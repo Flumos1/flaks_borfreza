@@ -1,0 +1,183 @@
+/* ============================================================
+   FLAKS Design System — Foundations
+   Tokens extracted directly from production codebase (reference/style.css)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Condensed:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* ---------- Brand colors (orange = primary accent) ---------- */
+  --flaks-orange:      #e85d04;   /* primary brand accent */
+  --flaks-orange-hot:  #ff7c2a;   /* hover / highlight */
+  --flaks-orange-dim:  rgba(232,93,4,0.12);
+  --flaks-gold:        #f0a500;   /* secondary accent */
+
+  /* ---------- Dark surfaces (industrial navy-black) ---------- */
+  --bg-black:  #0d0f14;   /* deepest — hero / contact / footer-ish */
+  --bg-dark:   #13161e;   /* page body */
+  --bg-dark2:  #1c2030;   /* cards, inputs */
+  --bg-dark3:  #252a3a;   /* table head, elevated panels */
+  --bg-steel:  #323850;   /* qty buttons / pressed */
+
+  /* ---------- Lines ---------- */
+  --line-soft:  rgba(255,255,255,0.08);
+  --line:       rgba(255,255,255,0.14);
+
+  /* ---------- Foreground ---------- */
+  --fg-1:    #ffffff;   /* high-contrast headings */
+  --fg-text: #e8eaf0;   /* body */
+  --fg-mid:  #9aa0b8;   /* secondary */
+  --fg-dim:  #5a6080;   /* muted captions */
+
+  /* ---------- Semantic ---------- */
+  --ok:     #25d366;    /* WhatsApp green (also used for success) */
+  --ok-bg:  rgba(37,211,102,0.12);
+  --ok-bd:  rgba(37,211,102,0.30);
+  --err:    #e74c3c;
+
+  /* ---------- Typography stacks ---------- */
+  --font-head: 'Bebas Neue', 'Arial Narrow', sans-serif;
+  --font-body: 'Roboto Condensed', system-ui, sans-serif;
+
+  /* ---------- Type scale (matches reference) ---------- */
+  --t-hero:    140px;   /* hero title (clamp 72–140) */
+  --t-h1:      44px;    /* section title (clamp 28–44) */
+  --t-h2:      32px;    /* hero sub */
+  --t-h3:      26px;    /* form / cart title */
+  --t-h4:      18px;    /* card title */
+  --t-body:    15px;    /* default body */
+  --t-small:   14px;
+  --t-meta:    13px;    /* captions, footer copy */
+  --t-eyebrow: 12px;    /* uppercase labels */
+  --t-tiny:    11px;    /* logo subtitle */
+
+  /* ---------- Spacing ---------- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+  --sp-8: 48px;
+  --sp-9: 64px;
+  --sp-10: 72px;
+
+  /* ---------- Radii (small — industrial, not soft) ---------- */
+  --r-1:    3px;
+  --r-2:    4px;        /* default --radius */
+  --r-3:    8px;        /* --radius-md (cards) */
+  --r-pill: 20px;       /* filter chips */
+
+  /* ---------- Elevation ---------- */
+  --shadow:       0 4px 24px rgba(0,0,0,0.4);
+  --shadow-cart:  -8px 0 40px rgba(0,0,0,0.5);
+
+  /* ---------- Motion ---------- */
+  --ease-out: cubic-bezier(.4,0,.2,1);
+  --dur-fast: 150ms;
+  --dur-base: 200ms;
+  --dur-slow: 300ms;
+}
+
+/* ============================================================
+   Semantic type roles
+   ============================================================ */
+
+.hero-display {
+  font-family: var(--font-head);
+  font-size: clamp(72px, 12vw, 140px);
+  letter-spacing: 6px;
+  color: var(--fg-1);
+  line-height: 0.9;
+}
+
+h1, .h1 {
+  font-family: var(--font-head);
+  font-size: clamp(28px, 4vw, 44px);
+  letter-spacing: 2px;
+  color: var(--fg-1);
+  line-height: 1.05;
+  margin: 0;
+}
+
+h2, .h2 {
+  font-family: var(--font-head);
+  font-size: 32px;
+  letter-spacing: 2px;
+  color: var(--fg-1);
+  margin: 0;
+}
+
+h3, .h3 {
+  font-family: var(--font-head);
+  font-size: 26px;
+  letter-spacing: 1.5px;
+  color: var(--fg-1);
+  margin: 0;
+}
+
+h4, .h4 {
+  font-family: var(--font-head);
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: var(--fg-1);
+  margin: 0;
+}
+
+p, .body {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--t-body);
+  line-height: 1.6;
+  color: var(--fg-text);
+  margin: 0;
+}
+
+.small { font-size: var(--t-small); color: var(--fg-mid); }
+.meta  { font-size: var(--t-meta); color: var(--fg-dim); }
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--t-meta);
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--flaks-orange);
+}
+
+.caption {
+  font-family: var(--font-body);
+  font-size: var(--t-eyebrow);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+
+.price {
+  font-family: var(--font-head);
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  color: var(--flaks-orange-hot);
+}
+
+.price-big {
+  font-family: var(--font-head);
+  font-size: 36px;
+  letter-spacing: 1px;
+  color: var(--flaks-orange-hot);
+}
+
+/* ============================================================
+   Base reset for system docs
+   ============================================================ */
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg-dark);
+  color: var(--fg-text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
