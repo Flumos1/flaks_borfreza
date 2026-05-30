@@ -9,6 +9,8 @@ import {
   useTweaks, TweaksPanel, TweakSection, TweakRadio, TweakToggle, TweakColor,
 } from './tweaks/tweaks-panel.jsx'
 
+const MIN_ORDER = 500; // минимальная сумма заказа, грн
+
 const PHONE_RAW = "380675453115";          // 067 545 31 15
 const PHONE_DISP = "+38 (067) 545-31-15";
 const EMAIL = "tpolegat@gmail.com";
@@ -85,6 +87,8 @@ function Header({ t, lang, setLang, cartCount, openCart, onNav }) {
           <a href="#shapes" onClick={(e)=>{e.preventDefault();onNav("shapes");}}>{t.nav_shapes}</a>
           <a href="#catalog" onClick={(e)=>{e.preventDefault();onNav("catalog");}}>{t.nav_catalog}</a>
           <a href="#about" onClick={(e)=>{e.preventDefault();onNav("about");}}>{t.nav_about}</a>
+          <a href="#delivery" onClick={(e)=>{e.preventDefault();onNav("delivery");}}>{t.nav_delivery}</a>
+          <a href="#articles" onClick={(e)=>{e.preventDefault();onNav("articles");}}>{t.nav_articles}</a>
           <a href="#contact" onClick={(e)=>{e.preventDefault();onNav("contact");}}>{t.nav_contact}</a>
         </nav>
         <button className="bf-cartbtn" onClick={openCart} aria-label={t.cart}>
@@ -205,10 +209,18 @@ function Guide({ t, lang, onPick, flutes }) {
 
 // ─────────── CATALOG ───────────
 function Catalog({ t, lang, shape, setShape, view, setView, cart, onAdd, onOpen, flutes, photos, refEl }) {
-  const [query, setQuery] = useState("");
-  const [sort, setSort] = useState("default");
+  const [query, setQuery] = useState(() => new URLSearchParams(window.location.search).get("q") || "");
+  const [sort, setSort] = useState(() => new URLSearchParams(window.location.search).get("sort") || "default");
   const [page, setPage] = useState(1);
   useEffect(() => { setPage(1); }, [shape, query, sort, view]);
+
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    if (query) p.set("q", query); else p.delete("q");
+    if (sort !== "default") p.set("sort", sort); else p.delete("sort");
+    const qs = p.toString();
+    window.history.replaceState({}, "", qs ? "?" + qs : window.location.pathname);
+  }, [query, sort]);
 
   const filtered = useMemo(() => {
     let r = PRODUCTS;
@@ -437,6 +449,78 @@ function Contact({ t, lang }) {
   );
 }
 
+// ─────────── DELIVERY ───────────
+function Delivery({ t }) {
+  return (
+    <section className="bf-sec bf-delivery" id="delivery">
+      <div className="wrap">
+        <Reveal tag="div" className="bf-sechead">
+          <p className="eyebrow">{t.del_eyebrow}</p>
+          <h2 className="bf-sectitle">{t.del_title}</h2>
+          <p className="bf-secsub">{t.del_sub}</p>
+        </Reveal>
+        <Reveal tag="div" className="bf-del-steps">
+          {t.del_how.map(([n, h, b]) => (
+            <div key={n} className="bf-del-step">
+              <span className="bf-del-step-n">{n}</span>
+              <h3 className="bf-del-step-h">{h}</h3>
+              <p className="bf-del-step-b">{b}</p>
+            </div>
+          ))}
+        </Reveal>
+        <div className="bf-del-info">
+          <Reveal tag="div" className="bf-del-block">
+            <div className="bf-del-block-title">{t.del_ship_title}</div>
+            <ul className="bf-del-list">
+              {t.del_ship_items.map((s,i) => <li key={i}><span className="bf-del-dot"/>{s}</li>)}
+            </ul>
+          </Reveal>
+          <Reveal tag="div" className="bf-del-block" delay={80}>
+            <div className="bf-del-block-title">{t.del_pay_title}</div>
+            <ul className="bf-del-list">
+              {t.del_pay_items.map((s,i) => <li key={i}><span className="bf-del-dot"/>{s}</li>)}
+            </ul>
+          </Reveal>
+          <Reveal tag="div" className="bf-del-block bf-del-wholesale" delay={160}>
+            <div className="bf-del-block-title">{t.del_wholesale_title}</div>
+            <p className="bf-del-wholesale-desc">{t.del_wholesale_desc}</p>
+            <a href={`https://wa.me/${PHONE_RAW}?text=${encodeURIComponent(t.del_wholesale_title)}`} target="_blank" className="bf-del-wa"><I.wa s={16}/> WhatsApp</a>
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─────────── ARTICLES ───────────
+function Articles({ t, lang }) {
+  const fmt = (iso) => {
+    const d = new Date(iso);
+    return d.toLocaleDateString(lang === "ua" ? "uk-UA" : "ru-RU", { year: "numeric", month: "long", day: "numeric" });
+  };
+  return (
+    <section className="bf-sec bf-articles" id="articles">
+      <div className="wrap">
+        <Reveal tag="div" className="bf-sechead">
+          <p className="eyebrow">{t.art_eyebrow}</p>
+          <h2 className="bf-sectitle">{t.art_title}</h2>
+          <p className="bf-secsub">{t.art_sub}</p>
+        </Reveal>
+        <div className="bf-art-grid">
+          {t.articles.map((a) => (
+            <Reveal key={a.slug} tag="a" className="bf-art-card" href={`/articles/${a.slug}.html?lang=${lang}`}>
+              <div className="bf-art-date">{fmt(a.date)}</div>
+              <h3 className="bf-art-title">{lang === "ua" ? a.ua : a.ru}</h3>
+              <p className="bf-art-desc">{lang === "ua" ? a.desc_ua : a.desc_ru}</p>
+              <span className="bf-art-read">{t.art_read} <I.arrow s={14}/></span>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─────────── FOOTER ───────────
 function Footer({ t }) {
   return (
@@ -492,11 +576,17 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes }) {
         {items.length > 0 && (
           <div className="bf-cart-foot">
             <div className="bf-cart-total"><span className="l">{t.total}</span><span className="v">{priceFmt(total)} грн</span></div>
+            {total < MIN_ORDER && (
+              <div className="bf-cart-minwarn">
+                <b>{t.cart_min_warn} — {MIN_ORDER} грн.</b> {t.cart_min_note}
+                <div className="bf-cart-minbar"><div className="bf-cart-minbar-fill" style={{width: Math.min(100, (total/MIN_ORDER)*100)+"%"}}/></div>
+              </div>
+            )}
             <p className="bf-cart-channels-l">{t.order_channels}</p>
-            <button className="bf-cart-send wa" onClick={sendWa}><I.wa/> {t.send_wa}</button>
+            <button className={"bf-cart-send wa" + (total < MIN_ORDER ? " disabled" : "")} onClick={total >= MIN_ORDER ? sendWa : undefined} disabled={total < MIN_ORDER}><I.wa/> {t.send_wa}</button>
             <div className="bf-cart-send-row">
-              <button className="bf-cart-send2 tg" onClick={sendTg}><I.tg s={17}/> {t.send_tg}</button>
-              <button className="bf-cart-send2 em" onClick={sendEmail}><I.mail s={17}/> {t.send_email}</button>
+              <button className={"bf-cart-send2 tg" + (total < MIN_ORDER ? " disabled" : "")} onClick={total >= MIN_ORDER ? sendTg : undefined} disabled={total < MIN_ORDER}><I.tg s={17}/> {t.send_tg}</button>
+              <button className={"bf-cart-send2 em" + (total < MIN_ORDER ? " disabled" : "")} onClick={total >= MIN_ORDER ? sendEmail : undefined} disabled={total < MIN_ORDER}><I.mail s={17}/> {t.send_email}</button>
             </div>
             <p className="bf-cart-note">{t.order_note}</p>
           </div>
@@ -565,8 +655,13 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 // ─────────── APP ───────────
 export default function App() {
   const [tw, setTweak] = useTweaks(TWEAK_DEFAULTS);
-  const [lang, setLang] = useState("ua");
-  const [shape, setShape] = useState("all");
+  const [lang, setLang] = useState(() => {
+    const p = new URLSearchParams(window.location.search).get("lang");
+    return p === "ru" ? "ru" : "ua";
+  });
+  const [shape, setShape] = useState(() => {
+    return new URLSearchParams(window.location.search).get("shape") || "all";
+  });
   const [cart, setCart] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [active, setActive] = useState(null);
@@ -591,6 +686,14 @@ export default function App() {
   const setQty = (id,q)=>setCart((prev)=>prev.map((i)=>i.id===id?{...i,qty:q}:i));
   const remove = (id)=>setCart((prev)=>prev.filter((i)=>i.id!==id));
 
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    if (lang !== "ua") p.set("lang", lang); else p.delete("lang");
+    if (shape !== "all") p.set("shape", shape); else p.delete("shape");
+    const qs = p.toString();
+    window.history.replaceState({}, "", qs ? "?" + qs : window.location.pathname);
+  }, [lang, shape]);
+
   const pickShape = (k) => { setShape(k); setTimeout(()=>catalogRef.current && catalogRef.current.scrollIntoView({behavior:"smooth",block:"start"}),60); };
   const onNav = (id) => {
     if (id === "top") { window.scrollTo({top:0,behavior:"smooth"}); return; }
@@ -609,6 +712,8 @@ export default function App() {
       <Guide t={t} lang={lang} onPick={pickShape} flutes={tw.flutes}/>
       <Catalog t={t} lang={lang} shape={shape} setShape={setShape} view={tw.view} setView={(v)=>setTweak("view",v)} cart={cart} onAdd={addCart} onOpen={setActive} flutes={tw.flutes} photos={tw.photos} refEl={catalogRef}/>
       <About t={t} lang={lang}/>
+      <Delivery t={t}/>
+      <Articles t={t} lang={lang}/>
       <Contact t={t} lang={lang}/>
       <Footer t={t}/>
       <Cart t={t} lang={lang} open={cartOpen} onClose={()=>setCartOpen(false)} items={cart} onQty={setQty} onRemove={remove} flutes={tw.flutes}/>

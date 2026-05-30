@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Статті про борфрези — FLAKS</title>
+<meta name="description" content="Практичні статті та поради щодо вибору, застосування й обслуговування твердосплавних борфрез ВК8. FLAKS — інструмент для майстрів.">
+<meta property="og:title" content="Статті — FLAKS Борфрези">
+<meta property="og:description" content="Практичні поради щодо вибору та роботи з борфрезами ВК8.">
+<meta name="theme-color" content="#e85d04">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="/assets/favicon.png">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#13161e;color:#e8eaf0;font-family:'Roboto Condensed',sans-serif;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px}
+
+.art-header{background:#0d0f14;border-bottom:2px solid #e85d04;padding:14px 0}
+.art-header-in{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.art-logo{display:flex;align-items:center;gap:10px;font-family:'Bebas Neue',sans-serif}
+.art-logo-mark{width:40px;height:40px;background:#e85d04;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;flex-shrink:0}
+.art-logo-name{font-size:24px;letter-spacing:3px;color:#fff;line-height:1}
+.art-logo-sub{font-size:9px;color:#5a6080;letter-spacing:1.5px;text-transform:uppercase}
+.art-back{margin-left:auto;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:#9aa0b8;border:1px solid rgba(255,255,255,0.14);border-radius:3px;padding:7px 16px;transition:.2s}
+.art-back:hover{border-color:#e85d04;color:#e85d04}
+
+.art-hero{padding:60px 0 48px;background:#0d0f14;border-bottom:1px solid rgba(255,255,255,0.08)}
+.art-eyebrow{font-family:'Roboto Condensed',sans-serif;font-size:12px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:#e85d04;margin-bottom:12px}
+.art-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,5vw,52px);letter-spacing:2px;color:#fff;line-height:1;margin-bottom:10px}
+
+.art-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;padding:48px 0}
+.art-card{background:#1c2030;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:26px;display:flex;flex-direction:column;transition:border-color .18s,transform .18s;position:relative;overflow:hidden}
+.art-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#e85d04,transparent);opacity:0;transition:opacity .2s}
+.art-card:hover{border-color:#e85d04;transform:translateY(-3px)}
+.art-card:hover::before{opacity:1}
+.art-card-date{font-size:11px;color:#5a6080;letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px}
+.art-card-title{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:.5px;color:#fff;line-height:1.15;margin-bottom:10px;flex-grow:1}
+.art-card-desc{font-size:13px;color:#9aa0b8;line-height:1.6;margin-bottom:16px;flex-grow:2}
+.art-card-read{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.5px;color:#e85d04;display:inline-flex;align-items:center;gap:6px;margin-top:auto}
+
+.art-footer{background:#0a0b0f;border-top:1px solid rgba(255,255,255,0.08);padding:24px 0}
+.art-footer-in{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:13px;color:#5a6080}
+
+@media(max-width:760px){.art-grid{grid-template-columns:1fr}}
+@media(max-width:900px){.art-grid{grid-template-columns:1fr 1fr}}
+</style>
+<script>
+(function(){
+  var stored = localStorage.getItem('flaks-lang');
+  var p = new URLSearchParams(location.search).get('lang');
+  var lang = (p==='ru'||stored==='ru') ? 'ru' : 'ua';
+  if(p) localStorage.setItem('flaks-lang', p);
+  document.documentElement.lang = lang==='ua' ? 'uk' : 'ru';
+  window.__lang = lang;
+})();
+</script>
+</head>
+<body>
+<header class="art-header">
+  <div class="wrap art-header-in">
+    <a href="/" class="art-logo">
+      <span class="art-logo-mark">F</span>
+      <span>
+        <span class="art-logo-name">FLAKS</span>
+        <span class="art-logo-sub" data-ua="Твердосплавний інструмент" data-ru="Твёрдосплавный инструмент"></span>
+      </span>
+    </a>
+    <a href="/" class="art-back" data-ua="← На головну" data-ru="← На главную"></a>
+  </div>
+</header>
+
+<section class="art-hero">
+  <div class="wrap">
+    <p class="art-eyebrow" data-ua="Корисно знати" data-ru="Полезно знать"></p>
+    <h1 data-ua="Статті та поради" data-ru="Статьи и советы"></h1>
+    <p style="color:#9aa0b8;font-size:15px;margin-top:8px" data-ua="Практичні матеріали для тих, хто працює з твердосплавним інструментом." data-ru="Практические материалы для тех, кто работает с твёрдосплавным инструментом."></p>
+  </div>
+</section>
+
+<main>
+  <div class="wrap">
+    <div class="art-grid">
+
+      <a class="art-card" href="/articles/yak-vybrat-borfrezu.html">
+        <div class="art-card-date" data-ua="1 травня 2026" data-ru="1 мая 2026"></div>
+        <div class="art-card-title" data-ua="Як вибрати борфрезу: форма, Ø, матеріал" data-ru="Как выбрать борфрезу: форма, Ø, материал"></div>
+        <div class="art-card-desc" data-ua="Розбираємо 16 форм головки, правила вибору діаметра та типу насічки під конкретні задачі." data-ru="Разбираем 16 форм головки, правила выбора диаметра и типа насечки под конкретные задачи."></div>
+        <span class="art-card-read" data-ua="Читати →" data-ru="Читать →"></span>
+      </a>
+
+      <a class="art-card" href="/articles/borfrezy-po-aluminiu.html">
+        <div class="art-card-date" data-ua="10 травня 2026" data-ru="10 мая 2026"></div>
+        <div class="art-card-title" data-ua="Борфрези по алюмінію: чому потрібна спеціальна насічка" data-ru="Борфрезы по алюминию: почему нужна специальная насечка"></div>
+        <div class="art-card-desc" data-ua="Звичайна подвійна насічка забивається алюмінієм. Пояснюємо, чим відрізняються фрези ALU і коли їх застосовувати." data-ru="Обычная двойная насечка забивается алюминием. Объясняем, чем отличаются фрезы ALU и когда их применять."></div>
+        <span class="art-card-read" data-ua="Читати →" data-ru="Читать →"></span>
+      </a>
+
+      <a class="art-card" href="/articles/zachystka-zvarnykh-shviv.html">
+        <div class="art-card-date" data-ua="20 травня 2026" data-ru="20 мая 2026"></div>
+        <div class="art-card-title" data-ua="Зачистка зварних швів борфрезами: поради майстра" data-ru="Зачистка сварных швов борфрезами: советы мастера"></div>
+        <div class="art-card-desc" data-ua="Форми A і C для площин, H і D для радіусів, режими обертів і техніка роботи без припалів." data-ru="Формы A и C для плоскостей, H и D для радиусов, режимы оборотов и техника без прижогов."></div>
+        <span class="art-card-read" data-ua="Читати →" data-ru="Читать →"></span>
+      </a>
+
+    </div>
+  </div>
+</main>
+
+<footer class="art-footer">
+  <div class="wrap art-footer-in">
+    <span>© 2025–2026 FLAKS · <span data-ua="Харків, Україна" data-ru="Харьков, Украина"></span></span>
+    <a href="/" data-ua="← Каталог борфрез" data-ru="← Каталог борфрез" style="color:#9aa0b8;transition:.2s" onmouseover="this.style.color='#e85d04'" onmouseout="this.style.color='#9aa0b8'"></a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var lang = window.__lang || 'ua';
+  document.querySelectorAll('[data-ua]').forEach(function(el){
+    el.textContent = lang === 'ru' ? el.getAttribute('data-ru') : el.getAttribute('data-ua');
+  });
+  document.querySelectorAll('.art-card').forEach(function(el){
+    var href = el.getAttribute('href');
+    el.setAttribute('href', href + '?lang=' + lang);
+  });
+})();
+</script>
+</body>
+</html>
