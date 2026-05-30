@@ -287,6 +287,24 @@
   .bf-cart-send2.em:hover{background:var(--flaks-orange);color:#fff}
   .bf-cart-note{font-size:11px;color:var(--fg-dim);line-height:1.5;margin:12px 0 0}
 
+  /* ─────────── CART ORDER FORM ─────────── */
+  .bf-order-form{display:flex;flex-direction:column;gap:7px;padding-top:14px;border-top:1px solid var(--line)}
+  .bf-order-form-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--fg-dim);margin-bottom:2px}
+  .bf-order-inp{background:var(--bg-dark3);border:1px solid var(--line);border-radius:4px;padding:9px 12px;font-size:13px;color:var(--fg-text);width:100%;transition:border-color .2s;font-family:inherit;resize:none}
+  .bf-order-inp:focus{outline:none;border-color:var(--flaks-orange)}
+  .bf-order-err{font-size:12px;color:var(--err);margin:2px 0 0;line-height:1.4}
+  .bf-cart-send-tg{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;background:#2aabee;color:#fff;font-family:var(--font-head);font-size:18px;letter-spacing:1px;padding:13px;border-radius:4px;transition:.2s;border:none;cursor:pointer;margin-top:2px}
+  .bf-cart-send-tg:hover:not(:disabled){background:#1e9be0;transform:translateY(-1px)}
+  .bf-cart-send-tg:disabled{opacity:.45;cursor:not-allowed;transform:none}
+
+  /* ─────────── CART SUCCESS STATE ─────────── */
+  .bf-cart-success-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px;text-align:center;gap:18px}
+  .bf-cart-success-ico{width:68px;height:68px;border-radius:50%;background:var(--ok-bg);border:2px solid var(--ok);display:flex;align-items:center;justify-content:center;color:var(--ok)}
+  .bf-cart-success-title{font-family:var(--font-head);font-size:28px;letter-spacing:1px;color:#fff;margin:0}
+  .bf-cart-success-desc{font-size:14px;color:var(--fg-mid);line-height:1.65;margin:0;max-width:290px}
+  .bf-cart-close-btn{background:var(--bg-dark3);border:1px solid var(--line);color:var(--fg-mid);font-family:var(--font-head);font-size:16px;letter-spacing:1px;padding:11px 32px;border-radius:4px;cursor:pointer;transition:.2s;margin-top:4px}
+  .bf-cart-close-btn:hover{border-color:var(--flaks-orange);color:var(--flaks-orange)}
+
   /* ─────────── MODAL ─────────── */
   .bf-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);animation:bf-fade .2s ease}
   @keyframes bf-fade{from{opacity:0}to{opacity:1}}

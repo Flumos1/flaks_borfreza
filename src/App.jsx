@@ -534,61 +534,126 @@ function Footer({ t }) {
 }
 
 // ─────────── CART ───────────
-function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes }) {
+function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearCart }) {
   const total = items.reduce((s,i)=>s+i.price*i.qty,0);
   const count = items.reduce((s,i)=>s+i.qty,0);
-  const orderText = () => {
+
+  const [cName,    setCName]    = useState("");
+  const [cPhone,   setCPhone]   = useState("");
+  const [cEmail,   setCEmail]   = useState("");
+  const [cCity,    setCCity]    = useState("");
+  const [cComment, setCComment] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [sent,  setSent]  = useState(false);
+  const [orderError, setOrderError] = useState("");
+
+  useEffect(() => {
+    if (!open) { const id = setTimeout(()=>{ setSent(false); setOrderError(""); }, 350); return ()=>clearTimeout(id); }
+  }, [open]);
+
+  const emailBody = () => {
     const lines = items.map((i)=>`• ${lang==="ua"?i.name_ua:i.name_ru}${i.code?" ("+i.code+")":""} — ${i.qty} ${t.pcs} × ${priceFmt(i.price)} = ${priceFmt(i.price*i.qty)} грн`);
-    return `${lang==="ua"?"Замовлення з сайту FLAKS — борфрези:":"Заказ с сайта FLAKS — борфрезы:"}\n\n${lines.join("\n")}\n\n${t.total}: ${priceFmt(total)} грн`;
+    return `${lang==="ua"?"Замовлення FLAKS:":"Заказ FLAKS:"}\n\n${lines.join("\n")}\n\n${t.total}: ${priceFmt(total)} грн\n\n${lang==="ua"?"Ім'я":"Имя"}: ${cName||"—"}\n${lang==="ua"?"Телефон":"Телефон"}: ${cPhone||"—"}`;
   };
-  const sendWa = () => window.open(wa(orderText()), "_blank");
-  const sendTg = () => window.open(tg(orderText()), "_blank");
-  const sendEmail = () => { window.location.href = mailtoOrder(lang==="ua"?"Замовлення борфрез — FLAKS":"Заказ борфрез — FLAKS", orderText()); };
+  const sendEmail = () => {
+    window.location.href = mailtoOrder(lang==="ua"?"Замовлення борфрез — FLAKS":"Заказ борфрез — FLAKS", emailBody());
+  };
+
+  const submitOrder = async (e) => {
+    e.preventDefault();
+    if (!cPhone.trim()) { setOrderError(t.order_phone_req); return; }
+    setSubmitting(true); setOrderError("");
+    try {
+      const res = await fetch("/api/order", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+          language: lang,
+          customer: { name: cName.trim(), phone: cPhone.trim(), email: cEmail.trim(), city: cCity.trim(), comment: cComment.trim() },
+          items: items.map((i)=>({ name_ua:i.name_ua, name_ru:i.name_ru, code:i.code, headD:i.headD, headL:i.headL, price:i.price, qty:i.qty })),
+          total,
+        }),
+      });
+      if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(d.error||"error"); }
+      setSent(true);
+      onClearCart();
+    } catch {
+      setOrderError(t.order_failed);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <Fragment>
       <div className={"bf-overlay"+(open?" on":"")} onClick={onClose}/>
       <aside className={"bf-cart"+(open?" on":"")}>
         <div className="bf-cart-head">
-          <h3 className="bf-cart-title">{t.cart} {count>0 && <small>{count} {t.positions}</small>}</h3>
+          <h3 className="bf-cart-title">{t.cart} {count>0 && !sent && <small>{count} {t.positions}</small>}</h3>
           <button className="bf-cart-close" onClick={onClose}>✕</button>
         </div>
-        <div className="bf-cart-panel">
-          {items.length === 0 ? (
-            <div className="bf-cart-empty"><div className="ico"><I.cart s={46}/></div><p>{t.cart_empty}</p><span>{t.cart_hint}</span></div>
-          ) : items.map((it)=>(
-            <div key={it.id} className="bf-citemc">
-              <span className="bf-citemc-art"><BurrShape type={it.shape} size={46} strokeWidth={3} flutes={flutes}/></span>
-              <div className="bf-citemc-body">
-                <div className="bf-citemc-name">{catName(it,lang)} · {dimStr(it)}{it.headD?" · хв."+it.shankD:""}</div>
-                <div className="bf-citemc-row">
-                  <div className="bf-qty">
-                    <button className="bf-qty-btn" onClick={()=>onQty(it.id, Math.max(1,it.qty-1))}>−</button>
-                    <input className="bf-qty-inp" value={it.qty} onChange={(e)=>onQty(it.id, Math.max(1,+e.target.value||1))}/>
-                    <button className="bf-qty-btn" onClick={()=>onQty(it.id, it.qty+1)}>+</button>
+
+        {/* ── items panel ── */}
+        {!sent && (
+          <div className="bf-cart-panel">
+            {items.length === 0 ? (
+              <div className="bf-cart-empty"><div className="ico"><I.cart s={46}/></div><p>{t.cart_empty}</p><span>{t.cart_hint}</span></div>
+            ) : items.map((it)=>(
+              <div key={it.id} className="bf-citemc">
+                <span className="bf-citemc-art"><BurrShape type={it.shape} size={46} strokeWidth={3} flutes={flutes}/></span>
+                <div className="bf-citemc-body">
+                  <div className="bf-citemc-name">{catName(it,lang)} · {dimStr(it)}{it.headD?" · хв."+it.shankD:""}</div>
+                  <div className="bf-citemc-row">
+                    <div className="bf-qty">
+                      <button className="bf-qty-btn" onClick={()=>onQty(it.id, Math.max(1,it.qty-1))}>−</button>
+                      <input className="bf-qty-inp" value={it.qty} onChange={(e)=>onQty(it.id, Math.max(1,+e.target.value||1))}/>
+                      <button className="bf-qty-btn" onClick={()=>onQty(it.id, it.qty+1)}>+</button>
+                    </div>
+                    <span className="bf-citemc-price">{priceFmt(it.price*it.qty)} грн</span>
+                    <button className="bf-citemc-rem" onClick={()=>onRemove(it.id)}>✕</button>
                   </div>
-                  <span className="bf-citemc-price">{priceFmt(it.price*it.qty)} грн</span>
-                  <button className="bf-citemc-rem" onClick={()=>onRemove(it.id)}>✕</button>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-        {items.length > 0 && (
+            ))}
+          </div>
+        )}
+
+        {/* ── order form ── */}
+        {items.length > 0 && !sent && (
           <div className="bf-cart-foot">
             <div className="bf-cart-total"><span className="l">{t.total}</span><span className="v">{priceFmt(total)} грн</span></div>
             {total < MIN_ORDER && (
               <div className="bf-cart-minwarn">
                 <b>{t.cart_min_warn} — {MIN_ORDER} грн.</b> {t.cart_min_note}
-                <div className="bf-cart-minbar"><div className="bf-cart-minbar-fill" style={{width: Math.min(100, (total/MIN_ORDER)*100)+"%"}}/></div>
+                <div className="bf-cart-minbar"><div className="bf-cart-minbar-fill" style={{width:Math.min(100,(total/MIN_ORDER)*100)+"%"}}/></div>
               </div>
             )}
-            <p className="bf-cart-channels-l">{t.order_channels}</p>
-            <button className={"bf-cart-send wa" + (total < MIN_ORDER ? " disabled" : "")} onClick={total >= MIN_ORDER ? sendWa : undefined} disabled={total < MIN_ORDER}><I.wa/> {t.send_wa}</button>
-            <div className="bf-cart-send-row">
-              <button className={"bf-cart-send2 tg" + (total < MIN_ORDER ? " disabled" : "")} onClick={total >= MIN_ORDER ? sendTg : undefined} disabled={total < MIN_ORDER}><I.tg s={17}/> {t.send_tg}</button>
-              <button className={"bf-cart-send2 em" + (total < MIN_ORDER ? " disabled" : "")} onClick={total >= MIN_ORDER ? sendEmail : undefined} disabled={total < MIN_ORDER}><I.mail s={17}/> {t.send_email}</button>
-            </div>
-            <p className="bf-cart-note">{t.order_note}</p>
+            <form className="bf-order-form" onSubmit={submitOrder}>
+              <p className="bf-order-form-label">{t.order_form_title}</p>
+              <input className="bf-order-inp" placeholder={t.f_name_ph} value={cName} onChange={(e)=>setCName(e.target.value)}/>
+              <input className="bf-order-inp" placeholder={t.f_phone_ph+" *"} value={cPhone} onChange={(e)=>setCPhone(e.target.value)}/>
+              <input className="bf-order-inp" type="email" placeholder="Email" value={cEmail} onChange={(e)=>setCEmail(e.target.value)}/>
+              <input className="bf-order-inp" placeholder={t.f_city_ph} value={cCity} onChange={(e)=>setCCity(e.target.value)}/>
+              <textarea className="bf-order-inp" rows={2} placeholder={t.f_msg_ph} value={cComment} onChange={(e)=>setCComment(e.target.value)}/>
+              {orderError && <p className="bf-order-err">{orderError}</p>}
+              <button type="submit" className="bf-cart-send-tg" disabled={submitting||total<MIN_ORDER}>
+                <I.tg s={18}/> {submitting ? t.order_sending : t.order_submit}
+              </button>
+              <button type="button" className={"bf-cart-send2 em"+(total<MIN_ORDER?" disabled":"")} onClick={sendEmail} disabled={total<MIN_ORDER}>
+                <I.mail s={16}/> {t.send_email}
+              </button>
+            </form>
+            <p className="bf-cart-note">{t.order_note_new}</p>
+          </div>
+        )}
+
+        {/* ── success state ── */}
+        {sent && (
+          <div className="bf-cart-success-state">
+            <div className="bf-cart-success-ico"><I.check s={28}/></div>
+            <h4 className="bf-cart-success-title">{t.order_sent_title}</h4>
+            <p className="bf-cart-success-desc">{t.order_sent_desc}</p>
+            <button className="bf-cart-close-btn" onClick={onClose}>{t.order_close}</button>
           </div>
         )}
       </aside>
@@ -716,7 +781,7 @@ export default function App() {
       <Articles t={t} lang={lang}/>
       <Contact t={t} lang={lang}/>
       <Footer t={t}/>
-      <Cart t={t} lang={lang} open={cartOpen} onClose={()=>setCartOpen(false)} items={cart} onQty={setQty} onRemove={remove} flutes={tw.flutes}/>
+      <Cart t={t} lang={lang} open={cartOpen} onClose={()=>setCartOpen(false)} items={cart} onQty={setQty} onRemove={remove} flutes={tw.flutes} onClearCart={()=>setCart([])}/>
       <Modal t={t} lang={lang} p={active} onClose={()=>setActive(null)} onAdd={addCart} flutes={tw.flutes} photos={tw.photos}/>
       <div className={"bf-toast"+(toast?" on":"")}><span className="ok"><I.check s={16}/></span>{toast}</div>
 
