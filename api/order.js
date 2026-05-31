@@ -1,4 +1,4 @@
-const MIN_ORDER = 500;
+const MIN_ORDER = 2000;
 const TO_EMAIL = process.env.ORDER_TO_EMAIL || "tpolegat@gmail.com";
 
 function clean(v, max) {

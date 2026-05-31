@@ -9,7 +9,7 @@ import {
   useTweaks, TweaksPanel, TweakSection, TweakRadio, TweakToggle, TweakColor,
 } from './tweaks/tweaks-panel.jsx'
 
-const MIN_ORDER = 500; // минимальная сумма заказа, грн
+const MIN_ORDER = 2000; // минимальная сумма заказа, грн
 
 const PHONE_RAW = "380675453115";          // 067 545 31 15
 const PHONE_DISP = "+38 (067) 545-31-15";
@@ -557,7 +557,11 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
 
   const submitOrder = async (e) => {
     e.preventDefault();
-    if (!cPhone.trim()) { setOrderError(t.order_phone_req); return; }
+    if (!cName.trim()) { setOrderError(lang==="ua"?"Введіть ваше ім'я":"Введите ваше имя"); return; }
+    const digits = cPhone.replace(/\D/g, "");
+    if (digits.length < 10) { setOrderError(lang==="ua"?"Введіть повний номер телефону (мін. 10 цифр)":"Введите полный номер телефона (мин. 10 цифр)"); return; }
+    if (!cEmail.trim()) { setOrderError(lang==="ua"?"Введіть ваш email":"Введите ваш email"); return; }
+    if (!cCity.trim()) { setOrderError(lang==="ua"?"Введіть місто доставки":"Введите город доставки"); return; }
     setSubmitting(true); setOrderError("");
     try {
       const res = await fetch("/api/order", {
@@ -626,10 +630,10 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
             )}
             <form className="bf-order-form" onSubmit={submitOrder}>
               <p className="bf-order-form-label">{t.order_form_title}</p>
-              <input className="bf-order-inp" placeholder={t.f_name_ph} value={cName} onChange={(e)=>setCName(e.target.value)}/>
+              <input className="bf-order-inp" placeholder={t.f_name_ph+" *"} value={cName} onChange={(e)=>setCName(e.target.value)}/>
               <input className="bf-order-inp" type="tel" placeholder={t.f_phone_ph+" *"} value={cPhone} onChange={(e)=>setCPhone(e.target.value)}/>
-              <input className="bf-order-inp" type="email" placeholder="Email" value={cEmail} onChange={(e)=>setCEmail(e.target.value)}/>
-              <input className="bf-order-inp" placeholder={t.f_city_ph} value={cCity} onChange={(e)=>setCCity(e.target.value)}/>
+              <input className="bf-order-inp" type="email" placeholder={"Email *"} value={cEmail} onChange={(e)=>setCEmail(e.target.value)}/>
+              <input className="bf-order-inp" placeholder={t.f_city_ph+" *"} value={cCity} onChange={(e)=>setCCity(e.target.value)}/>
               <textarea className="bf-order-inp" rows={2} placeholder={t.f_msg_ph} value={cComment} onChange={(e)=>setCComment(e.target.value)}/>
               {orderError && <p className="bf-order-err">{orderError}</p>}
               <button type="submit" className="bf-cart-send-tg" disabled={submitting||total<MIN_ORDER}>
