@@ -547,14 +547,6 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
     if (!open) { const id = setTimeout(()=>{ setSent(false); setOrderError(""); }, 350); return ()=>clearTimeout(id); }
   }, [open]);
 
-  const emailBody = () => {
-    const lines = items.map((i)=>`• ${lang==="ua"?i.name_ua:i.name_ru}${i.code?" ("+i.code+")":""} — ${i.qty} ${t.pcs} × ${priceFmt(i.price)} = ${priceFmt(i.price*i.qty)} грн`);
-    return `${lang==="ua"?"Замовлення FLAKS:":"Заказ FLAKS:"}\n\n${lines.join("\n")}\n\n${t.total}: ${priceFmt(total)} грн\n\n${lang==="ua"?"Ім'я":"Имя"}: ${cName||"—"}\n${lang==="ua"?"Телефон":"Телефон"}: ${cPhone||"—"}`;
-  };
-  const sendEmail = () => {
-    window.location.href = mailtoOrder(lang==="ua"?"Замовлення борфрез — FLAKS":"Заказ борфрез — FLAKS", emailBody());
-  };
-
   const submitOrder = async (e) => {
     e.preventDefault();
     if (!cName.trim()) { setOrderError(lang==="ua"?"Введіть ваше ім'я":"Введите ваше имя"); return; }
