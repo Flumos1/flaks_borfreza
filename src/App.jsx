@@ -72,10 +72,13 @@ function Header({ t, lang, setLang, cartCount, openCart, onNav }) {
       <div className="bf-htop"><div className="wrap bf-htop-in">
         <div className="bf-contacts">
           <a href={`tel:+${PHONE_RAW}`} className="bf-toplink"><I.phone s={14}/> {t.top_phone}</a>
-          <a href={`https://t.me/${TG_BOT}`} target="_blank" className="bf-toplink tg"><I.tg s={14}/> Telegram</a>
+          <a href="https://t.me/+380675453115" target="_blank" className="bf-toplink tg"><I.tg s={14}/> Telegram</a>
           <span className="bf-topcity"><I.pin s={13}/> {t.top_city}</span>
         </div>
-        <button className="bf-lang" onClick={() => setLang(lang === "ua" ? "ru" : "ua")}>{lang.toUpperCase()}</button>
+        <div className="bf-lang-sw">
+          <button className={"bf-lang"+(lang==="ua"?" active":"")} onClick={()=>setLang("ua")}>UA</button>
+          <button className={"bf-lang"+(lang==="ru"?" active":"")} onClick={()=>setLang("ru")}>RU</button>
+        </div>
       </div></div>
       <div className="bf-hmain"><div className="wrap bf-hmain-in">
         <a href="#top" className="bf-logo" onClick={(e)=>{e.preventDefault();onNav("top");}}>
@@ -127,7 +130,7 @@ function Hero({ t, flutes, onNav }) {
         <Reveal tag="p" className="bf-hero-desc" delay={180}>{t.hero_desc}</Reveal>
         <Reveal className="bf-hero-actions" delay={240}>
           <a href="#shapes" className="bf-btn" onClick={(e)=>{e.preventDefault();onNav("shapes");}}>{t.hero_cta1} <I.arrow/></a>
-          <a href={wa("Вітаю! Допоможіть підібрати борфрезу.")} target="_blank" className="bf-btn-wa"><I.wa/> {t.hero_cta2}</a>
+          <a href="https://t.me/+380675453115" target="_blank" className="bf-btn-tg"><I.tg/> {t.hero_cta2}</a>
         </Reveal>
         <Reveal className="bf-hero-stats" delay={320}>
           <div><span className="bf-stat-n"><CountUp value={t.stat1_n}/></span><span className="bf-stat-l">{t.stat1_l}</span></div>
@@ -397,7 +400,7 @@ function Contact({ t, lang }) {
   const [msg, setMsg] = useState("");
   const items = [
     [I.phone, t.c_phone, t.top_phone, `tel:+${PHONE_RAW}`, "", false],
-    [I.tg, t.c_tg, "@" + TG_BOT, `https://t.me/${TG_BOT}`, "tg", true],
+    [I.tg, t.c_tg, "+38 (067) 545-31-15", "https://t.me/+380675453115", "tg", true],
     [I.mail, t.c_email, EMAIL, `mailto:${EMAIL}`, "", false],
     [I.pin, t.c_city, t.c_city_val, null, "", false],
   ];
@@ -435,9 +438,6 @@ function Contact({ t, lang }) {
           <div className="bf-fg"><label>{t.f_phone}</label><input type="tel" placeholder={t.f_phone_ph} value={phone} onChange={(e)=>setPhone(e.target.value)}/></div>
           <div className="bf-fg"><label>{t.f_msg}</label><textarea rows="3" placeholder={t.f_msg_ph} value={msg} onChange={(e)=>setMsg(e.target.value)}></textarea></div>
           <button type="submit" className="bf-submit"><I.tg s={16}/> {t.f_submit}</button>
-          <div className="bf-form-alt">
-            <button type="button" className="bf-form-alt-btn em" onClick={()=>submit("email")}><I.mail s={16}/> {t.send_email}</button>
-          </div>
           <p className="bf-fnote">{t.f_note}</p>
         </Reveal>
       </div>
@@ -627,16 +627,13 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
             <form className="bf-order-form" onSubmit={submitOrder}>
               <p className="bf-order-form-label">{t.order_form_title}</p>
               <input className="bf-order-inp" placeholder={t.f_name_ph} value={cName} onChange={(e)=>setCName(e.target.value)}/>
-              <input className="bf-order-inp" placeholder={t.f_phone_ph+" *"} value={cPhone} onChange={(e)=>setCPhone(e.target.value)}/>
+              <input className="bf-order-inp" type="tel" placeholder={t.f_phone_ph+" *"} value={cPhone} onChange={(e)=>setCPhone(e.target.value)}/>
               <input className="bf-order-inp" type="email" placeholder="Email" value={cEmail} onChange={(e)=>setCEmail(e.target.value)}/>
               <input className="bf-order-inp" placeholder={t.f_city_ph} value={cCity} onChange={(e)=>setCCity(e.target.value)}/>
               <textarea className="bf-order-inp" rows={2} placeholder={t.f_msg_ph} value={cComment} onChange={(e)=>setCComment(e.target.value)}/>
               {orderError && <p className="bf-order-err">{orderError}</p>}
               <button type="submit" className="bf-cart-send-tg" disabled={submitting||total<MIN_ORDER}>
-                <I.tg s={18}/> {submitting ? t.order_sending : t.order_submit}
-              </button>
-              <button type="button" className={"bf-cart-send2 em"+(total<MIN_ORDER?" disabled":"")} onClick={sendEmail} disabled={total<MIN_ORDER}>
-                <I.mail s={16}/> {t.send_email}
+                {submitting ? t.order_sending : t.order_submit}
               </button>
             </form>
             <p className="bf-cart-note">{t.order_note_new}</p>

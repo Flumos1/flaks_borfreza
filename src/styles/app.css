@@ -20,8 +20,10 @@
   .bf-toplink.wa:hover{color:var(--ok)}
   .bf-toplink.tg:hover{color:#2aabee}
   .bf-topcity{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--fg-dim)}
+  .bf-lang-sw{display:flex;gap:4px}
   .bf-lang{background:var(--bg-dark3);border:1px solid var(--line);color:var(--fg-mid);font-size:12px;font-weight:600;letter-spacing:1px;padding:4px 12px;border-radius:3px;transition:.2s}
   .bf-lang:hover{border-color:var(--flaks-orange);color:var(--flaks-orange)}
+  .bf-lang.active{border-color:var(--flaks-orange);color:var(--flaks-orange);background:var(--flaks-orange-dim)}
   .bf-hmain{background:var(--bg-dark);border-bottom:2px solid var(--flaks-orange);padding:13px 0}
   .bf-hmain-in{display:flex;align-items:center;gap:32px}
   .bf-logo{display:flex;align-items:center;gap:12px}
@@ -56,6 +58,8 @@
   .bf-btn:hover .arr{transform:translateX(4px)}
   .bf-btn-wa{display:inline-flex;align-items:center;gap:9px;background:var(--ok-bg);border:1px solid var(--ok-bd);color:var(--ok);font-family:var(--font-head);font-size:17px;letter-spacing:1px;padding:13px 26px;border-radius:4px;transition:.2s}
   .bf-btn-wa:hover{background:rgba(37,211,102,.2)}
+  .bf-btn-tg{display:inline-flex;align-items:center;gap:9px;background:rgba(42,171,238,.12);border:1px solid rgba(42,171,238,.4);color:#2aabee;font-family:var(--font-head);font-size:17px;letter-spacing:1px;padding:13px 26px;border-radius:4px;transition:.2s}
+  .bf-btn-tg:hover{background:rgba(42,171,238,.22)}
   .bf-hero-stats{display:flex;align-items:center;justify-content:center;gap:34px;padding-top:36px;border-top:1px solid var(--line-soft);flex-wrap:wrap;width:100%;max-width:600px}
   .bf-stat-n{display:block;font-family:var(--font-head);font-size:38px;letter-spacing:1px;color:var(--flaks-orange);line-height:1}
   .bf-stat-l{display:block;font-size:13px;color:var(--fg-dim);margin-top:3px}
@@ -272,7 +276,7 @@
   .bf-citemc-price{margin-left:auto;font-family:var(--font-head);font-size:17px;color:var(--flaks-orange-hot);white-space:nowrap}
   .bf-citemc-rem{color:var(--fg-dim);font-size:13px;padding:4px 6px;transition:.2s}
   .bf-citemc-rem:hover{color:var(--err)}
-  .bf-cart-foot{border-top:1px solid var(--line);padding:18px 24px 22px}
+  .bf-cart-foot{border-top:1px solid var(--line);padding:18px 24px 22px;overflow-y:auto;flex-shrink:0;max-height:60vh}
   .bf-cart-total{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
   .bf-cart-channels-l{font-size:12px;color:var(--fg-mid);margin:0 0 10px;line-height:1.5}
   .bf-cart-total .l{font-size:13px;color:var(--fg-mid);text-transform:uppercase;letter-spacing:1px}
