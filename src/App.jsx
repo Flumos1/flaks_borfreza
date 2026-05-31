@@ -72,7 +72,6 @@ function Header({ t, lang, setLang, cartCount, openCart, onNav }) {
       <div className="bf-htop"><div className="wrap bf-htop-in">
         <div className="bf-contacts">
           <a href={`tel:+${PHONE_RAW}`} className="bf-toplink"><I.phone s={14}/> {t.top_phone}</a>
-          <a href={wa("Вітаю! Цікавлять борфрези.")} target="_blank" className="bf-toplink wa"><I.wa s={14}/> WhatsApp</a>
           <a href={`https://t.me/${TG_BOT}`} target="_blank" className="bf-toplink tg"><I.tg s={14}/> Telegram</a>
           <span className="bf-topcity"><I.pin s={13}/> {t.top_city}</span>
         </div>
@@ -398,7 +397,6 @@ function Contact({ t, lang }) {
   const [msg, setMsg] = useState("");
   const items = [
     [I.phone, t.c_phone, t.top_phone, `tel:+${PHONE_RAW}`, "", false],
-    [I.wa, t.c_wa, t.top_phone, wa("Вітаю! Цікавлять борфрези."), "wa", true],
     [I.tg, t.c_tg, "@" + TG_BOT, `https://t.me/${TG_BOT}`, "tg", true],
     [I.mail, t.c_email, EMAIL, `mailto:${EMAIL}`, "", false],
     [I.pin, t.c_city, t.c_city_val, null, "", false],
@@ -409,8 +407,7 @@ function Contact({ t, lang }) {
   };
   const submit = (channel) => {
     const txt = leadText();
-    if (channel === "wa") window.open(wa(txt), "_blank");
-    else if (channel === "tg") window.open(tg(txt), "_blank");
+    if (channel === "tg") window.open(tg(txt), "_blank");
     else window.location.href = mailtoOrder(lang==="ua"?"Заявка борфрези — FLAKS":"Заявка борфрезы — FLAKS", txt);
   };
   return (
@@ -432,14 +429,13 @@ function Contact({ t, lang }) {
             })}
           </div>
         </Reveal>
-        <Reveal tag="form" className="bf-form" delay={120} onSubmit={(e)=>{e.preventDefault();submit("wa");}}>
+        <Reveal tag="form" className="bf-form" delay={120} onSubmit={(e)=>{e.preventDefault();submit("tg");}}>
           <h3 className="bf-form-title">{t.form_title}</h3>
           <div className="bf-fg"><label>{t.f_name}</label><input type="text" placeholder={t.f_name_ph} value={name} onChange={(e)=>setName(e.target.value)}/></div>
           <div className="bf-fg"><label>{t.f_phone}</label><input type="tel" placeholder={t.f_phone_ph} value={phone} onChange={(e)=>setPhone(e.target.value)}/></div>
           <div className="bf-fg"><label>{t.f_msg}</label><textarea rows="3" placeholder={t.f_msg_ph} value={msg} onChange={(e)=>setMsg(e.target.value)}></textarea></div>
-          <button type="submit" className="bf-submit"><I.wa/> {t.f_submit}</button>
+          <button type="submit" className="bf-submit"><I.tg s={16}/> {t.f_submit}</button>
           <div className="bf-form-alt">
-            <button type="button" className="bf-form-alt-btn tg" onClick={()=>submit("tg")}><I.tg s={16}/> {t.send_tg}</button>
             <button type="button" className="bf-form-alt-btn em" onClick={()=>submit("email")}><I.mail s={16}/> {t.send_email}</button>
           </div>
           <p className="bf-fnote">{t.f_note}</p>
@@ -484,7 +480,7 @@ function Delivery({ t }) {
           <Reveal tag="div" className="bf-del-block bf-del-wholesale" delay={160}>
             <div className="bf-del-block-title">{t.del_wholesale_title}</div>
             <p className="bf-del-wholesale-desc">{t.del_wholesale_desc}</p>
-            <a href={`https://wa.me/${PHONE_RAW}?text=${encodeURIComponent(t.del_wholesale_title)}`} target="_blank" className="bf-del-wa"><I.wa s={16}/> WhatsApp</a>
+            <a href={`https://t.me/${TG_BOT}`} target="_blank" className="bf-del-wa"><I.tg s={16}/> Telegram</a>
           </Reveal>
         </div>
       </div>
@@ -698,7 +694,7 @@ function Modal({ t, lang, p, onClose, onAdd, flutes, photos }) {
             <span className="bf-modal-price">{priceFmt(p.price)}</span><span className="bf-modal-unit">грн / {t.pcs}</span>
           </div>
           <div className="bf-modal-actions">
-            <a className="bf-modal-wa" href={wa(`Вітаю! Цікавить: ${lang==="ua"?p.name_ua:p.name_ru} — ${priceFmt(p.price)} грн`)} target="_blank"><I.wa/> WhatsApp</a>
+            <a className="bf-modal-wa" href={`https://t.me/${TG_BOT}`} target="_blank"><I.tg/> Telegram</a>
             <button className="bf-modal-cart" onClick={()=>{onAdd(p);onClose();}}><I.cart s={18}/> {t.to_cart}</button>
           </div>
         </div>
