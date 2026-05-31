@@ -122,7 +122,7 @@ function Hero({ t, flutes, onNav }) {
   return (
     <section className="bf-hero" id="top">
       <div className="bf-noise"/>
-      <img className="bf-hero-emblem" src="assets/logo-flaks.png" alt="FLAKS Tool Solutions" aria-hidden="true"/>
+      <img className="bf-hero-emblem" src="assets/logo-flaks.png" alt="" aria-hidden="true" width="1408" height="768" fetchPriority="high"/>
       <div className="wrap bf-hero-inner">
         <Reveal tag="p" className="bf-hero-kicker">{t.hero_kicker}</Reveal>
         <Reveal tag="h1" className="bf-hero-title" delay={60}>{t.hero_title}</Reveal>
@@ -264,7 +264,7 @@ function Catalog({ t, lang, shape, setShape, view, setView, cart, onAdd, onOpen,
           </div>
           <div className="bf-sort">
             <span className="bf-sort-l">{t.sort}</span>
-            <select className="bf-sort-s" value={sort} onChange={(e)=>setSort(e.target.value)}>
+            <select className="bf-sort-s" aria-label={t.sort} value={sort} onChange={(e)=>setSort(e.target.value)}>
               <option value="default">{t.sort_default}</option>
               <option value="d-asc">{t.sort_d_asc}</option>
               <option value="d-desc">{t.sort_d_desc}</option>
@@ -761,6 +761,7 @@ export default function App() {
     <MotionCtx.Provider value={!!tw.motion}>
     <div className="bf-app" style={rootStyle} data-density={tw.density}>
       <Header t={t} lang={lang} setLang={setLang} cartCount={cartCount} openCart={()=>setCartOpen(true)} onNav={onNav}/>
+      <main>
       <Hero t={t} flutes={tw.flutes} onNav={onNav}/>
       <ShapeSelector t={t} lang={lang} shape={shape} setShape={pickShape} counts={counts} flutes={tw.flutes} refEl={shapesRef}/>
       <Guide t={t} lang={lang} onPick={pickShape} flutes={tw.flutes}/>
@@ -769,6 +770,7 @@ export default function App() {
       <Delivery t={t}/>
       <Articles t={t} lang={lang}/>
       <Contact t={t} lang={lang}/>
+      </main>
       <Footer t={t}/>
       <Cart t={t} lang={lang} open={cartOpen} onClose={()=>setCartOpen(false)} items={cart} onQty={setQty} onRemove={remove} flutes={tw.flutes} onClearCart={()=>setCart([])}/>
       <Modal t={t} lang={lang} p={active} onClose={()=>setActive(null)} onAdd={addCart} flutes={tw.flutes} photos={tw.photos}/>

@@ -19,7 +19,7 @@
   .bf-toplink:hover{color:var(--flaks-orange-hot)}
   .bf-toplink.wa:hover{color:var(--ok)}
   .bf-toplink.tg:hover{color:#2aabee}
-  .bf-topcity{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--fg-dim)}
+  .bf-topcity{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--fg-mid)}
   .bf-lang-sw{display:flex;gap:4px}
   .bf-lang{background:var(--bg-dark3);border:1px solid var(--line);color:var(--fg-mid);font-size:12px;font-weight:600;letter-spacing:1px;padding:4px 12px;border-radius:3px;transition:.2s}
   .bf-lang:hover{border-color:var(--flaks-orange);color:var(--flaks-orange)}
