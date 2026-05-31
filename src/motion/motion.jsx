@@ -117,7 +117,7 @@ function Gears({ color = "currentColor" }) {
 }
 
 // ── RingSeal: металлический диск логотипа + вращающийся кольцевой текст ──
-function RingSeal({ size = 220, text = "FLAKS · TOOL SOLUTIONS · PROFESSIONAL GRADE · ВК8 · ", disc = "assets/flaks-disc.webp" }) {
+function RingSeal({ size = 220, text = "FLAKS · TOOL SOLUTIONS · PROFESSIONAL GRADE · ВК · ", disc = "assets/flaks-disc.webp" }) {
   const motion = useMotion();
   const rid = useRef("ring-" + Math.random().toString(36).slice(2, 8)).current;
   const R = 92;

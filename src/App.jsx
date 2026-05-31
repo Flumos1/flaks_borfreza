@@ -105,8 +105,8 @@ function Header({ t, lang, setLang, cartCount, openCart, onNav }) {
 // ─────────── TICKER ───────────
 function Ticker({ t, lang }) {
   const facts = lang === "ua"
-    ? ["16 форм головки", "Твердосплав ВК8", "Ø головки 6–25 мм", "Хвостовик 6 мм", "Подвійна насічка", "Відправка в день замовлення", "Нова Пошта по Україні", "Гуртом і вроздріб"]
-    : ["16 форм головки", "Твёрдосплав ВК8", "Ø головки 6–25 мм", "Хвостовик 6 мм", "Двойная насечка", "Отправка в день заказа", "Новая Почта по Украине", "Оптом и в розницу"];
+    ? ["16 форм головки", "Твердосплав ВК", "Ø головки 6–25 мм", "Хвостовик 6 мм", "Подвійна насічка", "Відправка в день замовлення", "Нова Пошта по Україні", "Гуртом і вроздріб"]
+    : ["16 форм головки", "Твёрдосплав ВК", "Ø головки 6–25 мм", "Хвостовик 6 мм", "Двойная насечка", "Отправка в день заказа", "Новая Почта по Украине", "Оптом и в розницу"];
   const row = (key) => (
     <div className="bf-ticker-track" aria-hidden={key === "b" ? "true" : undefined}>
       {[...facts, ...facts].map((f, i) => (
@@ -341,7 +341,7 @@ function Catalog({ t, lang, shape, setShape, view, setView, cart, onAdd, onOpen,
                 <div className="bf-card-specs">
                   <span>{cutLabel(p, lang)}</span>
                   {p.code && <span>{p.code}</span>}
-                  <span>ВК8</span>
+                  <span>ВК</span>
                 </div>
                 <div className="bf-card-foot">
                   <span className="bf-card-price">{priceFmt(p.price)}<small>грн</small></span>
