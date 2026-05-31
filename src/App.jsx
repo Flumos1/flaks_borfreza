@@ -480,7 +480,7 @@ function Delivery({ t }) {
           <Reveal tag="div" className="bf-del-block bf-del-wholesale" delay={160}>
             <div className="bf-del-block-title">{t.del_wholesale_title}</div>
             <p className="bf-del-wholesale-desc">{t.del_wholesale_desc}</p>
-            <a href={`https://t.me/${TG_BOT}`} target="_blank" className="bf-del-wa"><I.tg s={16}/> Telegram</a>
+            <a href="https://t.me/+380675453115" target="_blank" className="bf-del-wa"><I.tg s={16}/> Telegram</a>
           </Reveal>
         </div>
       </div>
@@ -524,7 +524,7 @@ function Footer({ t }) {
       <a href="#top" className="bf-logo"><span className="bf-logo-mark">F</span>
         <span><span className="bf-logo-name">FLAKS</span><span className="bf-logo-sub">{t.foot_tag}</span></span></a>
       <img className="bf-footer-disc" src="assets/flaks-disc.png" alt="FLAKS Tool Solutions" loading="lazy"/>
-      <p className="bf-footer-copy">© 2025 FLAKS · {t.top_city}. {t.foot_rights}</p>
+      <p className="bf-footer-copy">© 2025 Flumos · {t.top_city}. {t.foot_rights}</p>
     </div></footer>
   );
 }
@@ -687,7 +687,7 @@ function Modal({ t, lang, p, onClose, onAdd, flutes, photos }) {
             <span className="bf-modal-price">{priceFmt(p.price)}</span><span className="bf-modal-unit">грн / {t.pcs}</span>
           </div>
           <div className="bf-modal-actions">
-            <a className="bf-modal-wa" href={`https://t.me/${TG_BOT}`} target="_blank"><I.tg/> Telegram</a>
+            <a className="bf-modal-wa" href="https://t.me/+380675453115" target="_blank"><I.tg/> Telegram</a>
             <button className="bf-modal-cart" onClick={()=>{onAdd(p);onClose();}}><I.cart s={18}/> {t.to_cart}</button>
           </div>
         </div>
