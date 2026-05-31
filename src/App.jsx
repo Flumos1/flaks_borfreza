@@ -122,7 +122,10 @@ function Hero({ t, flutes, onNav }) {
   return (
     <section className="bf-hero" id="top">
       <div className="bf-noise"/>
-      <img className="bf-hero-emblem" src="assets/logo-flaks.png" alt="" aria-hidden="true" width="1408" height="768" fetchPriority="high"/>
+      <picture>
+        <source srcSet="assets/logo-flaks.webp" type="image/webp"/>
+        <img className="bf-hero-emblem" src="assets/logo-flaks.png" alt="" aria-hidden="true" width="1000" height="545" fetchPriority="high"/>
+      </picture>
       <div className="wrap bf-hero-inner">
         <Reveal tag="p" className="bf-hero-kicker">{t.hero_kicker}</Reveal>
         <Reveal tag="h1" className="bf-hero-title" delay={60}>{t.hero_title}</Reveal>
@@ -415,7 +418,10 @@ function Contact({ t, lang }) {
   };
   return (
     <section className="bf-sec bf-contact" id="contact">
-      <img className="bf-contact-wm" src="assets/flaks-disc.png" alt="" aria-hidden="true" loading="lazy"/>
+      <picture>
+        <source srcSet="assets/flaks-disc.webp" type="image/webp"/>
+        <img className="bf-contact-wm" src="assets/flaks-disc.png" alt="" aria-hidden="true" loading="lazy" width="600" height="600"/>
+      </picture>
       <div className="wrap bf-contact-grid">
         <Reveal tag="div">
           <p className="eyebrow">{t.contact_eyebrow}</p>
@@ -523,7 +529,10 @@ function Footer({ t }) {
     <footer className="bf-footer"><div className="wrap bf-footer-in">
       <a href="#top" className="bf-logo"><span className="bf-logo-mark">F</span>
         <span><span className="bf-logo-name">FLAKS</span><span className="bf-logo-sub">{t.foot_tag}</span></span></a>
-      <img className="bf-footer-disc" src="assets/flaks-disc.png" alt="FLAKS Tool Solutions" loading="lazy"/>
+      <picture>
+        <source srcSet="assets/flaks-disc.webp" type="image/webp"/>
+        <img className="bf-footer-disc" src="assets/flaks-disc.png" alt="FLAKS Tool Solutions" loading="lazy" width="600" height="600"/>
+      </picture>
       <p className="bf-footer-copy">© 2025 Flumos · {t.top_city}. {t.foot_rights}</p>
     </div></footer>
   );
