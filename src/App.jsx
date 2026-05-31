@@ -410,7 +410,7 @@ function Contact({ t, lang }) {
   };
   const submit = (channel) => {
     const txt = leadText();
-    if (channel === "tg") window.open(tg(txt), "_blank");
+    if (channel === "tg") window.open(`https://t.me/+380675453115?text=${encodeURIComponent(txt)}`, "_blank");
     else window.location.href = mailtoOrder(lang==="ua"?"Заявка борфрези — FLAKS":"Заявка борфрезы — FLAKS", txt);
   };
   return (
