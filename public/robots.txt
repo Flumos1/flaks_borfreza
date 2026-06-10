@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /assets/
 
-Sitemap: https://flaks-borfreza.vercel.app/sitemap.xml
+Sitemap: https://borfrezy.in.ua/sitemap.xml

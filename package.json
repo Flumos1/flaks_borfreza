@@ -6,7 +6,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "feed": "node scripts/generate-feed.js"
+    "feed": "node scripts/generate-feed.js",
+    "landings": "node scripts/generate-landings.js"
   },
   "dependencies": {
     "react": "^18.3.1",

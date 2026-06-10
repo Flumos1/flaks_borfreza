@@ -3,46 +3,170 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
   <url>
-    <loc>https://flaks-borfreza.vercel.app/</loc>
+    <loc>https://borfrezy.in.ua/</loc>
     <lastmod>2026-05-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://flaks-borfreza.vercel.app/?lang=ua"/>
-    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://flaks-borfreza.vercel.app/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/?lang=ru"/>
   </url>
 
   <url>
-    <loc>https://flaks-borfreza.vercel.app/articles/</loc>
+    <loc>https://borfrezy.in.ua/borfrezy/</loc>
+    <lastmod>2026-06-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/?lang=ru"/>
+  </url>
+
+  <url>
+    <loc>https://borfrezy.in.ua/borfrezy/cilindrichna/</loc>
+    <lastmod>2026-06-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/cilindrichna/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/cilindrichna/?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://borfrezy.in.ua/borfrezy/sferocilindrichna/</loc>
+    <lastmod>2026-06-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/sferocilindrichna/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/sferocilindrichna/?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://borfrezy.in.ua/borfrezy/sferychna/</loc>
+    <lastmod>2026-06-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/sferychna/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/sferychna/?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://borfrezy.in.ua/borfrezy/ovalna/</loc>
+    <lastmod>2026-06-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/ovalna/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/ovalna/?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://borfrezy.in.ua/borfrezy/giperbolichna/</loc>
+    <lastmod>2026-06-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/giperbolichna/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/giperbolichna/?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://borfrezy.in.ua/borfrezy/giperbolichna-tochkova/</loc>
+    <lastmod>2026-06-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/giperbolichna-tochkova/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/giperbolichna-tochkova/?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://borfrezy.in.ua/borfrezy/polumyapodibna/</loc>
+    <lastmod>2026-06-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/polumyapodibna/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/polumyapodibna/?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://borfrezy.in.ua/borfrezy/konichna-60/</loc>
+    <lastmod>2026-06-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/konichna-60/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/konichna-60/?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://borfrezy.in.ua/borfrezy/konichna-90/</loc>
+    <lastmod>2026-06-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/konichna-90/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/konichna-90/?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://borfrezy.in.ua/borfrezy/sferokonichna/</loc>
+    <lastmod>2026-06-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/sferokonichna/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/sferokonichna/?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://borfrezy.in.ua/borfrezy/konichna-zagostrena/</loc>
+    <lastmod>2026-06-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/konichna-zagostrena/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/konichna-zagostrena/?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://borfrezy.in.ua/borfrezy/zvorotniy-konus/</loc>
+    <lastmod>2026-06-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/zvorotniy-konus/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/zvorotniy-konus/?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://borfrezy.in.ua/borfrezy/konusna-zrizana/</loc>
+    <lastmod>2026-06-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/konusna-zrizana/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/konusna-zrizana/?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://borfrezy.in.ua/borfrezy/diskova/</loc>
+    <lastmod>2026-06-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/diskova/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/diskova/?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://borfrezy.in.ua/borfrezy/uvignuta-cilindrichna/</loc>
+    <lastmod>2026-06-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/uvignuta-cilindrichna/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/uvignuta-cilindrichna/?lang=ru"/>
+  </url>
+  <url>
+    <loc>https://borfrezy.in.ua/borfrezy/diskova-90/</loc>
+    <lastmod>2026-06-10</lastmod><changefreq>weekly</changefreq><priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/borfrezy/diskova-90/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/borfrezy/diskova-90/?lang=ru"/>
+  </url>
+
+  <url>
+    <loc>https://borfrezy.in.ua/articles/</loc>
     <lastmod>2026-05-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://flaks-borfreza.vercel.app/articles/yak-vybrat-borfrezu.html</loc>
+    <loc>https://borfrezy.in.ua/articles/yak-vybrat-borfrezu.html</loc>
     <lastmod>2026-05-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://flaks-borfreza.vercel.app/articles/yak-vybrat-borfrezu.html?lang=ua"/>
-    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://flaks-borfreza.vercel.app/articles/yak-vybrat-borfrezu.html?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/articles/yak-vybrat-borfrezu.html?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/articles/yak-vybrat-borfrezu.html?lang=ru"/>
   </url>
 
   <url>
-    <loc>https://flaks-borfreza.vercel.app/articles/borfrezy-po-aluminiu.html</loc>
+    <loc>https://borfrezy.in.ua/articles/borfrezy-po-aluminiu.html</loc>
     <lastmod>2026-05-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://flaks-borfreza.vercel.app/articles/borfrezy-po-aluminiu.html?lang=ua"/>
-    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://flaks-borfreza.vercel.app/articles/borfrezy-po-aluminiu.html?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/articles/borfrezy-po-aluminiu.html?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/articles/borfrezy-po-aluminiu.html?lang=ru"/>
   </url>
 
   <url>
-    <loc>https://flaks-borfreza.vercel.app/articles/zachystka-zvarnykh-shviv.html</loc>
+    <loc>https://borfrezy.in.ua/articles/zachystka-zvarnykh-shviv.html</loc>
     <lastmod>2026-05-20</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://flaks-borfreza.vercel.app/articles/zachystka-zvarnykh-shviv.html?lang=ua"/>
-    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://flaks-borfreza.vercel.app/articles/zachystka-zvarnykh-shviv.html?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/articles/zachystka-zvarnykh-shviv.html?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/articles/zachystka-zvarnykh-shviv.html?lang=ru"/>
+  </url>
+
+  <url>
+    <loc>https://borfrezy.in.ua/articles/oberty-borfrezy.html</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/articles/oberty-borfrezy.html?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/articles/oberty-borfrezy.html?lang=ru"/>
+  </url>
+
+  <url>
+    <loc>https://borfrezy.in.ua/articles/resurs-borfrezy.html</loc>
+    <lastmod>2026-06-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/articles/resurs-borfrezy.html?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/articles/resurs-borfrezy.html?lang=ru"/>
   </url>
 
 </urlset>
