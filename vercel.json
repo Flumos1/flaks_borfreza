@@ -8,12 +8,6 @@
       "has": [{ "type": "host", "value": "flaks-borfreza.vercel.app" }],
       "destination": "https://borfrezy.in.ua/$1",
       "permanent": true
-    },
-    {
-      "source": "/(.*)",
-      "has": [{ "type": "host", "value": "www.borfrezy.in.ua" }],
-      "destination": "https://borfrezy.in.ua/$1",
-      "permanent": true
     }
   ],
   "headers": [
