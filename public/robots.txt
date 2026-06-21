@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /assets/
 
 Sitemap: https://borfrezy.in.ua/sitemap.xml

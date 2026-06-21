@@ -124,7 +124,7 @@ function Hero({ t, flutes, onNav }) {
       <div className="bf-noise"/>
       <picture>
         <source srcSet="assets/logo-flaks.webp" type="image/webp"/>
-        <img className="bf-hero-emblem" src="assets/logo-flaks.png" alt="" aria-hidden="true" width="560" height="305" fetchPriority="high"/>
+        <img className="bf-hero-emblem" src="assets/logo-flaks.png" alt="" aria-hidden="true" width="560" height="305" fetchpriority="high"/>
       </picture>
       <div className="wrap bf-hero-inner">
         <Reveal tag="p" className="bf-hero-kicker">{t.hero_kicker}</Reveal>
