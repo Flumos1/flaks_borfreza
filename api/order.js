@@ -8,7 +8,16 @@ const TO_EMAIL = process.env.ORDER_TO_EMAIL || "tpolegat@gmail.com";
 const PRICE_BY_CODE = Object.fromEntries(PRODUCTS.map((p) => [p.code, p.price]));
 
 // Разрешённые источники запроса (защита от кросс-сайтового спама, п.3).
-const ALLOWED_HOSTS = ["borfrezy.in.ua", "www.borfrezy.in.ua", "flaks-borfreza.vercel.app", "localhost"];
+// Пускаем боевой домен, любые превью-деплои *.vercel.app и localhost.
+function isAllowedHost(host) {
+  return (
+    host === "localhost" ||
+    host === "127.0.0.1" ||
+    host === "borfrezy.in.ua" ||
+    host.endsWith(".borfrezy.in.ua") ||
+    host.endsWith(".vercel.app")
+  );
+}
 
 // Управляющие символы (кроме \t и \n) — вырезаем из пользовательского ввода.
 const CTRL_CHARS = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g;
@@ -35,8 +44,7 @@ function originAllowed(req) {
   const origin = req.headers.origin || req.headers.referer || "";
   if (!origin) return true; // запрос без Origin (server-to-server, curl) не блокируем
   try {
-    const host = new URL(origin).hostname;
-    return ALLOWED_HOSTS.includes(host);
+    return isAllowedHost(new URL(origin).hostname);
   } catch {
     return false;
   }
