@@ -146,7 +146,9 @@ function page(shape) {
 <meta property="og:url" content="${url}">
 <meta property="og:title" content="${esc(titleUa)}">
 <meta property="og:description" content="${esc(descUa)}">
-<meta property="og:image" content="${SITE}/assets/logo-flaks.png">
+<meta property="og:image" content="${SITE}/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:locale" content="uk_UA">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -297,6 +299,13 @@ ${navLinks(shape.key, 'ua')}
 <script>
 (function(){
   var lang = window.__lang || 'ua';
+  // RU-версия: подменяем title и meta, чтобы страницы не выглядели дублями для Google.
+  if(lang==='ru'){
+    document.title = ${JSON.stringify(titleRu)};
+    var _md=document.querySelector('meta[name="description"]'); if(_md) _md.setAttribute('content', ${JSON.stringify(descRu)});
+    var _ot=document.querySelector('meta[property="og:title"]'); if(_ot) _ot.setAttribute('content', ${JSON.stringify(titleRu)});
+    var _od=document.querySelector('meta[property="og:description"]'); if(_od) _od.setAttribute('content', ${JSON.stringify(descRu)});
+  }
   // Текстовые узлы с data-ua/data-ru
   document.querySelectorAll('[data-ua]').forEach(function(el){
     var v = el.getAttribute('data-'+lang);
@@ -327,6 +336,8 @@ function hubPage() {
   const maxD = Math.max(...PRODUCTS.map((p) => p.headD));
   const titleUa = `Борфрези твердосплавні ВК — каталог за формами | FLAKS`;
   const descUa = `Каталог твердосплавних борфрез (шарошок) ВК за формами головки. ${SHAPES.length} форм, ${total} типорозмірів Ø${minD}–${maxD} мм, хвостовик 6 мм. Відправка в день замовлення по Україні.`;
+  const titleRu = `Борфрезы твердосплавные ВК — каталог по формам | FLAKS`;
+  const descRu = `Каталог твердосплавных борфрез (шарошек) ВК по формам головки. ${SHAPES.length} форм, ${total} типоразмеров Ø${minD}–${maxD} мм, хвостовик 6 мм. Отправка в день заказа по Украине.`;
 
   const cards = SHAPES.map((s) => {
     const items = PRODUCTS.filter((p) => p.shape === s.key);
@@ -363,7 +374,9 @@ function hubPage() {
 <meta property="og:url" content="${url}">
 <meta property="og:title" content="${esc(titleUa)}">
 <meta property="og:description" content="${esc(descUa)}">
-<meta property="og:image" content="${SITE}/assets/logo-flaks.png">
+<meta property="og:image" content="${SITE}/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:locale" content="uk_UA">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -450,6 +463,12 @@ ${cards}
 <script>
 (function(){
   var lang = window.__lang || 'ua';
+  if(lang==='ru'){
+    document.title = ${JSON.stringify(titleRu)};
+    var _md=document.querySelector('meta[name="description"]'); if(_md) _md.setAttribute('content', ${JSON.stringify(descRu)});
+    var _ot=document.querySelector('meta[property="og:title"]'); if(_ot) _ot.setAttribute('content', ${JSON.stringify(titleRu)});
+    var _od=document.querySelector('meta[property="og:description"]'); if(_od) _od.setAttribute('content', ${JSON.stringify(descRu)});
+  }
   document.querySelectorAll('[data-ua]').forEach(function(el){
     var v = el.getAttribute('data-'+lang); if(v!=null) el.textContent = v;
   });

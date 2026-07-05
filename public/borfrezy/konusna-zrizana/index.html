@@ -14,7 +14,9 @@
 <meta property="og:url" content="https://borfrezy.in.ua/borfrezy/konusna-zrizana/">
 <meta property="og:title" content="Борфреза конусна зрізана ВК — купити в Україні | FLAKS">
 <meta property="og:description" content="Борфреза конусна зрізана (зрізаний конус) твердосплавна ВК. Конусні отвори, фаски, розширення пазів. 5 типорозмірів Ø6–14 мм, від 290 грн. Відправка в день замовлення.">
-<meta property="og:image" content="https://borfrezy.in.ua/assets/logo-flaks.png">
+<meta property="og:image" content="https://borfrezy.in.ua/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:locale" content="uk_UA">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -259,6 +261,13 @@ a{text-decoration:none;color:inherit}
 <script>
 (function(){
   var lang = window.__lang || 'ua';
+  // RU-версия: подменяем title и meta, чтобы страницы не выглядели дублями для Google.
+  if(lang==='ru'){
+    document.title = "Борфреза конусная усечённая ВК — купить в Украине | FLAKS";
+    var _md=document.querySelector('meta[name="description"]'); if(_md) _md.setAttribute('content', "Борфреза конусная усечённая (усечённый конус) твердосплавная ВК. Конусные отверстия, фаски, расширение пазов. 5 типоразмеров Ø6–14 мм, от 290 грн. Отправка в день заказа.");
+    var _ot=document.querySelector('meta[property="og:title"]'); if(_ot) _ot.setAttribute('content', "Борфреза конусная усечённая ВК — купить в Украине | FLAKS");
+    var _od=document.querySelector('meta[property="og:description"]'); if(_od) _od.setAttribute('content', "Борфреза конусная усечённая (усечённый конус) твердосплавная ВК. Конусные отверстия, фаски, расширение пазов. 5 типоразмеров Ø6–14 мм, от 290 грн. Отправка в день заказа.");
+  }
   // Текстовые узлы с data-ua/data-ru
   document.querySelectorAll('[data-ua]').forEach(function(el){
     var v = el.getAttribute('data-'+lang);

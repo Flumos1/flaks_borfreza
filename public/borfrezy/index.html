@@ -14,7 +14,9 @@
 <meta property="og:url" content="https://borfrezy.in.ua/borfrezy/">
 <meta property="og:title" content="Борфрези твердосплавні ВК — каталог за формами | FLAKS">
 <meta property="og:description" content="Каталог твердосплавних борфрез (шарошок) ВК за формами головки. 16 форм, 80 типорозмірів Ø6–25 мм, хвостовик 6 мм. Відправка в день замовлення по Україні.">
-<meta property="og:image" content="https://borfrezy.in.ua/assets/logo-flaks.png">
+<meta property="og:image" content="https://borfrezy.in.ua/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:locale" content="uk_UA">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -196,6 +198,12 @@ a{text-decoration:none;color:inherit}
 <script>
 (function(){
   var lang = window.__lang || 'ua';
+  if(lang==='ru'){
+    document.title = "Борфрезы твердосплавные ВК — каталог по формам | FLAKS";
+    var _md=document.querySelector('meta[name="description"]'); if(_md) _md.setAttribute('content', "Каталог твердосплавных борфрез (шарошек) ВК по формам головки. 16 форм, 80 типоразмеров Ø6–25 мм, хвостовик 6 мм. Отправка в день заказа по Украине.");
+    var _ot=document.querySelector('meta[property="og:title"]'); if(_ot) _ot.setAttribute('content', "Борфрезы твердосплавные ВК — каталог по формам | FLAKS");
+    var _od=document.querySelector('meta[property="og:description"]'); if(_od) _od.setAttribute('content', "Каталог твердосплавных борфрез (шарошек) ВК по формам головки. 16 форм, 80 типоразмеров Ø6–25 мм, хвостовик 6 мм. Отправка в день заказа по Украине.");
+  }
   document.querySelectorAll('[data-ua]').forEach(function(el){
     var v = el.getAttribute('data-'+lang); if(v!=null) el.textContent = v;
   });

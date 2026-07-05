@@ -4,11 +4,12 @@
 
   <url>
     <loc>https://borfrezy.in.ua/</loc>
-    <lastmod>2026-05-31</lastmod>
+    <lastmod>2026-07-05</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/?lang=ua"/>
     <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://borfrezy.in.ua/"/>
   </url>
 
   <url>

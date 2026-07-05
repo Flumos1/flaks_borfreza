@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 // FLAKS · Борфрезы — технические SVG-схемы профилей головок
 // Горизонтальная ориентация: хвостовик слева, головка справа.
 // Силуэт по контуру + диагональная насечка (clip по головке).
-// 16 форм ISO/DIN: A C D E F G H J K L M N S T U Y (+ SET).
+// 16 форм ISO/DIN: A C D E F G H J K L M N S T U Y.
 // ============================================================
 
 const HEAD_PATHS = {
@@ -58,23 +58,6 @@ function BurrShape({ type, size = 64, strokeWidth = 2.4, flutes = true, classNam
   const cid = useMemo(() => "burrclip-" + (++_burrUid), []);
   const w = size, h = (size * 72) / 144;
   const common = { className, style, width: w, height: h, viewBox: "0 0 144 72", fill: "none", stroke: "currentColor", "aria-hidden": "true" };
-
-  // ── Набор: композиция из трёх мини-форм ──
-  if (type === "SET") {
-    const mini = (d, tx, ty, sc) => (
-      <g transform={`translate(${tx},${ty}) scale(${sc})`}>
-        <rect x="2" y="31.5" width="40" height="9" rx="2.5" stroke="currentColor" strokeWidth={strokeWidth / sc} />
-        <path d={d} fill="currentColor" fillOpacity="0.08" stroke="currentColor" strokeWidth={strokeWidth / sc} strokeLinejoin="round" />
-      </g>
-    );
-    return (
-      <svg {...common}>
-        {mini(HEAD_PATHS.A, 6, -16, 0.5)}
-        {mini(HEAD_PATHS.D, 6, 16, 0.5)}
-        {mini(HEAD_PATHS.M, 64, 0, 0.5)}
-      </svg>
-    );
-  }
 
   const hp = HEAD_PATHS[type] || HEAD_PATHS.A;
   const shankTo = DISC[type] || 58;

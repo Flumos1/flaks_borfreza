@@ -14,7 +14,9 @@
 <meta property="og:url" content="https://borfrezy.in.ua/borfrezy/diskova/">
 <meta property="og:title" content="Борфреза дискова ВК — купити в Україні | FLAKS">
 <meta property="og:description" content="Борфреза дискова (диск) твердосплавна ВК. Прорізка вузьких пазів, розділка, торцювання канавок. 4 типорозмірів Ø12–16 мм, від 530 грн. Відправка в день замовлення.">
-<meta property="og:image" content="https://borfrezy.in.ua/assets/logo-flaks.png">
+<meta property="og:image" content="https://borfrezy.in.ua/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:locale" content="uk_UA">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -243,6 +245,13 @@ a{text-decoration:none;color:inherit}
 <script>
 (function(){
   var lang = window.__lang || 'ua';
+  // RU-версия: подменяем title и meta, чтобы страницы не выглядели дублями для Google.
+  if(lang==='ru'){
+    document.title = "Борфреза дисковая ВК — купить в Украине | FLAKS";
+    var _md=document.querySelector('meta[name="description"]'); if(_md) _md.setAttribute('content', "Борфреза дисковая (диск) твердосплавная ВК. Прорезка узких пазов, разделка, торцевание канавок. 4 типоразмеров Ø12–16 мм, от 530 грн. Отправка в день заказа.");
+    var _ot=document.querySelector('meta[property="og:title"]'); if(_ot) _ot.setAttribute('content', "Борфреза дисковая ВК — купить в Украине | FLAKS");
+    var _od=document.querySelector('meta[property="og:description"]'); if(_od) _od.setAttribute('content', "Борфреза дисковая (диск) твердосплавная ВК. Прорезка узких пазов, разделка, торцевание канавок. 4 типоразмеров Ø12–16 мм, от 530 грн. Отправка в день заказа.");
+  }
   // Текстовые узлы с data-ua/data-ru
   document.querySelectorAll('[data-ua]').forEach(function(el){
     var v = el.getAttribute('data-'+lang);

@@ -15,16 +15,14 @@ const esc = (s) => String(s ?? '')
 const money = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2));
 
 function desc(p) {
-  if (p.set) return 'Набор из 10 борфрез твердосплавных ВК8, 10 форм головки, хвостовик 6 мм, пластиковый кейс.';
   const shape = SHAPES.find(s => s.key === p.shape);
   const sName = shape ? shape.ru : p.shape;
   const dim   = p.headD ? `Ø головки ${p.headD}×${p.headL} мм, хвостовик Ø${p.shankD} мм. ` : '';
   const cut   = p.alu ? 'По алюминию' : 'Двойная насечка (крест)';
-  return `Борфреза твердосплавная ВК8 ${sName}. ${dim}Насечка: ${cut}. Материал: твердый сплав ВК8. Бренд: FLAKS.`;
+  return `Борфреза твердосплавная ВК ${sName}. ${dim}Насечка: ${cut}. Материал: твёрдый сплав ВК. Бренд: FLAKS.`;
 }
 
 function ptype(p) {
-  if (p.set) return 'Борфрезы > Наборы';
   if (p.alu) return 'Борфрезы > По алюминию';
   const shape = SHAPES.find(s => s.key === p.shape);
   return `Борфрезы > ${shape ? shape.ru : p.shape}`;
@@ -53,7 +51,7 @@ const xml = `<?xml version="1.0" encoding="UTF-8"?>
   <channel>
     <title>FLAKS — Борфрезы твердосплавные</title>
     <link>${SITE}</link>
-    <description>Твердосплавные борфрезы (шарошки) ВК8. 16 форм, Ø 6–25 мм, хвостовик 6 мм.</description>
+    <description>Твердосплавные борфрезы (шарошки) ВК. 16 форм, Ø 6–25 мм, хвостовик 6 мм.</description>
 ${items}
   </channel>
 </rss>`;

@@ -3,21 +3,16 @@
 // ============================================================
 import { useState, useMemo, useEffect, useRef, Fragment } from 'react'
 import { SHAPES, CUTS, PRODUCTS, STRINGS } from './data/burr-data.js'
+import { MIN_ORDER } from './data/constants.js'
 import { BurrShape } from './components/BurrShape.jsx'
 import { MotionCtx, Reveal, CountUp, RingSeal } from './motion/motion.jsx'
 import {
   useTweaks, TweaksPanel, TweakSection, TweakRadio, TweakToggle, TweakColor,
 } from './tweaks/tweaks-panel.jsx'
 
-const MIN_ORDER = 2000; // минимальная сумма заказа, грн
-
 const PHONE_RAW = "380675453115";          // 067 545 31 15
-const PHONE_DISP = "+38 (067) 545-31-15";
 const EMAIL = "tpolegat@gmail.com";
-const TG_BOT = "flaks_orders_bot";           // username Telegram-бота заказов
-const wa = (text) => `https://wa.me/${PHONE_RAW}?text=${encodeURIComponent(text)}`;
-const tg = (text) => `https://t.me/${TG_BOT}?text=${encodeURIComponent(text)}`;
-const mailtoOrder = (subject, body) => `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+const TG_LINK = "https://t.me/+380675453115"; // прямой чат для связи (используется в шапке, контактах, модалке)
 const shapeByKey = (k) => SHAPES.find((s) => s.key === k);
 const hexToRgba = (hex, a) => {
   const h = hex.replace("#", "");
@@ -25,13 +20,12 @@ const hexToRgba = (hex, a) => {
 };
 const priceFmt = (n) => Number.isInteger(n) ? String(n) : String(n).replace(".", ",");
 const catName = (p, lang) => {
-  if (p.set) return lang === "ua" ? "Набір борфрез" : "Набор борфрез";
   const s = shapeByKey(p.shape); if (!s) return p.shape;
   return lang === "ua" ? s.ua : s.ru;
 };
-const letterOf = (p) => p.set ? "10×" : (shapeByKey(p.shape) || {}).letter || p.shape;
+const letterOf = (p) => (shapeByKey(p.shape) || {}).letter || p.shape;
 const cutLabel = (p, lang) => (CUTS[p.cut] || CUTS.double)[lang];
-const dimStr = (p) => p.set ? "10× Ø6" : (p.headD ? `Ø${p.headD}×${p.headL}` : "—");
+const dimStr = (p) => (p.headD ? `Ø${p.headD}×${p.headL}` : "—");
 
 // ─────────── ICONS ───────────
 const I = {
@@ -39,7 +33,6 @@ const I = {
   mail:(p)=><svg width={p.s||16} height={p.s||16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 6 10 7 10-7"/></svg>,
   search:(p)=><svg width={p.s||16} height={p.s||16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
   cart:(p)=><svg width={p.s||20} height={p.s||20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 002 1.6h9.7a2 2 0 002-1.6L23 6H6"/></svg>,
-  wa:(p)=><svg width={p.s||18} height={p.s||18} viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1s-.8 1-.9 1.2c-.2.2-.3.2-.6.1s-1.3-.5-2.4-1.5c-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5l.3-.5c.1-.2.1-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.4M12 21.8h0a9.9 9.9 0 01-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.9 9.9 0 012.2 12c0-5.4 4.4-9.9 9.9-9.9 2.6 0 5.1 1 7 2.9a9.8 9.8 0 012.9 7c0 5.4-4.4 9.9-9.8 9.9M20.5 3.5A11.8 11.8 0 0012.1 0C5.5 0 .2 5.3.2 11.9c0 2.1.5 4.1 1.6 5.9L0 24l6.3-1.7a11.9 11.9 0 005.7 1.5c6.6 0 11.9-5.3 11.9-11.9a11.8 11.8 0 00-3.5-8.4"/></svg>,
   tg:(p)=><svg width={p.s||18} height={p.s||18} viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.3 18.7 19.4c-.2 1.1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.3-5 9.1-8.2c.4-.3-.1-.5-.6-.2L5.5 13 .7 11.5c-1-.3-1.1-1 .2-1.5l19.4-7.5c.9-.3 1.7.2 1.4 1.8z"/></svg>,
   pin:(p)=><svg width={p.s||16} height={p.s||16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0116 0Z"/><circle cx="12" cy="10" r="3"/></svg>,
   arrow:(p)=><svg className="arr" width={p.s||16} height={p.s||16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>,
@@ -72,7 +65,7 @@ function Header({ t, lang, setLang, cartCount, openCart, onNav }) {
       <div className="bf-htop"><div className="wrap bf-htop-in">
         <div className="bf-contacts">
           <a href={`tel:+${PHONE_RAW}`} className="bf-toplink"><I.phone s={14}/> {t.top_phone}</a>
-          <a href="https://t.me/+380675453115" target="_blank" className="bf-toplink tg"><I.tg s={14}/> Telegram</a>
+          <a href={TG_LINK} target="_blank" rel="noopener noreferrer" className="bf-toplink tg"><I.tg s={14}/> Telegram</a>
           <span className="bf-topcity"><I.pin s={13}/> {t.top_city}</span>
         </div>
         <div className="bf-lang-sw">
@@ -123,8 +116,8 @@ function Hero({ t, flutes, onNav }) {
     <section className="bf-hero" id="top">
       <div className="bf-noise"/>
       <picture>
-        <source srcSet="assets/logo-flaks.webp" type="image/webp"/>
-        <img className="bf-hero-emblem" src="assets/logo-flaks.png" alt="" aria-hidden="true" width="560" height="305" fetchpriority="high"/>
+        <source srcSet="/assets/logo-flaks.webp" type="image/webp"/>
+        <img className="bf-hero-emblem" src="/assets/logo-flaks.png" alt="" aria-hidden="true" width="560" height="305" fetchpriority="high"/>
       </picture>
       <div className="wrap bf-hero-inner">
         <Reveal tag="p" className="bf-hero-kicker">{t.hero_kicker}</Reveal>
@@ -133,7 +126,7 @@ function Hero({ t, flutes, onNav }) {
         <Reveal tag="p" className="bf-hero-desc" delay={180}>{t.hero_desc}</Reveal>
         <Reveal className="bf-hero-actions" delay={240}>
           <a href="#shapes" className="bf-btn" onClick={(e)=>{e.preventDefault();onNav("shapes");}}>{t.hero_cta1} <I.arrow/></a>
-          <a href="https://t.me/+380675453115" target="_blank" className="bf-btn-tg"><I.tg/> {t.hero_cta2}</a>
+          <a href={TG_LINK} target="_blank" rel="noopener noreferrer" className="bf-btn-tg"><I.tg/> {t.hero_cta2}</a>
         </Reveal>
         <Reveal className="bf-hero-stats" delay={320}>
           <div><span className="bf-stat-n"><CountUp value={t.stat1_n}/></span><span className="bf-stat-l">{t.stat1_l}</span></div>
@@ -401,26 +394,48 @@ function Contact({ t, lang }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [msg, setMsg] = useState("");
+  const [company, setCompany] = useState(""); // honeypot — заполняют только боты
+  const [submitting, setSubmitting] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [err, setErr] = useState("");
   const items = [
     [I.phone, t.c_phone, t.top_phone, `tel:+${PHONE_RAW}`, "", false],
-    [I.tg, t.c_tg, "+38 (067) 545-31-15", "https://t.me/+380675453115", "tg", true],
+    [I.tg, t.c_tg, "+38 (067) 545-31-15", TG_LINK, "tg", true],
     [I.mail, t.c_email, EMAIL, `mailto:${EMAIL}`, "", false],
     [I.pin, t.c_city, t.c_city_val, null, "", false],
   ];
-  const leadText = () => {
-    const head = lang==="ua" ? "Заявка з сайту FLAKS — борфрези" : "Заявка с сайта FLAKS — борфрезы";
-    return `${head}:\n${lang==="ua"?"Ім'я":"Имя"}: ${name||"—"}\n${lang==="ua"?"Телефон":"Телефон"}: ${phone||"—"}\n${lang==="ua"?"Запит":"Запрос"}: ${msg||"—"}`;
-  };
-  const submit = (channel) => {
-    const txt = leadText();
-    if (channel === "tg") window.open(`https://t.me/+380675453115?text=${encodeURIComponent(txt)}`, "_blank");
-    else window.location.href = mailtoOrder(lang==="ua"?"Заявка борфрези — FLAKS":"Заявка борфрезы — FLAKS", txt);
+  const submit = async (e) => {
+    e.preventDefault();
+    if (company) return; // honeypot сработал — тихо игнорируем
+    if (!name.trim()) { setErr(lang==="ua"?"Введіть ваше ім'я":"Введите ваше имя"); return; }
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length < 10) { setErr(lang==="ua"?"Введіть телефон (мін. 10 цифр)":"Введите телефон (мин. 10 цифр)"); return; }
+    setSubmitting(true); setErr("");
+    try {
+      const res = await fetch("/api/order", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+          type: "lead", language: lang,
+          customer: { name: name.trim(), phone: phone.trim(), comment: msg.trim() },
+          company,
+        }),
+      });
+      if (!res.ok) throw new Error("request failed");
+      setSent(true); setName(""); setPhone(""); setMsg("");
+    } catch {
+      setErr(lang==="ua"
+        ? "Не вдалося відправити. Спробуйте ще раз або зателефонуйте: +38 (067) 545-31-15"
+        : "Не удалось отправить. Попробуйте снова или позвоните: +38 (067) 545-31-15");
+    } finally {
+      setSubmitting(false);
+    }
   };
   return (
     <section className="bf-sec bf-contact" id="contact">
       <picture>
-        <source srcSet="assets/flaks-disc.webp" type="image/webp"/>
-        <img className="bf-contact-wm" src="assets/flaks-disc.png" alt="" aria-hidden="true" loading="lazy" width="600" height="600"/>
+        <source srcSet="/assets/flaks-disc.webp" type="image/webp"/>
+        <img className="bf-contact-wm" src="/assets/flaks-disc.png" alt="" aria-hidden="true" loading="lazy" width="600" height="600"/>
       </picture>
       <div className="wrap bf-contact-grid">
         <Reveal tag="div">
@@ -433,19 +448,29 @@ function Contact({ t, lang }) {
                 <span className={"bf-cico"+(kind?" "+kind:"")}><Ico s={18}/></span>
                 <span><span className="bf-clabel">{label}</span><span className="bf-cval">{val}</span></span>
               </Fragment>;
-              return href ? <a key={i} className="bf-citem" href={href} target={blank?"_blank":undefined}>{inner}</a>
+              return href ? <a key={i} className="bf-citem" href={href} target={blank?"_blank":undefined} rel={blank?"noopener noreferrer":undefined}>{inner}</a>
                 : <div key={i} className="bf-citem">{inner}</div>;
             })}
           </div>
         </Reveal>
-        <Reveal tag="form" className="bf-form" delay={120} onSubmit={(e)=>{e.preventDefault();submit("tg");}}>
+        {sent ? (
+          <Reveal tag="div" className="bf-form" delay={120}>
+            <div className="bf-cart-success-ico"><I.check s={28}/></div>
+            <h3 className="bf-form-title">{t.order_sent_title}</h3>
+            <p className="bf-fnote">{t.order_sent_desc}</p>
+          </Reveal>
+        ) : (
+        <Reveal tag="form" className="bf-form" delay={120} onSubmit={submit}>
           <h3 className="bf-form-title">{t.form_title}</h3>
           <div className="bf-fg"><label>{t.f_name}</label><input type="text" placeholder={t.f_name_ph} value={name} onChange={(e)=>setName(e.target.value)}/></div>
           <div className="bf-fg"><label>{t.f_phone}</label><input type="tel" placeholder={t.f_phone_ph} value={phone} onChange={(e)=>setPhone(e.target.value)}/></div>
           <div className="bf-fg"><label>{t.f_msg}</label><textarea rows="3" placeholder={t.f_msg_ph} value={msg} onChange={(e)=>setMsg(e.target.value)}></textarea></div>
-          <button type="submit" className="bf-submit"><I.tg s={16}/> {t.f_submit}</button>
+          <input type="text" name="company" tabIndex={-1} autoComplete="off" value={company} onChange={(e)=>setCompany(e.target.value)} style={{position:"absolute",left:"-9999px",width:1,height:1,opacity:0}} aria-hidden="true"/>
+          {err && <p className="bf-order-err">{err}</p>}
+          <button type="submit" className="bf-submit" disabled={submitting}><I.tg s={16}/> {submitting ? t.order_sending : t.f_submit}</button>
           <p className="bf-fnote">{t.f_note}</p>
         </Reveal>
+        )}
       </div>
     </section>
   );
@@ -486,7 +511,7 @@ function Delivery({ t }) {
           <Reveal tag="div" className="bf-del-block bf-del-wholesale" delay={160}>
             <div className="bf-del-block-title">{t.del_wholesale_title}</div>
             <p className="bf-del-wholesale-desc">{t.del_wholesale_desc}</p>
-            <a href="https://t.me/+380675453115" target="_blank" className="bf-del-wa"><I.tg s={16}/> Telegram</a>
+            <a href={TG_LINK} target="_blank" rel="noopener noreferrer" className="bf-del-wa"><I.tg s={16}/> Telegram</a>
           </Reveal>
         </div>
       </div>
@@ -530,11 +555,27 @@ function Footer({ t }) {
       <a href="#top" className="bf-logo"><span className="bf-logo-mark">F</span>
         <span><span className="bf-logo-name">FLAKS</span><span className="bf-logo-sub">{t.foot_tag}</span></span></a>
       <picture>
-        <source srcSet="assets/flaks-disc.webp" type="image/webp"/>
-        <img className="bf-footer-disc" src="assets/flaks-disc.png" alt="FLAKS Tool Solutions" loading="lazy" width="600" height="600"/>
+        <source srcSet="/assets/flaks-disc.webp" type="image/webp"/>
+        <img className="bf-footer-disc" src="/assets/flaks-disc.png" alt="FLAKS Tool Solutions" loading="lazy" width="600" height="600"/>
       </picture>
-      <p className="bf-footer-copy">© 2025 Flumos · {t.top_city}. {t.foot_rights}</p>
+      <p className="bf-footer-copy">© 2025–{new Date().getFullYear()} FLAKS · {t.top_city}. {t.foot_rights}</p>
     </div></footer>
+  );
+}
+
+// Поле количества: держит локальную строку, чтобы её можно было очистить и
+// набрать новое значение (без мгновенного «схлопывания» в 1 при стирании).
+function QtyInput({ qty, onCommit }) {
+  const [raw, setRaw] = useState(String(qty));
+  useEffect(() => { setRaw(String(qty)); }, [qty]);
+  return (
+    <input className="bf-qty-inp" inputMode="numeric" value={raw}
+      onChange={(e) => {
+        const v = e.target.value.replace(/[^\d]/g, "");
+        setRaw(v);
+        if (v !== "") onCommit(Math.min(9999, Math.max(1, parseInt(v, 10))));
+      }}
+      onBlur={() => { if (raw === "" || parseInt(raw, 10) < 1) setRaw(String(qty)); }} />
   );
 }
 
@@ -548,6 +589,7 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
   const [cEmail,   setCEmail]   = useState("");
   const [cCity,    setCCity]    = useState("");
   const [cComment, setCComment] = useState("");
+  const [company, setCompany] = useState(""); // honeypot — заполняют только боты
   const [submitting, setSubmitting] = useState(false);
   const [sent,  setSent]  = useState(false);
   const [orderError, setOrderError] = useState("");
@@ -558,6 +600,7 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
 
   const submitOrder = async (e) => {
     e.preventDefault();
+    if (company) return; // honeypot сработал — тихо игнорируем
     if (!cName.trim()) { setOrderError(lang==="ua"?"Введіть ваше ім'я":"Введите ваше имя"); return; }
     const digits = cPhone.replace(/\D/g, "");
     if (digits.length < 10) { setOrderError(lang==="ua"?"Введіть повний номер телефону (мін. 10 цифр)":"Введите полный номер телефона (мин. 10 цифр)"); return; }
@@ -571,8 +614,8 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
         body: JSON.stringify({
           language: lang,
           customer: { name: cName.trim(), phone: cPhone.trim(), email: cEmail.trim(), city: cCity.trim(), comment: cComment.trim() },
-          items: items.map((i)=>({ name_ua:i.name_ua, name_ru:i.name_ru, code:i.code, headD:i.headD, headL:i.headL, price:i.price, qty:i.qty })),
-          total,
+          items: items.map((i)=>({ name_ua:i.name_ua, name_ru:i.name_ru, code:i.code, headD:i.headD, headL:i.headL, qty:i.qty })),
+          company,
         }),
       });
       if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(d.error||"error"); }
@@ -607,7 +650,7 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
                   <div className="bf-citemc-row">
                     <div className="bf-qty">
                       <button className="bf-qty-btn" onClick={()=>onQty(it.id, Math.max(1,it.qty-1))}>−</button>
-                      <input className="bf-qty-inp" value={it.qty} onChange={(e)=>onQty(it.id, Math.max(1,+e.target.value||1))}/>
+                      <QtyInput qty={it.qty} onCommit={(q)=>onQty(it.id, q)}/>
                       <button className="bf-qty-btn" onClick={()=>onQty(it.id, it.qty+1)}>+</button>
                     </div>
                     <span className="bf-citemc-price">{priceFmt(it.price*it.qty)} грн</span>
@@ -636,6 +679,7 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
               <input className="bf-order-inp" type="email" placeholder={"Email *"} value={cEmail} onChange={(e)=>setCEmail(e.target.value)}/>
               <input className="bf-order-inp" placeholder={t.f_city_ph+" *"} value={cCity} onChange={(e)=>setCCity(e.target.value)}/>
               <textarea className="bf-order-inp" rows={2} placeholder={t.f_msg_ph} value={cComment} onChange={(e)=>setCComment(e.target.value)}/>
+              <input type="text" name="company" tabIndex={-1} autoComplete="off" value={company} onChange={(e)=>setCompany(e.target.value)} style={{position:"absolute",left:"-9999px",width:1,height:1,opacity:0}} aria-hidden="true"/>
               {orderError && <p className="bf-order-err">{orderError}</p>}
               <button type="submit" className="bf-cart-send-tg" disabled={submitting||total<MIN_ORDER}>
                 {submitting ? t.order_sending : t.order_submit}
@@ -661,14 +705,21 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
 
 // ─────────── MODAL ───────────
 function Modal({ t, lang, p, onClose, onAdd, flutes, photos }) {
+  const isOpen = !!p;
   useEffect(() => {
+    if (!isOpen) return;                         // слушатель только когда модалка открыта
     const h = (e) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", h);
-    return () => window.removeEventListener("keydown", h);
-  }, [onClose]);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";      // блокируем прокрутку фона
+    return () => {
+      window.removeEventListener("keydown", h);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isOpen, onClose]);
   if (!p) return null;
   const s = shapeByKey(p.shape);
-  const rows = p.set ? t.set_rows : [
+  const rows = [
     [t.spec_shape, `${catName(p,lang)} · ${letterOf(p)}`],
     ...(p.code ? [[t.spec_art, p.code]] : []),
     ...(p.headD ? [[t.spec_headD, `Ø${p.headD} ${t.mm}`], [t.spec_headL, `${p.headL} ${t.mm}`], [t.spec_shankD, `Ø${p.shankD} ${t.mm}`]] : []),
@@ -676,14 +727,14 @@ function Modal({ t, lang, p, onClose, onAdd, flutes, photos }) {
     [t.spec_mat, t.mat],
     [t.spec_stock, t.in_stock],
   ];
-  const useText = p.set ? t.set_desc : (s ? (lang==="ua"?s.use_ua:s.use_ru) : null);
+  const useText = s ? (lang==="ua"?s.use_ua:s.use_ru) : null;
   return (
     <div className="bf-modal-overlay" onClick={onClose}>
       <div className="bf-modal" onClick={(e)=>e.stopPropagation()}>
         <button className="bf-modal-close" onClick={onClose}>✕</button>
         <div className="bf-modal-art">
           <span className="bf-modal-art-svg"><ProdImage p={p} size={230} sw={2.2} flutes={flutes} photos={photos} frame={photos && !!p.img}/></span>
-          <span className="bf-modal-letter">{p.set ? (lang==="ua"?"НАБІР · 10 ШТ":"НАБОР · 10 ШТ") : (lang==="ua"?"ТИП ":"ТИП ")+letterOf(p)}</span>
+          <span className="bf-modal-letter">{(lang==="ua"?"ТИП ":"ТИП ")+letterOf(p)}</span>
         </div>
         <div className="bf-modal-body">
           <div className="bf-modal-cat">{catName(p,lang)}{p.alu?(lang==="ua"?" · по алюмінію":" · по алюминию"):""}</div>
@@ -691,12 +742,12 @@ function Modal({ t, lang, p, onClose, onAdd, flutes, photos }) {
           <div className="bf-modal-rows">
             {rows.map(([k,v],i)=><div key={i} className="bf-modal-row"><span className="bf-modal-k">{k}</span><span className="bf-modal-v">{v}</span></div>)}
           </div>
-          {useText && <div className="bf-modal-use"><div className="l">{p.set ? t.set_title : t.use_label}</div><p>{useText}</p></div>}
+          {useText && <div className="bf-modal-use"><div className="l">{t.use_label}</div><p>{useText}</p></div>}
           <div className="bf-modal-price-row">
             <span className="bf-modal-price">{priceFmt(p.price)}</span><span className="bf-modal-unit">грн / {t.pcs}</span>
           </div>
           <div className="bf-modal-actions">
-            <a className="bf-modal-wa" href="https://t.me/+380675453115" target="_blank"><I.tg/> Telegram</a>
+            <a className="bf-modal-wa" href={TG_LINK} target="_blank" rel="noopener noreferrer"><I.tg/> Telegram</a>
             <button className="bf-modal-cart" onClick={()=>{onAdd(p);onClose();}}><I.cart s={18}/> {t.to_cart}</button>
           </div>
         </div>
@@ -750,6 +801,7 @@ export default function App() {
   const remove = (id)=>setCart((prev)=>prev.filter((i)=>i.id!==id));
 
   useEffect(() => {
+    document.documentElement.lang = lang === "ua" ? "uk" : "ru";
     const p = new URLSearchParams(window.location.search);
     if (lang !== "ua") p.set("lang", lang); else p.delete("lang");
     if (shape !== "all") p.set("shape", shape); else p.delete("shape");

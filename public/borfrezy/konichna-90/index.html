@@ -14,7 +14,9 @@
 <meta property="og:url" content="https://borfrezy.in.ua/borfrezy/konichna-90/">
 <meta property="og:title" content="Борфреза конічна 90° ВК — купити в Україні | FLAKS">
 <meta property="og:description" content="Борфреза конічна 90° (зенкування 90°) твердосплавна ВК. Зняття фасок, зенкування отворів під 90°. 5 типорозмірів Ø6–16 мм, від 290 грн. Відправка в день замовлення.">
-<meta property="og:image" content="https://borfrezy.in.ua/assets/logo-flaks.png">
+<meta property="og:image" content="https://borfrezy.in.ua/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:locale" content="uk_UA">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -259,6 +261,13 @@ a{text-decoration:none;color:inherit}
 <script>
 (function(){
   var lang = window.__lang || 'ua';
+  // RU-версия: подменяем title и meta, чтобы страницы не выглядели дублями для Google.
+  if(lang==='ru'){
+    document.title = "Борфреза коническая 90° ВК — купить в Украине | FLAKS";
+    var _md=document.querySelector('meta[name="description"]'); if(_md) _md.setAttribute('content', "Борфреза коническая 90° (зенковка 90°) твердосплавная ВК. Снятие фасок, зенковка отверстий под 90°. 5 типоразмеров Ø6–16 мм, от 290 грн. Отправка в день заказа.");
+    var _ot=document.querySelector('meta[property="og:title"]'); if(_ot) _ot.setAttribute('content', "Борфреза коническая 90° ВК — купить в Украине | FLAKS");
+    var _od=document.querySelector('meta[property="og:description"]'); if(_od) _od.setAttribute('content', "Борфреза коническая 90° (зенковка 90°) твердосплавная ВК. Снятие фасок, зенковка отверстий под 90°. 5 типоразмеров Ø6–16 мм, от 290 грн. Отправка в день заказа.");
+  }
   // Текстовые узлы с data-ua/data-ru
   document.querySelectorAll('[data-ua]').forEach(function(el){
     var v = el.getAttribute('data-'+lang);
