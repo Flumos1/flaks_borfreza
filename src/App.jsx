@@ -85,6 +85,7 @@ function Header({ t, lang, setLang, cartCount, openCart, onNav }) {
           <a href="#catalog" onClick={(e)=>{e.preventDefault();onNav("catalog");}}>{t.nav_catalog}</a>
           <a href="#about" onClick={(e)=>{e.preventDefault();onNav("about");}}>{t.nav_about}</a>
           <a href="#delivery" onClick={(e)=>{e.preventDefault();onNav("delivery");}}>{t.nav_delivery}</a>
+          <a href="#returns" onClick={(e)=>{e.preventDefault();onNav("returns");}}>{t.nav_returns}</a>
           <a href="#articles" onClick={(e)=>{e.preventDefault();onNav("articles");}}>{t.nav_articles}</a>
           <a href="#contact" onClick={(e)=>{e.preventDefault();onNav("contact");}}>{t.nav_contact}</a>
         </nav>
@@ -512,19 +513,33 @@ function Delivery({ t }) {
               {t.del_pay_items.map((s,i) => <li key={i}><span className="bf-del-dot"/>{s}</li>)}
             </ul>
           </Reveal>
-          <Reveal tag="div" className="bf-del-block" delay={120}>
-            <div className="bf-del-block-title">{t.del_returns_title}</div>
-            <ul className="bf-del-list">
-              {t.del_returns_items.map((s,i) => <li key={i}><span className="bf-del-dot"/>{s}</li>)}
-            </ul>
-            <p className="bf-del-returns-note">{t.del_returns_note}</p>
-          </Reveal>
-          <Reveal tag="div" className="bf-del-block bf-del-wholesale" delay={200}>
+          <Reveal tag="div" className="bf-del-block bf-del-wholesale" delay={160}>
             <div className="bf-del-block-title">{t.del_wholesale_title}</div>
             <p className="bf-del-wholesale-desc">{t.del_wholesale_desc}</p>
             <a href={TG_LINK} target="_blank" rel="noopener noreferrer" className="bf-del-wa"><I.tg s={16}/> Telegram</a>
           </Reveal>
         </div>
+      </div>
+    </section>
+  );
+}
+
+// ─────────── RETURNS ───────────
+function Returns({ t }) {
+  return (
+    <section className="bf-sec bf-returns" id="returns">
+      <div className="wrap">
+        <Reveal tag="div" className="bf-sechead">
+          <p className="eyebrow">{t.ret_eyebrow}</p>
+          <h2 className="bf-sectitle">{t.ret_title}</h2>
+          <p className="bf-secsub">{t.ret_sub}</p>
+        </Reveal>
+        <Reveal tag="div" className="bf-ret-block">
+          <ul className="bf-del-list bf-ret-list">
+            {t.ret_items.map((s,i) => <li key={i}><span className="bf-del-dot"/>{s}</li>)}
+          </ul>
+          <p className="bf-ret-note">{t.ret_note}</p>
+        </Reveal>
       </div>
     </section>
   );
@@ -840,6 +855,7 @@ export default function App() {
       <Catalog t={t} lang={lang} shape={shape} setShape={setShape} view={tw.view} setView={(v)=>setTweak("view",v)} cart={cart} onAdd={addCart} onOpen={setActive} flutes={tw.flutes} photos={tw.photos} refEl={catalogRef}/>
       <About t={t} lang={lang}/>
       <Delivery t={t}/>
+      <Returns t={t}/>
       <Articles t={t} lang={lang}/>
       <Contact t={t} lang={lang}/>
       </main>
