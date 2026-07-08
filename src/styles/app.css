@@ -420,12 +420,13 @@
   .bf-del-step:hover .bf-del-step-n{color:var(--flaks-orange)}
   .bf-del-step-h{font-family:var(--font-head);font-size:17px;letter-spacing:.5px;color:#fff;margin:0 0 8px;line-height:1.1}
   .bf-del-step-b{font-size:13px;color:var(--fg-mid);line-height:1.55;margin:0}
-  .bf-del-info{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  .bf-del-info{display:grid;grid-template-columns:1fr 1fr;gap:14px}
   .bf-del-block{background:var(--bg-dark2);border:1px solid var(--line-soft);border-radius:8px;padding:24px}
   .bf-del-block-title{font-family:var(--font-head);font-size:18px;letter-spacing:1px;color:var(--flaks-orange);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line-soft)}
   .bf-del-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
   .bf-del-list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--fg-text);line-height:1.45}
   .bf-del-dot{width:6px;height:6px;border-radius:50%;background:var(--flaks-orange);flex-shrink:0;margin-top:5px}
+  .bf-del-returns-note{font-size:12px;color:var(--fg-dim);line-height:1.5;margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line-soft)}
   .bf-del-wholesale{border-color:var(--flaks-orange);border-left-width:3px}
   .bf-del-wholesale-desc{font-size:14px;color:var(--fg-mid);line-height:1.6;margin:0 0 16px}
   .bf-del-wa{display:inline-flex;align-items:center;gap:8px;background:var(--ok-bg);border:1px solid var(--ok-bd);color:var(--ok);font-family:var(--font-head);font-size:15px;letter-spacing:.5px;padding:9px 18px;border-radius:4px;transition:.2s}

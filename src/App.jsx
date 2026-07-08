@@ -508,7 +508,14 @@ function Delivery({ t }) {
               {t.del_pay_items.map((s,i) => <li key={i}><span className="bf-del-dot"/>{s}</li>)}
             </ul>
           </Reveal>
-          <Reveal tag="div" className="bf-del-block bf-del-wholesale" delay={160}>
+          <Reveal tag="div" className="bf-del-block" delay={120}>
+            <div className="bf-del-block-title">{t.del_returns_title}</div>
+            <ul className="bf-del-list">
+              {t.del_returns_items.map((s,i) => <li key={i}><span className="bf-del-dot"/>{s}</li>)}
+            </ul>
+            <p className="bf-del-returns-note">{t.del_returns_note}</p>
+          </Reveal>
+          <Reveal tag="div" className="bf-del-block bf-del-wholesale" delay={200}>
             <div className="bf-del-block-title">{t.del_wholesale_title}</div>
             <p className="bf-del-wholesale-desc">{t.del_wholesale_desc}</p>
             <a href={TG_LINK} target="_blank" rel="noopener noreferrer" className="bf-del-wa"><I.tg s={16}/> Telegram</a>
