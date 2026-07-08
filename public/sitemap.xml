@@ -119,6 +119,26 @@
   </url>
 
   <url>
+    <loc>https://borfrezy.in.ua/dostavka/</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/dostavka/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/dostavka/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://borfrezy.in.ua/dostavka/"/>
+  </url>
+
+  <url>
+    <loc>https://borfrezy.in.ua/povernennya/</loc>
+    <lastmod>2026-07-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/povernennya/?lang=ua"/>
+    <xhtml:link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/povernennya/?lang=ru"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://borfrezy.in.ua/povernennya/"/>
+  </url>
+
+  <url>
     <loc>https://borfrezy.in.ua/articles/</loc>
     <lastmod>2026-05-31</lastmod>
     <changefreq>monthly</changefreq>

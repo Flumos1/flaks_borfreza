@@ -400,8 +400,6 @@
     .bf-guide-grid{grid-template-columns:repeat(2,1fr)}
     .bf-cards{grid-template-columns:repeat(2,1fr)}
     .bf-about-grid,.bf-contact-grid{grid-template-columns:1fr;gap:40px}
-    .bf-del-steps{grid-template-columns:repeat(2,1fr)}
-    .bf-del-info{grid-template-columns:1fr 1fr}
     .bf-art-grid{grid-template-columns:repeat(2,1fr)}
   }
   /* ─────────── CART MIN ORDER ─────────── */
@@ -410,33 +408,6 @@
   .bf-cart-minbar{height:4px;background:var(--bg-dark3);border-radius:2px;margin-top:8px;overflow:hidden}
   .bf-cart-minbar-fill{height:100%;background:var(--flaks-orange);border-radius:2px;transition:width .4s}
   .bf-cart-send:disabled,.bf-cart-send2:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
-
-  /* ─────────── DELIVERY ─────────── */
-  .bf-delivery{background:var(--bg-black)}
-  .bf-del-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:36px}
-  .bf-del-step{background:var(--bg-dark2);border:1px solid var(--line-soft);border-radius:8px;padding:22px 20px;position:relative;overflow:hidden}
-  .bf-del-step::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--flaks-orange)}
-  .bf-del-step-n{font-family:var(--font-head);font-size:36px;letter-spacing:2px;color:var(--flaks-orange-dim);line-height:1;display:block;margin-bottom:12px}
-  .bf-del-step:hover .bf-del-step-n{color:var(--flaks-orange)}
-  .bf-del-step-h{font-family:var(--font-head);font-size:17px;letter-spacing:.5px;color:#fff;margin:0 0 8px;line-height:1.1}
-  .bf-del-step-b{font-size:13px;color:var(--fg-mid);line-height:1.55;margin:0}
-  .bf-del-info{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-  .bf-del-block{background:var(--bg-dark2);border:1px solid var(--line-soft);border-radius:8px;padding:24px}
-  .bf-del-block-title{font-family:var(--font-head);font-size:18px;letter-spacing:1px;color:var(--flaks-orange);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line-soft)}
-  .bf-del-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
-  .bf-del-list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--fg-text);line-height:1.45}
-  .bf-del-dot{width:6px;height:6px;border-radius:50%;background:var(--flaks-orange);flex-shrink:0;margin-top:5px}
-  .bf-del-wholesale{border-color:var(--flaks-orange);border-left-width:3px}
-  .bf-del-wholesale-desc{font-size:14px;color:var(--fg-mid);line-height:1.6;margin:0 0 16px}
-  .bf-del-wa{display:inline-flex;align-items:center;gap:8px;background:var(--ok-bg);border:1px solid var(--ok-bd);color:var(--ok);font-family:var(--font-head);font-size:15px;letter-spacing:.5px;padding:9px 18px;border-radius:4px;transition:.2s}
-  .bf-del-wa:hover{background:rgba(37,211,102,.2)}
-
-  /* ─────────── RETURNS ─────────── */
-  .bf-returns{background:var(--bg-dark2);border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
-  .bf-ret-block{max-width:760px;margin:0 auto;background:var(--bg-dark);border:1px solid var(--flaks-orange);border-left-width:3px;border-radius:8px;padding:28px 32px}
-  .bf-ret-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px}
-  .bf-ret-list li{display:flex;align-items:flex-start;gap:10px;font-size:15px;color:var(--fg-text);line-height:1.5}
-  .bf-ret-note{font-size:13px;color:var(--fg-dim);line-height:1.5;margin:18px 0 0;padding-top:16px;border-top:1px solid var(--line-soft)}
 
   /* ─────────── ARTICLES ─────────── */
   .bf-articles{background:var(--bg-dark)}
@@ -463,8 +434,5 @@
     .bf-modal-art{border-right:none;border-bottom:1px solid var(--line)}
     .bf-hero-stats{gap:20px}
     .bf-stat-div{display:none}
-    .bf-ret-block{padding:22px 20px}
-    .bf-del-steps{grid-template-columns:1fr}
-    .bf-del-info{grid-template-columns:1fr}
     .bf-art-grid{grid-template-columns:1fr}
   }

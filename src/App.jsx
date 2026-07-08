@@ -84,8 +84,8 @@ function Header({ t, lang, setLang, cartCount, openCart, onNav }) {
           <a href="#shapes" onClick={(e)=>{e.preventDefault();onNav("shapes");}}>{t.nav_shapes}</a>
           <a href="#catalog" onClick={(e)=>{e.preventDefault();onNav("catalog");}}>{t.nav_catalog}</a>
           <a href="#about" onClick={(e)=>{e.preventDefault();onNav("about");}}>{t.nav_about}</a>
-          <a href="#delivery" onClick={(e)=>{e.preventDefault();onNav("delivery");}}>{t.nav_delivery}</a>
-          <a href="#returns" onClick={(e)=>{e.preventDefault();onNav("returns");}}>{t.nav_returns}</a>
+          <a href="/dostavka/">{t.nav_delivery}</a>
+          <a href="/povernennya/">{t.nav_returns}</a>
           <a href="#articles" onClick={(e)=>{e.preventDefault();onNav("articles");}}>{t.nav_articles}</a>
           <a href="#contact" onClick={(e)=>{e.preventDefault();onNav("contact");}}>{t.nav_contact}</a>
         </nav>
@@ -481,70 +481,6 @@ function Contact({ t, lang }) {
   );
 }
 
-// ─────────── DELIVERY ───────────
-function Delivery({ t }) {
-  return (
-    <section className="bf-sec bf-delivery" id="delivery">
-      <div className="wrap">
-        <Reveal tag="div" className="bf-sechead">
-          <p className="eyebrow">{t.del_eyebrow}</p>
-          <h2 className="bf-sectitle">{t.del_title}</h2>
-          <p className="bf-secsub">{t.del_sub}</p>
-        </Reveal>
-        <Reveal tag="div" className="bf-del-steps">
-          {t.del_how.map(([n, h, b]) => (
-            <div key={n} className="bf-del-step">
-              <span className="bf-del-step-n">{n}</span>
-              <h3 className="bf-del-step-h">{h}</h3>
-              <p className="bf-del-step-b">{b}</p>
-            </div>
-          ))}
-        </Reveal>
-        <div className="bf-del-info">
-          <Reveal tag="div" className="bf-del-block">
-            <div className="bf-del-block-title">{t.del_ship_title}</div>
-            <ul className="bf-del-list">
-              {t.del_ship_items.map((s,i) => <li key={i}><span className="bf-del-dot"/>{s}</li>)}
-            </ul>
-          </Reveal>
-          <Reveal tag="div" className="bf-del-block" delay={80}>
-            <div className="bf-del-block-title">{t.del_pay_title}</div>
-            <ul className="bf-del-list">
-              {t.del_pay_items.map((s,i) => <li key={i}><span className="bf-del-dot"/>{s}</li>)}
-            </ul>
-          </Reveal>
-          <Reveal tag="div" className="bf-del-block bf-del-wholesale" delay={160}>
-            <div className="bf-del-block-title">{t.del_wholesale_title}</div>
-            <p className="bf-del-wholesale-desc">{t.del_wholesale_desc}</p>
-            <a href={TG_LINK} target="_blank" rel="noopener noreferrer" className="bf-del-wa"><I.tg s={16}/> Telegram</a>
-          </Reveal>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ─────────── RETURNS ───────────
-function Returns({ t }) {
-  return (
-    <section className="bf-sec bf-returns" id="returns">
-      <div className="wrap">
-        <Reveal tag="div" className="bf-sechead">
-          <p className="eyebrow">{t.ret_eyebrow}</p>
-          <h2 className="bf-sectitle">{t.ret_title}</h2>
-          <p className="bf-secsub">{t.ret_sub}</p>
-        </Reveal>
-        <Reveal tag="div" className="bf-ret-block">
-          <ul className="bf-del-list bf-ret-list">
-            {t.ret_items.map((s,i) => <li key={i}><span className="bf-del-dot"/>{s}</li>)}
-          </ul>
-          <p className="bf-ret-note">{t.ret_note}</p>
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
 // ─────────── ARTICLES ───────────
 function Articles({ t, lang }) {
   const fmt = (iso) => {
@@ -854,8 +790,6 @@ export default function App() {
       <Guide t={t} lang={lang} onPick={pickShape} flutes={tw.flutes}/>
       <Catalog t={t} lang={lang} shape={shape} setShape={setShape} view={tw.view} setView={(v)=>setTweak("view",v)} cart={cart} onAdd={addCart} onOpen={setActive} flutes={tw.flutes} photos={tw.photos} refEl={catalogRef}/>
       <About t={t} lang={lang}/>
-      <Delivery t={t}/>
-      <Returns t={t}/>
       <Articles t={t} lang={lang}/>
       <Contact t={t} lang={lang}/>
       </main>
