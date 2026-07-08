@@ -25,13 +25,13 @@
   .bf-lang:hover{border-color:var(--flaks-orange);color:var(--flaks-orange)}
   .bf-lang.active{border-color:var(--flaks-orange);color:var(--flaks-orange);background:var(--flaks-orange-dim)}
   .bf-hmain{background:var(--bg-dark);border-bottom:2px solid var(--flaks-orange);padding:13px 0}
-  .bf-hmain-in{display:flex;align-items:center;gap:32px}
+  .bf-hmain-in{display:flex;align-items:center;gap:24px}
   .bf-logo{display:flex;align-items:center;gap:12px}
   .bf-logo-mark{display:flex;align-items:center;justify-content:center;width:46px;height:46px;background:var(--flaks-orange);font-family:var(--font-head);font-size:30px;color:#fff;border-radius:3px;flex-shrink:0;line-height:1}
   .bf-logo-name{display:block;font-family:var(--font-head);font-size:28px;letter-spacing:3px;color:#fff;line-height:1}
   .bf-logo-sub{display:block;font-size:10px;color:var(--fg-dim);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
-  .bf-nav{display:flex;gap:28px;margin-left:auto}
-  .bf-nav a{font-family:var(--font-head);font-size:19px;letter-spacing:1px;color:var(--fg-mid);position:relative;padding:2px 0;transition:color .2s}
+  .bf-nav{display:flex;gap:20px;margin-left:auto}
+  .bf-nav a{font-family:var(--font-head);font-size:17px;letter-spacing:.5px;color:var(--fg-mid);position:relative;padding:2px 0;white-space:nowrap;transition:color .2s}
   .bf-nav a::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:2px;background:var(--flaks-orange);transition:width .2s}
   .bf-nav a:hover{color:#fff}
   .bf-nav a:hover::after{width:100%}
