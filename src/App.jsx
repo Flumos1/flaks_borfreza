@@ -14,6 +14,8 @@ const PHONE_RAW = "380675453115";          // 067 545 31 15
 const EMAIL = "tpolegat@gmail.com";
 const TG_LINK = "https://t.me/+380675453115"; // прямой чат для связи (используется в шапке, контактах, модалке)
 const shapeByKey = (k) => SHAPES.find((s) => s.key === k);
+// Порядок форм головки за алфавітом (A C D E F G H J K L M N S T U Y) — базовий порядок каталогу.
+const SHAPE_ORDER = Object.fromEntries(SHAPES.map((s, i) => [s.key, i]));
 const hexToRgba = (hex, a) => {
   const h = hex.replace("#", "");
   return `rgba(${parseInt(h.slice(0,2),16)},${parseInt(h.slice(2,4),16)},${parseInt(h.slice(4,6),16)},${a})`;
@@ -231,6 +233,8 @@ function Catalog({ t, lang, shape, setShape, view, setView, cart, onAdd, onOpen,
         || (p.headD && String(p.headD).includes(q)));
     }
     r = [...r];
+    // За замовчуванням — за формою головки в алфавітному порядку (A C D E F G H J K L M N S T U Y), потім за Ø і ціною.
+    if (sort === "default") r.sort((a,b)=>(SHAPE_ORDER[a.shape]-SHAPE_ORDER[b.shape])||(a.headD||0)-(b.headD||0)||a.price-b.price);
     if (sort === "d-asc") r.sort((a,b)=>(a.headD||0)-(b.headD||0)||a.price-b.price);
     if (sort === "d-desc") r.sort((a,b)=>(b.headD||0)-(a.headD||0)||a.price-b.price);
     if (sort === "p-asc") r.sort((a,b)=>a.price-b.price);
