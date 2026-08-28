@@ -96,6 +96,15 @@ function checkFeed() {
   }
   for (const product of PRODUCTS) {
     if (!xml.includes(productUrl(product))) fail(`feed.xml misses product URL ${product.code}`);
+    if (!xml.includes(`<g:custom_label_0>shape_${product.shape}</g:custom_label_0>`)) {
+      fail(`feed.xml misses shape label for ${product.code}`);
+    }
+    if (!xml.includes(`<g:custom_label_1>cut_${product.alu ? 'alu' : 'double'}</g:custom_label_1>`)) {
+      fail(`feed.xml misses cut label for ${product.code}`);
+    }
+    if (!xml.includes(`<g:custom_label_2>head_d_${String(product.headD || 0).padStart(2, '0')}</g:custom_label_2>`)) {
+      fail(`feed.xml misses head diameter label for ${product.code}`);
+    }
   }
 }
 

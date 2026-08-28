@@ -32,6 +32,10 @@ function link(p) {
   return p.code ? productUrl(p) : `${SITE}/#catalog`;
 }
 
+function cutKey(p) {
+  return p.alu ? 'alu' : 'double';
+}
+
 const items = PRODUCTS.map(p => `  <item>
     <g:id>${esc(`FLAKS-${p.id}`)}</g:id>
     <g:title>${esc(p.name_ru)}</g:title>
@@ -44,6 +48,9 @@ const items = PRODUCTS.map(p => `  <item>
     <g:condition>new</g:condition>
     <g:mpn>${esc(p.code || `FLAKS-${p.id}`)}</g:mpn>
     <g:product_type>${esc(ptype(p))}</g:product_type>
+    <g:custom_label_0>shape_${esc(p.shape)}</g:custom_label_0>
+    <g:custom_label_1>cut_${cutKey(p)}</g:custom_label_1>
+    <g:custom_label_2>head_d_${String(p.headD || 0).padStart(2, '0')}</g:custom_label_2>
   </item>`).join('\n');
 
 const xml = `<?xml version="1.0" encoding="UTF-8"?>

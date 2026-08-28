@@ -16,6 +16,9 @@
     <g:condition>new</g:condition>
     <g:mpn>T1205M06</g:mpn>
     <g:product_type>Борфрезы &gt; Дисковая</g:product_type>
+    <g:custom_label_0>shape_T</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_12</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-3</g:id>
@@ -29,6 +32,9 @@
     <g:condition>new</g:condition>
     <g:mpn>T1603M06</g:mpn>
     <g:product_type>Борфрезы &gt; Дисковая</g:product_type>
+    <g:custom_label_0>shape_T</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-4</g:id>
@@ -42,6 +48,9 @@
     <g:condition>new</g:condition>
     <g:mpn>T1604M06</g:mpn>
     <g:product_type>Борфрезы &gt; Дисковая</g:product_type>
+    <g:custom_label_0>shape_T</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-5</g:id>
@@ -55,6 +64,9 @@
     <g:condition>new</g:condition>
     <g:mpn>T1606M06</g:mpn>
     <g:product_type>Борфрезы &gt; Дисковая</g:product_type>
+    <g:custom_label_0>shape_T</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-6</g:id>
@@ -68,6 +80,9 @@
     <g:condition>new</g:condition>
     <g:mpn>FX0618M06</g:mpn>
     <g:product_type>Борфрезы &gt; Гиперболическая</g:product_type>
+    <g:custom_label_0>shape_F</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_06</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-7</g:id>
@@ -81,6 +96,9 @@
     <g:condition>new</g:condition>
     <g:mpn>LX0616M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сфероконическая</g:product_type>
+    <g:custom_label_0>shape_L</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_06</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-8</g:id>
@@ -94,6 +112,9 @@
     <g:condition>new</g:condition>
     <g:mpn>U1625M06</g:mpn>
     <g:product_type>Борфрезы &gt; Вогнутая цилиндр.</g:product_type>
+    <g:custom_label_0>shape_U</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-9</g:id>
@@ -107,6 +128,9 @@
     <g:condition>new</g:condition>
     <g:mpn>MX0618M06</g:mpn>
     <g:product_type>Борфрезы &gt; Коническая заостр.</g:product_type>
+    <g:custom_label_0>shape_M</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_06</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-10</g:id>
@@ -120,6 +144,9 @@
     <g:condition>new</g:condition>
     <g:mpn>MX0817M06</g:mpn>
     <g:product_type>Борфрезы &gt; Коническая заостр.</g:product_type>
+    <g:custom_label_0>shape_M</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_08</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-11</g:id>
@@ -133,6 +160,9 @@
     <g:condition>new</g:condition>
     <g:mpn>MX1020M06</g:mpn>
     <g:product_type>Борфрезы &gt; Коническая заостр.</g:product_type>
+    <g:custom_label_0>shape_M</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_10</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-12</g:id>
@@ -146,6 +176,9 @@
     <g:condition>new</g:condition>
     <g:mpn>MX1225M06</g:mpn>
     <g:product_type>Борфрезы &gt; Коническая заостр.</g:product_type>
+    <g:custom_label_0>shape_M</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_12</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-13</g:id>
@@ -159,6 +192,9 @@
     <g:condition>new</g:condition>
     <g:mpn>MX1425M06</g:mpn>
     <g:product_type>Борфрезы &gt; Коническая заостр.</g:product_type>
+    <g:custom_label_0>shape_M</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_14</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-14</g:id>
@@ -172,6 +208,9 @@
     <g:condition>new</g:condition>
     <g:mpn>MX1625M06</g:mpn>
     <g:product_type>Борфрезы &gt; Коническая заостр.</g:product_type>
+    <g:custom_label_0>shape_M</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-15</g:id>
@@ -185,6 +224,9 @@
     <g:condition>new</g:condition>
     <g:mpn>LX0822M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сфероконическая</g:product_type>
+    <g:custom_label_0>shape_L</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_08</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-16</g:id>
@@ -198,6 +240,9 @@
     <g:condition>new</g:condition>
     <g:mpn>LX1025M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сфероконическая</g:product_type>
+    <g:custom_label_0>shape_L</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_10</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-17</g:id>
@@ -211,6 +256,9 @@
     <g:condition>new</g:condition>
     <g:mpn>LX1228M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сфероконическая</g:product_type>
+    <g:custom_label_0>shape_L</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_12</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-18</g:id>
@@ -224,6 +272,9 @@
     <g:condition>new</g:condition>
     <g:mpn>LX1633M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сфероконическая</g:product_type>
+    <g:custom_label_0>shape_L</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-19</g:id>
@@ -237,6 +288,9 @@
     <g:condition>new</g:condition>
     <g:mpn>FX0818M06</g:mpn>
     <g:product_type>Борфрезы &gt; Гиперболическая</g:product_type>
+    <g:custom_label_0>shape_F</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_08</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-20</g:id>
@@ -250,6 +304,9 @@
     <g:condition>new</g:condition>
     <g:mpn>FX1020M06</g:mpn>
     <g:product_type>Борфрезы &gt; Гиперболическая</g:product_type>
+    <g:custom_label_0>shape_F</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_10</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-21</g:id>
@@ -263,6 +320,9 @@
     <g:condition>new</g:condition>
     <g:mpn>FX1225M06</g:mpn>
     <g:product_type>Борфрезы &gt; Гиперболическая</g:product_type>
+    <g:custom_label_0>shape_F</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_12</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-22</g:id>
@@ -276,6 +336,9 @@
     <g:condition>new</g:condition>
     <g:mpn>FX1422M06</g:mpn>
     <g:product_type>Борфрезы &gt; Гиперболическая</g:product_type>
+    <g:custom_label_0>shape_F</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_14</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-23</g:id>
@@ -289,6 +352,9 @@
     <g:condition>new</g:condition>
     <g:mpn>FX1625M06</g:mpn>
     <g:product_type>Борфрезы &gt; Гиперболическая</g:product_type>
+    <g:custom_label_0>shape_F</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-24</g:id>
@@ -302,6 +368,9 @@
     <g:condition>new</g:condition>
     <g:mpn>CX0616M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сфероцилиндрическая</g:product_type>
+    <g:custom_label_0>shape_C</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_06</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-25</g:id>
@@ -315,6 +384,9 @@
     <g:condition>new</g:condition>
     <g:mpn>EX0610M06</g:mpn>
     <g:product_type>Борфрезы &gt; Овальная</g:product_type>
+    <g:custom_label_0>shape_E</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_06</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-26</g:id>
@@ -328,6 +400,9 @@
     <g:condition>new</g:condition>
     <g:mpn>EX0813M06</g:mpn>
     <g:product_type>Борфрезы &gt; Овальная</g:product_type>
+    <g:custom_label_0>shape_E</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_08</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-27</g:id>
@@ -341,6 +416,9 @@
     <g:condition>new</g:condition>
     <g:mpn>AX1020M06</g:mpn>
     <g:product_type>Борфрезы &gt; Цилиндрическая</g:product_type>
+    <g:custom_label_0>shape_A</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_10</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-28</g:id>
@@ -354,6 +432,9 @@
     <g:condition>new</g:condition>
     <g:mpn>CX1625M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сфероцилиндрическая</g:product_type>
+    <g:custom_label_0>shape_C</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-29</g:id>
@@ -367,6 +448,9 @@
     <g:condition>new</g:condition>
     <g:mpn>EX1016M06</g:mpn>
     <g:product_type>Борфрезы &gt; Овальная</g:product_type>
+    <g:custom_label_0>shape_E</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_10</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-30</g:id>
@@ -380,6 +464,9 @@
     <g:condition>new</g:condition>
     <g:mpn>EX1220M06</g:mpn>
     <g:product_type>Борфрезы &gt; Овальная</g:product_type>
+    <g:custom_label_0>shape_E</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_12</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-31</g:id>
@@ -393,6 +480,9 @@
     <g:condition>new</g:condition>
     <g:mpn>EX1422M06</g:mpn>
     <g:product_type>Борфрезы &gt; Овальная</g:product_type>
+    <g:custom_label_0>shape_E</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_14</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-32</g:id>
@@ -406,6 +496,9 @@
     <g:condition>new</g:condition>
     <g:mpn>EX1625M06</g:mpn>
     <g:product_type>Борфрезы &gt; Овальная</g:product_type>
+    <g:custom_label_0>shape_E</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-33</g:id>
@@ -419,6 +512,9 @@
     <g:condition>new</g:condition>
     <g:mpn>AX0820M06</g:mpn>
     <g:product_type>Борфрезы &gt; Цилиндрическая</g:product_type>
+    <g:custom_label_0>shape_A</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_08</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-34</g:id>
@@ -432,6 +528,9 @@
     <g:condition>new</g:condition>
     <g:mpn>GX0618M06</g:mpn>
     <g:product_type>Борфрезы &gt; Гиперболическая</g:product_type>
+    <g:custom_label_0>shape_G</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_06</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-35</g:id>
@@ -445,6 +544,9 @@
     <g:condition>new</g:condition>
     <g:mpn>HX0618M06</g:mpn>
     <g:product_type>Борфрезы &gt; Пламевидная</g:product_type>
+    <g:custom_label_0>shape_H</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_06</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-36</g:id>
@@ -458,6 +560,9 @@
     <g:condition>new</g:condition>
     <g:mpn>JX0605M06</g:mpn>
     <g:product_type>Борфрезы &gt; Коническая 60°</g:product_type>
+    <g:custom_label_0>shape_J</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_06</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-37</g:id>
@@ -471,6 +576,9 @@
     <g:condition>new</g:condition>
     <g:mpn>KX0603M06</g:mpn>
     <g:product_type>Борфрезы &gt; Коническая 90°</g:product_type>
+    <g:custom_label_0>shape_K</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_06</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-38</g:id>
@@ -484,6 +592,9 @@
     <g:condition>new</g:condition>
     <g:mpn>SX0614M06</g:mpn>
     <g:product_type>Борфрезы &gt; Конусная усечённая</g:product_type>
+    <g:custom_label_0>shape_S</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_06</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-39</g:id>
@@ -497,6 +608,9 @@
     <g:condition>new</g:condition>
     <g:mpn>GX0817M06</g:mpn>
     <g:product_type>Борфрезы &gt; Гиперболическая</g:product_type>
+    <g:custom_label_0>shape_G</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_08</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-40</g:id>
@@ -510,6 +624,9 @@
     <g:condition>new</g:condition>
     <g:mpn>GX1020M06</g:mpn>
     <g:product_type>Борфрезы &gt; Гиперболическая</g:product_type>
+    <g:custom_label_0>shape_G</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_10</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-41</g:id>
@@ -523,6 +640,9 @@
     <g:condition>new</g:condition>
     <g:mpn>GX1225M06</g:mpn>
     <g:product_type>Борфрезы &gt; Гиперболическая</g:product_type>
+    <g:custom_label_0>shape_G</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_12</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-42</g:id>
@@ -536,6 +656,9 @@
     <g:condition>new</g:condition>
     <g:mpn>GX1425M06</g:mpn>
     <g:product_type>Борфрезы &gt; Гиперболическая</g:product_type>
+    <g:custom_label_0>shape_G</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_14</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-43</g:id>
@@ -549,6 +672,9 @@
     <g:condition>new</g:condition>
     <g:mpn>GX1625M06</g:mpn>
     <g:product_type>Борфрезы &gt; Гиперболическая</g:product_type>
+    <g:custom_label_0>shape_G</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-44</g:id>
@@ -562,6 +688,9 @@
     <g:condition>new</g:condition>
     <g:mpn>HX0820M06</g:mpn>
     <g:product_type>Борфрезы &gt; Пламевидная</g:product_type>
+    <g:custom_label_0>shape_H</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_08</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-45</g:id>
@@ -575,6 +704,9 @@
     <g:condition>new</g:condition>
     <g:mpn>HX1025M06</g:mpn>
     <g:product_type>Борфрезы &gt; Пламевидная</g:product_type>
+    <g:custom_label_0>shape_H</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_10</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-46</g:id>
@@ -588,6 +720,9 @@
     <g:condition>new</g:condition>
     <g:mpn>HX1232M06</g:mpn>
     <g:product_type>Борфрезы &gt; Пламевидная</g:product_type>
+    <g:custom_label_0>shape_H</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_12</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-47</g:id>
@@ -601,6 +736,9 @@
     <g:condition>new</g:condition>
     <g:mpn>HX1432M06</g:mpn>
     <g:product_type>Борфрезы &gt; Пламевидная</g:product_type>
+    <g:custom_label_0>shape_H</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_14</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-48</g:id>
@@ -614,6 +752,9 @@
     <g:condition>new</g:condition>
     <g:mpn>HX1636M06</g:mpn>
     <g:product_type>Борфрезы &gt; Пламевидная</g:product_type>
+    <g:custom_label_0>shape_H</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-49</g:id>
@@ -627,6 +768,9 @@
     <g:condition>new</g:condition>
     <g:mpn>JX0807M06</g:mpn>
     <g:product_type>Борфрезы &gt; Коническая 60°</g:product_type>
+    <g:custom_label_0>shape_J</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_08</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-50</g:id>
@@ -640,6 +784,9 @@
     <g:condition>new</g:condition>
     <g:mpn>JX1008M06</g:mpn>
     <g:product_type>Борфрезы &gt; Коническая 60°</g:product_type>
+    <g:custom_label_0>shape_J</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_10</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-51</g:id>
@@ -653,6 +800,9 @@
     <g:condition>new</g:condition>
     <g:mpn>JX1210M06</g:mpn>
     <g:product_type>Борфрезы &gt; Коническая 60°</g:product_type>
+    <g:custom_label_0>shape_J</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_12</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-52</g:id>
@@ -666,6 +816,9 @@
     <g:condition>new</g:condition>
     <g:mpn>JX1613M06</g:mpn>
     <g:product_type>Борфрезы &gt; Коническая 60°</g:product_type>
+    <g:custom_label_0>shape_J</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-53</g:id>
@@ -679,6 +832,9 @@
     <g:condition>new</g:condition>
     <g:mpn>KX0804M06</g:mpn>
     <g:product_type>Борфрезы &gt; Коническая 90°</g:product_type>
+    <g:custom_label_0>shape_K</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_08</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-54</g:id>
@@ -692,6 +848,9 @@
     <g:condition>new</g:condition>
     <g:mpn>KX1005M06</g:mpn>
     <g:product_type>Борфрезы &gt; Коническая 90°</g:product_type>
+    <g:custom_label_0>shape_K</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_10</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-55</g:id>
@@ -705,6 +864,9 @@
     <g:condition>new</g:condition>
     <g:mpn>KX1206M06</g:mpn>
     <g:product_type>Борфрезы &gt; Коническая 90°</g:product_type>
+    <g:custom_label_0>shape_K</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_12</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-56</g:id>
@@ -718,6 +880,9 @@
     <g:condition>new</g:condition>
     <g:mpn>KX1608M06</g:mpn>
     <g:product_type>Борфрезы &gt; Коническая 90°</g:product_type>
+    <g:custom_label_0>shape_K</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-57</g:id>
@@ -731,6 +896,9 @@
     <g:condition>new</g:condition>
     <g:mpn>NX1005M06</g:mpn>
     <g:product_type>Борфрезы &gt; Обратный конус</g:product_type>
+    <g:custom_label_0>shape_N</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_10</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-58</g:id>
@@ -744,6 +912,9 @@
     <g:condition>new</g:condition>
     <g:mpn>NX1205M06</g:mpn>
     <g:product_type>Борфрезы &gt; Обратный конус</g:product_type>
+    <g:custom_label_0>shape_N</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_12</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-59</g:id>
@@ -757,6 +928,9 @@
     <g:condition>new</g:condition>
     <g:mpn>NX1606M06</g:mpn>
     <g:product_type>Борфрезы &gt; Обратный конус</g:product_type>
+    <g:custom_label_0>shape_N</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-60</g:id>
@@ -770,6 +944,9 @@
     <g:condition>new</g:condition>
     <g:mpn>SX0817M06</g:mpn>
     <g:product_type>Борфрезы &gt; Конусная усечённая</g:product_type>
+    <g:custom_label_0>shape_S</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_08</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-61</g:id>
@@ -783,6 +960,9 @@
     <g:condition>new</g:condition>
     <g:mpn>SX1020M06</g:mpn>
     <g:product_type>Борфрезы &gt; Конусная усечённая</g:product_type>
+    <g:custom_label_0>shape_S</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_10</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-62</g:id>
@@ -796,6 +976,9 @@
     <g:condition>new</g:condition>
     <g:mpn>SX1220M06</g:mpn>
     <g:product_type>Борфрезы &gt; Конусная усечённая</g:product_type>
+    <g:custom_label_0>shape_S</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_12</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-63</g:id>
@@ -809,6 +992,9 @@
     <g:condition>new</g:condition>
     <g:mpn>SX1428M06</g:mpn>
     <g:product_type>Борфрезы &gt; Конусная усечённая</g:product_type>
+    <g:custom_label_0>shape_S</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_14</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-64</g:id>
@@ -822,6 +1008,9 @@
     <g:condition>new</g:condition>
     <g:mpn>Y1603M06</g:mpn>
     <g:product_type>Борфрезы &gt; Дисковая 90°</g:product_type>
+    <g:custom_label_0>shape_Y</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-65</g:id>
@@ -835,6 +1024,9 @@
     <g:condition>new</g:condition>
     <g:mpn>Y2505M06</g:mpn>
     <g:product_type>Борфрезы &gt; Дисковая 90°</g:product_type>
+    <g:custom_label_0>shape_Y</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_25</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-66</g:id>
@@ -848,6 +1040,9 @@
     <g:condition>new</g:condition>
     <g:mpn>AX0616M06</g:mpn>
     <g:product_type>Борфрезы &gt; Цилиндрическая</g:product_type>
+    <g:custom_label_0>shape_A</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_06</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-67</g:id>
@@ -861,6 +1056,9 @@
     <g:condition>new</g:condition>
     <g:mpn>CX0820M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сфероцилиндрическая</g:product_type>
+    <g:custom_label_0>shape_C</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_08</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-68</g:id>
@@ -874,6 +1072,9 @@
     <g:condition>new</g:condition>
     <g:mpn>DX0605M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сферическая</g:product_type>
+    <g:custom_label_0>shape_D</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_06</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-69</g:id>
@@ -887,6 +1088,9 @@
     <g:condition>new</g:condition>
     <g:mpn>DX0807M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сферическая</g:product_type>
+    <g:custom_label_0>shape_D</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_08</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-70</g:id>
@@ -900,6 +1104,9 @@
     <g:condition>new</g:condition>
     <g:mpn>AX1225M06</g:mpn>
     <g:product_type>Борфрезы &gt; Цилиндрическая</g:product_type>
+    <g:custom_label_0>shape_A</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_12</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-71</g:id>
@@ -913,6 +1120,9 @@
     <g:condition>new</g:condition>
     <g:mpn>AX1425M06</g:mpn>
     <g:product_type>Борфрезы &gt; Цилиндрическая</g:product_type>
+    <g:custom_label_0>shape_A</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_14</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-72</g:id>
@@ -926,6 +1136,9 @@
     <g:condition>new</g:condition>
     <g:mpn>AX1625M06</g:mpn>
     <g:product_type>Борфрезы &gt; Цилиндрическая</g:product_type>
+    <g:custom_label_0>shape_A</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-73</g:id>
@@ -939,6 +1152,9 @@
     <g:condition>new</g:condition>
     <g:mpn>CX1020M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сфероцилиндрическая</g:product_type>
+    <g:custom_label_0>shape_C</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_10</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-74</g:id>
@@ -952,6 +1168,9 @@
     <g:condition>new</g:condition>
     <g:mpn>CX1225M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сфероцилиндрическая</g:product_type>
+    <g:custom_label_0>shape_C</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_12</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-75</g:id>
@@ -965,6 +1184,9 @@
     <g:condition>new</g:condition>
     <g:mpn>CX1425M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сфероцилиндрическая</g:product_type>
+    <g:custom_label_0>shape_C</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_14</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-76</g:id>
@@ -978,6 +1200,9 @@
     <g:condition>new</g:condition>
     <g:mpn>DX1009M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сферическая</g:product_type>
+    <g:custom_label_0>shape_D</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_10</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-77</g:id>
@@ -991,6 +1216,9 @@
     <g:condition>new</g:condition>
     <g:mpn>DX1210M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сферическая</g:product_type>
+    <g:custom_label_0>shape_D</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_12</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-78</g:id>
@@ -1004,6 +1232,9 @@
     <g:condition>new</g:condition>
     <g:mpn>DX1412M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сферическая</g:product_type>
+    <g:custom_label_0>shape_D</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_14</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-79</g:id>
@@ -1017,6 +1248,9 @@
     <g:condition>new</g:condition>
     <g:mpn>DX1614M06</g:mpn>
     <g:product_type>Борфрезы &gt; Сферическая</g:product_type>
+    <g:custom_label_0>shape_D</g:custom_label_0>
+    <g:custom_label_1>cut_double</g:custom_label_1>
+    <g:custom_label_2>head_d_16</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-80</g:id>
@@ -1030,6 +1264,9 @@
     <g:condition>new</g:condition>
     <g:mpn>C1225M06</g:mpn>
     <g:product_type>Борфрезы &gt; По алюминию</g:product_type>
+    <g:custom_label_0>shape_C</g:custom_label_0>
+    <g:custom_label_1>cut_alu</g:custom_label_1>
+    <g:custom_label_2>head_d_12</g:custom_label_2>
   </item>
   <item>
     <g:id>FLAKS-81</g:id>
@@ -1043,6 +1280,9 @@
     <g:condition>new</g:condition>
     <g:mpn>F1225M06</g:mpn>
     <g:product_type>Борфрезы &gt; По алюминию</g:product_type>
+    <g:custom_label_0>shape_F</g:custom_label_0>
+    <g:custom_label_1>cut_alu</g:custom_label_1>
+    <g:custom_label_2>head_d_12</g:custom_label_2>
   </item>
   </channel>
 </rss>
