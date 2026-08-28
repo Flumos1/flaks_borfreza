@@ -3,7 +3,7 @@
 // Переиспользует SHAPES / PRODUCTS из burr-data.js (как generate-feed.js).
 // Запуск: npm run landings
 import { PRODUCTS, SHAPES } from '../src/data/burr-data.js';
-import { SITE, SHAPE_SLUGS as SLUGS, productUrl, productPath } from '../src/data/site-urls.js';
+import { SITE, LANGS, SHAPE_SLUGS as SLUGS, productUrl, productPath, shapePath, shapeUrl } from '../src/data/site-urls.js';
 import { writeFileSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -67,7 +67,7 @@ function priceFrom(items) {
   return Math.min(...items.map((p) => p.price));
 }
 
-function specRows(items, lang) {
+function specRows(items, lang, pathLang = '') {
   // Таблица типоразмеров формы — уникальный контент страницы.
   return items
     .slice()
@@ -85,22 +85,22 @@ function specRows(items, lang) {
         <td>${cut}</td>
         <td>${money(p.price)} ${lang === 'ua' ? 'грн' : 'грн'}</td>
         <td><span class="in-stock">${inStock}</span></td>
-        <td><a class="row-cta" href="${productPath(p)}">${lang === 'ua' ? 'Купити' : 'Купить'}</a></td>
+        <td><a class="row-cta" href="${productPath(p, pathLang)}">${lang === 'ua' ? 'Купити' : 'Купить'}</a></td>
       </tr>`;
     })
     .join('\n');
 }
 
-function navLinks(currentKey, lang) {
+function navLinks(currentKey, lang, pathLang = '') {
   return NAV.map((n) => {
     const active = n.key === currentKey ? ' aria-current="page"' : '';
     const name = lang === 'ua' ? n.ua : n.ru;
-    return `<a class="form-chip${n.key === currentKey ? ' is-active' : ''}" href="/borfrezy/${n.slug}/"${active}>${esc(n.key)} · ${esc(name)}</a>`;
+    return `<a class="form-chip${n.key === currentKey ? ' is-active' : ''}" href="${shapePath(n.key, pathLang)}"${active}>${esc(n.key)} · ${esc(name)}</a>`;
   }).join('\n');
 }
 
-function jsonLd(shape, items, slug) {
-  const url = `${SITE}/borfrezy/${slug}/`;
+function jsonLd(shape, items, slug, lang = 'ua') {
+  const url = shapeUrl(shape.key, lang);
   const itemList = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -126,7 +126,7 @@ function jsonLd(shape, items, slug) {
             price: money(p.price),
             priceCurrency: 'UAH',
             availability: 'https://schema.org/InStock',
-            url: productUrl(p),
+            url: productUrl(p, lang),
           },
         },
       })),
@@ -135,8 +135,8 @@ function jsonLd(shape, items, slug) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Главная', item: `${SITE}/` },
-      { '@type': 'ListItem', position: 2, name: 'Борфрезы', item: `${SITE}/borfrezy/` },
+      { '@type': 'ListItem', position: 1, name: 'Главная', item: `${SITE}/${lang}/` },
+      { '@type': 'ListItem', position: 2, name: 'Борфрезы', item: `${SITE}/${lang}/borfrezy/` },
       { '@type': 'ListItem', position: 3, name: shape.ru, item: url },
     ],
   };
@@ -144,11 +144,12 @@ function jsonLd(shape, items, slug) {
 <script type="application/ld+json">${JSON.stringify(breadcrumb)}</script>`;
 }
 
-function page(shape) {
+function page(shape, lang = '') {
   const slug = SLUGS[shape.key];
+  const pageLang = lang === 'ru' ? 'ru' : 'ua';
   const items = PRODUCTS.filter((p) => p.shape === shape.key);
   const from = priceFrom(items);
-  const url = `${SITE}/borfrezy/${slug}/`;
+  const url = shapeUrl(shape.key, pageLang);
   const headDRange = rangeLabel(items, 'headD', ' мм');
   const headLRange = rangeLabel(items, 'headL', ' мм');
   const countUa = `${items.length} ${sizeWord(items.length, 'ua')}`;
@@ -165,22 +166,25 @@ function page(shape) {
   const mistakesUa = `Не затискайте хвостовик із биттям, не компенсуйте низькі оберти надмірним натиском і не використовуйте звичайну подвійну насічку для м'якого алюмінію, якщо потрібна чиста стружка без забивання.`;
   const mistakesRu = `Не зажимайте хвостовик с биением, не компенсируйте низкие обороты сильным нажимом и не используйте обычную двойную насечку для мягкого алюминия, если нужна чистая стружка без забивания.`;
 
+  const title = pageLang === 'ua' ? titleUa : titleRu;
+  const desc = pageLang === 'ua' ? descUa : descRu;
+
   return `<!DOCTYPE html>
-<html lang="uk">
+<html lang="${pageLang === 'ua' ? 'uk' : 'ru'}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(titleUa)}</title>
-<meta name="description" content="${esc(descUa)}">
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(desc)}">
 <meta name="theme-color" content="#e85d04">
 <link rel="canonical" href="${url}">
-<link rel="alternate" hreflang="uk-UA" href="${url}?lang=ua">
-<link rel="alternate" hreflang="ru-UA" href="${url}?lang=ru">
-<link rel="alternate" hreflang="x-default" href="${url}">
+<link rel="alternate" hreflang="uk-UA" href="${shapeUrl(shape.key, 'ua')}">
+<link rel="alternate" hreflang="ru-UA" href="${shapeUrl(shape.key, 'ru')}">
+<link rel="alternate" hreflang="x-default" href="${shapeUrl(shape.key, 'ua')}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="${url}">
-<meta property="og:title" content="${esc(titleUa)}">
-<meta property="og:description" content="${esc(descUa)}">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(desc)}">
 <meta property="og:image" content="${SITE}/assets/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -190,7 +194,7 @@ function page(shape) {
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Condensed:wght@300;400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Condensed:wght@300;400;500;600;700&display=swap"></noscript>
 <link rel="icon" type="image/png" href="/assets/favicon.png">
-${jsonLd(shape, items, slug)}
+${jsonLd(shape, items, slug, pageLang)}
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#13161e;color:#e8eaf0;font-family:'Roboto Condensed',sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
@@ -254,7 +258,8 @@ a{text-decoration:none;color:inherit}
 </style>
 <script>
 (function(){
-  var p = new URLSearchParams(location.search).get('lang');
+  var pathLang = location.pathname.split('/').filter(Boolean)[0];
+  var p = new URLSearchParams(location.search).get('lang') || (pathLang === 'ru' || pathLang === 'ua' ? pathLang : null);
   var stored = localStorage.getItem('flaks-lang');
   var lang = (p==='ru'||(p===null&&stored==='ru')) ? 'ru' : 'ua';
   if(p) localStorage.setItem('flaks-lang', p);
@@ -266,7 +271,7 @@ a{text-decoration:none;color:inherit}
 <body>
 <header class="art-header">
   <div class="art-header-in">
-    <a href="/" class="art-logo">
+    <a href="/${pageLang}/" class="art-logo">
       <span class="art-logo-mark">F</span>
       <span>
         <span class="art-logo-name">FLAKS</span>
@@ -274,15 +279,15 @@ a{text-decoration:none;color:inherit}
       </span>
     </a>
     <div class="art-nav">
-      <button class="lang-btn" id="langBtn">RU</button>
-      <a href="/" class="art-back" data-ua="← Каталог" data-ru="← Каталог">← Каталог</a>
+      <a class="lang-btn" id="langBtn" href="${shapePath(shape.key, pageLang === 'ua' ? 'ru' : 'ua')}">${pageLang === 'ua' ? 'RU' : 'UA'}</a>
+      <a href="/${pageLang}/" class="art-back" data-ua="← Каталог" data-ru="← Каталог">← Каталог</a>
     </div>
   </div>
 </header>
 
 <div class="wrap">
   <nav class="crumbs">
-    <a href="/">FLAKS</a><span>›</span><a href="/borfrezy/" data-ua="Борфрези" data-ru="Борфрезы">Борфрези</a><span>›</span><span class="t" data-ua="${esc(shape.ua)}" data-ru="${esc(shape.ru)}">${esc(shape.ua)}</span>
+    <a href="/${pageLang}/">FLAKS</a><span>›</span><a href="/${pageLang}/borfrezy/" data-ua="Борфрези" data-ru="Борфрезы">Борфрези</a><span>›</span><span class="t" data-ua="${esc(shape.ua)}" data-ru="${esc(shape.ru)}">${esc(shape.ua)}</span>
   </nav>
 </div>
 
@@ -324,25 +329,25 @@ a{text-decoration:none;color:inherit}
     <table class="art-table" id="spec-ua">
       <thead><tr><th data-ua="Артикул" data-ru="Артикул">Артикул</th><th>Ø×L</th><th data-ua="Насічка" data-ru="Насечка">Насічка</th><th data-ua="Ціна" data-ru="Цена">Ціна</th><th data-ua="Наявність" data-ru="Наличие">Наявність</th><th></th></tr></thead>
       <tbody>
-${specRows(items, 'ua')}
+${specRows(items, 'ua', pageLang)}
       </tbody>
     </table>
     <table class="art-table hidden" id="spec-ru">
       <thead><tr><th>Артикул</th><th>Ø×L</th><th>Насечка</th><th>Цена</th><th>Наличие</th><th></th></tr></thead>
       <tbody>
-${specRows(items, 'ru')}
+${specRows(items, 'ru', pageLang)}
       </tbody>
     </table>
 
     <h2 data-ua="Інші форми головки" data-ru="Другие формы головки">Інші форми головки</h2>
     <div class="forms-nav">
-${navLinks(shape.key, 'ua')}
+${navLinks(shape.key, 'ua', pageLang)}
     </div>
 
     <div class="art-cta">
       <h3 data-ua="Потрібна консультація?" data-ru="Нужна консультация?">Потрібна консультація?</h3>
       <p data-ua="Не впевнені у формі чи діаметрі? Напишіть задачу — підберемо борфрезу й порахуємо замовлення." data-ru="Не уверены в форме или диаметре? Напишите задачу — подберём борфрезу и посчитаем заказ.">Не впевнені у формі чи діаметрі? Напишіть задачу — підберемо борфрезу й порахуємо замовлення.</p>
-      <a class="art-cta-btn" href="/?shape=${esc(shape.key)}" data-ua="Дивитися в каталозі →" data-ru="Смотреть в каталоге →">Дивитися в каталозі →</a>
+      <a class="art-cta-btn" href="/${pageLang}/?shape=${esc(shape.key)}" data-ua="Дивитися в каталозі →" data-ru="Смотреть в каталоге →">Дивитися в каталозі →</a>
     </div>
   </div>
 </main>
@@ -378,7 +383,6 @@ ${navLinks(shape.key, 'ua')}
   btn.addEventListener('click', function(){
     var next = (window.__lang==='ua') ? 'ru' : 'ua';
     localStorage.setItem('flaks-lang', next);
-    var u = new URL(location.href); u.searchParams.set('lang', next); location.href = u.toString();
   });
 })();
 </script>
@@ -387,8 +391,9 @@ ${navLinks(shape.key, 'ua')}
 `;
 }
 
-function hubPage() {
-  const url = `${SITE}/borfrezy/`;
+function hubPage(lang = '') {
+  const pageLang = lang === 'ru' ? 'ru' : 'ua';
+  const url = `${SITE}/${pageLang}/borfrezy/`;
   const total = PRODUCTS.length;
   const minD = Math.min(...PRODUCTS.map((p) => p.headD));
   const maxD = Math.max(...PRODUCTS.map((p) => p.headD));
@@ -400,7 +405,7 @@ function hubPage() {
   const cards = SHAPES.map((s) => {
     const items = PRODUCTS.filter((p) => p.shape === s.key);
     const from = priceFrom(items);
-    return `<a class="hub-card" href="/borfrezy/${SLUGS[s.key]}/">
+    return `<a class="hub-card" href="${shapePath(s.key, pageLang)}">
       <span class="hub-letter">${esc(s.key)}</span>
       <span class="hub-name" data-ua="${esc(s.ua)}" data-ru="${esc(s.ru)}">${esc(s.ua)}</span>
       <span class="hub-sub" data-ua="${esc(s.ua_sub)}" data-ru="${esc(s.ru_sub)}">${esc(s.ua_sub)}</span>
@@ -416,22 +421,25 @@ function hubPage() {
     description: descUa,
   };
 
+  const title = pageLang === 'ua' ? titleUa : titleRu;
+  const desc = pageLang === 'ua' ? descUa : descRu;
+
   return `<!DOCTYPE html>
-<html lang="uk">
+<html lang="${pageLang === 'ua' ? 'uk' : 'ru'}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(titleUa)}</title>
-<meta name="description" content="${esc(descUa)}">
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(desc)}">
 <meta name="theme-color" content="#e85d04">
 <link rel="canonical" href="${url}">
-<link rel="alternate" hreflang="uk-UA" href="${url}?lang=ua">
-<link rel="alternate" hreflang="ru-UA" href="${url}?lang=ru">
-<link rel="alternate" hreflang="x-default" href="${url}">
+<link rel="alternate" hreflang="uk-UA" href="${SITE}/ua/borfrezy/">
+<link rel="alternate" hreflang="ru-UA" href="${SITE}/ru/borfrezy/">
+<link rel="alternate" hreflang="x-default" href="${SITE}/ua/borfrezy/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="${url}">
-<meta property="og:title" content="${esc(titleUa)}">
-<meta property="og:description" content="${esc(descUa)}">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(desc)}">
 <meta property="og:image" content="${SITE}/assets/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -475,7 +483,8 @@ a{text-decoration:none;color:inherit}
 </style>
 <script>
 (function(){
-  var p = new URLSearchParams(location.search).get('lang');
+  var pathLang = location.pathname.split('/').filter(Boolean)[0];
+  var p = new URLSearchParams(location.search).get('lang') || (pathLang === 'ru' || pathLang === 'ua' ? pathLang : null);
   var stored = localStorage.getItem('flaks-lang');
   var lang = (p==='ru'||(p===null&&stored==='ru')) ? 'ru' : 'ua';
   if(p) localStorage.setItem('flaks-lang', p);
@@ -487,7 +496,7 @@ a{text-decoration:none;color:inherit}
 <body>
 <header class="art-header">
   <div class="art-header-in">
-    <a href="/" class="art-logo">
+    <a href="/${pageLang}/" class="art-logo">
       <span class="art-logo-mark">F</span>
       <span>
         <span class="art-logo-name">FLAKS</span>
@@ -495,8 +504,8 @@ a{text-decoration:none;color:inherit}
       </span>
     </a>
     <div class="art-nav">
-      <button class="lang-btn" id="langBtn">RU</button>
-      <a href="/" class="art-back">← Каталог</a>
+      <a class="lang-btn" id="langBtn" href="/${pageLang === 'ua' ? 'ru' : 'ua'}/borfrezy/">${pageLang === 'ua' ? 'RU' : 'UA'}</a>
+      <a href="/${pageLang}/" class="art-back">← Каталог</a>
     </div>
   </div>
 </header>
@@ -535,7 +544,6 @@ ${cards}
   btn.addEventListener('click', function(){
     var next = (window.__lang==='ua') ? 'ru' : 'ua';
     localStorage.setItem('flaks-lang', next);
-    var u = new URL(location.href); u.searchParams.set('lang', next); location.href = u.toString();
   });
 })();
 </script>
@@ -549,6 +557,11 @@ const outDir = join(__dirname, '../public/borfrezy');
 mkdirSync(outDir, { recursive: true });
 
 writeFileSync(join(outDir, 'index.html'), hubPage(), 'utf8');
+for (const lang of LANGS) {
+  const langHubDir = join(__dirname, `../public/${lang}/borfrezy`);
+  mkdirSync(langHubDir, { recursive: true });
+  writeFileSync(join(langHubDir, 'index.html'), hubPage(lang), 'utf8');
+}
 
 let count = 0;
 for (const shape of SHAPES) {
@@ -557,6 +570,11 @@ for (const shape of SHAPES) {
   const dir = join(outDir, slug);
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, 'index.html'), page(shape), 'utf8');
+  for (const lang of LANGS) {
+    const langDir = join(__dirname, `../public/${lang}/borfrezy`, slug);
+    mkdirSync(langDir, { recursive: true });
+    writeFileSync(join(langDir, 'index.html'), page(shape, lang), 'utf8');
+  }
   count++;
 }
 

@@ -1,5 +1,5 @@
 import { PRODUCTS, SHAPES, CUTS } from '../src/data/burr-data.js';
-import { SITE, productPath, productUrl, shapePath, shapeUrl } from '../src/data/site-urls.js';
+import { SITE, LANGS, productPath, productUrl, shapePath, shapeUrl } from '../src/data/site-urls.js';
 import { writeFileSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -24,18 +24,19 @@ function productDescription(product, shape, lang) {
   return `${base} ${use || ''} FLAKS, ${lang === 'ua' ? 'відправка по Україні' : 'отправка по Украине'}.`;
 }
 
-function jsonLd(product, shape) {
-  const url = productUrl(product);
+function jsonLd(product, shape, lang = 'ua') {
+  const url = productUrl(product, lang);
+  const name = lang === 'ua' ? product.name_ua : product.name_ru;
   const productLd = {
     '@context': 'https://schema.org',
     '@type': 'Product',
-    name: product.name_ua,
-    description: productDescription(product, shape, 'ua'),
+    name,
+    description: productDescription(product, shape, lang),
     sku: product.code,
     mpn: product.code,
     image: product.img,
     brand: { '@type': 'Brand', name: 'FLAKS' },
-    category: `Борфрези > ${shape?.ua || product.shape}`,
+    category: `${lang === 'ua' ? 'Борфрези' : 'Борфрезы'} > ${lang === 'ua' ? (shape?.ua || product.shape) : (shape?.ru || product.shape)}`,
     offers: {
       '@type': 'Offer',
       url,
@@ -49,9 +50,9 @@ function jsonLd(product, shape) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'FLAKS', item: `${SITE}/` },
-      { '@type': 'ListItem', position: 2, name: 'Борфрези', item: `${SITE}/borfrezy/` },
-      { '@type': 'ListItem', position: 3, name: shape?.ua || product.shape, item: shapeUrl(product.shape) },
+      { '@type': 'ListItem', position: 1, name: 'FLAKS', item: `${SITE}/${lang}/` },
+      { '@type': 'ListItem', position: 2, name: lang === 'ua' ? 'Борфрези' : 'Борфрезы', item: `${SITE}/${lang}/borfrezy/` },
+      { '@type': 'ListItem', position: 3, name: lang === 'ua' ? (shape?.ua || product.shape) : (shape?.ru || product.shape), item: shapeUrl(product.shape, lang) },
       { '@type': 'ListItem', position: 4, name: product.code, item: url },
     ],
   };
@@ -59,42 +60,45 @@ function jsonLd(product, shape) {
 <script type="application/ld+json">${JSON.stringify(breadcrumb)}</script>`;
 }
 
-function relatedProducts(product) {
+function relatedProducts(product, lang = '') {
   return PRODUCTS
     .filter((item) => item.id !== product.id && item.shape === product.shape)
     .slice(0, 6)
-    .map((item) => `<a class="related-link" href="${productPath(item)}">${esc(item.code)} · Ø${item.headD}×${item.headL} мм</a>`)
+    .map((item) => `<a class="related-link" href="${productPath(item, lang)}">${esc(item.code)} · Ø${item.headD}×${item.headL} мм</a>`)
     .join('');
 }
 
-function page(product) {
+function page(product, lang = '') {
   const shape = shapeByKey(product.shape);
+  const pageLang = lang === 'ru' ? 'ru' : 'ua';
   const titleUa = `${product.name_ua} купити в Україні | FLAKS`;
   const titleRu = `${product.name_ru} купить в Украине | FLAKS`;
   const descUa = productDescription(product, shape, 'ua');
   const descRu = productDescription(product, shape, 'ru');
-  const url = productUrl(product);
+  const title = pageLang === 'ua' ? titleUa : titleRu;
+  const desc = pageLang === 'ua' ? descUa : descRu;
+  const url = productUrl(product, pageLang);
   const catalogUrl = `/?q=${encodeURIComponent(product.code)}#catalog`;
 
   return `<!DOCTYPE html>
-<html lang="uk">
+<html lang="${pageLang === 'ua' ? 'uk' : 'ru'}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(titleUa)}</title>
-<meta name="description" content="${esc(descUa)}">
+<title>${esc(title)}</title>
+<meta name="description" content="${esc(desc)}">
 <meta name="theme-color" content="#e85d04">
 <link rel="canonical" href="${url}">
-<link rel="alternate" hreflang="uk-UA" href="${url}?lang=ua">
-<link rel="alternate" hreflang="ru-UA" href="${url}?lang=ru">
-<link rel="alternate" hreflang="x-default" href="${url}">
+<link rel="alternate" hreflang="uk-UA" href="${productUrl(product, 'ua')}">
+<link rel="alternate" hreflang="ru-UA" href="${productUrl(product, 'ru')}">
+<link rel="alternate" hreflang="x-default" href="${productUrl(product, 'ua')}">
 <meta property="og:type" content="product">
 <meta property="og:url" content="${url}">
-<meta property="og:title" content="${esc(titleUa)}">
-<meta property="og:description" content="${esc(descUa)}">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(desc)}">
 <meta property="og:image" content="${esc(product.img || `${SITE}/assets/og-image.jpg`)}">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
-${jsonLd(product, shape)}
+${jsonLd(product, shape, pageLang)}
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#13161e;color:#e8eaf0;font-family:Arial,sans-serif;line-height:1.55}
@@ -130,7 +134,8 @@ h1{font-size:clamp(28px,5vw,44px);line-height:1.08;color:#fff;margin-bottom:14px
 </style>
 <script>
 (function(){
-  var p = new URLSearchParams(location.search).get('lang');
+  var pathLang = location.pathname.split('/').filter(Boolean)[0];
+  var p = new URLSearchParams(location.search).get('lang') || (pathLang === 'ru' || pathLang === 'ua' ? pathLang : null);
   var stored = localStorage.getItem('flaks-lang');
   var lang = (p==='ru'||(p===null&&stored==='ru')) ? 'ru' : 'ua';
   if(p) localStorage.setItem('flaks-lang', p);
@@ -143,14 +148,14 @@ h1{font-size:clamp(28px,5vw,44px);line-height:1.08;color:#fff;margin-bottom:14px
 <header class="header"><div class="wrap header-in">
   <a class="logo" href="/"><span class="mark">F</span><span>FLAKS</span></a>
   <nav class="nav">
-    <button class="lang-btn" id="langBtn">RU</button>
-    <a class="btn" href="${shapePath(product.shape)}" data-ua="Форма ${esc(shape?.ua || product.shape)}" data-ru="Форма ${esc(shape?.ru || product.shape)}">Форма ${esc(shape?.ua || product.shape)}</a>
-    <a class="btn" href="/">Каталог</a>
+    <a class="lang-btn" href="${productPath(product, pageLang === 'ua' ? 'ru' : 'ua')}" id="langBtn">${pageLang === 'ua' ? 'RU' : 'UA'}</a>
+    <a class="btn" href="${shapePath(product.shape, pageLang)}" data-ua="Форма ${esc(shape?.ua || product.shape)}" data-ru="Форма ${esc(shape?.ru || product.shape)}">Форма ${esc(shape?.ua || product.shape)}</a>
+    <a class="btn" href="/${pageLang}/">Каталог</a>
   </nav>
 </div></header>
 <main class="wrap">
   <nav class="crumbs">
-    <a href="/">FLAKS</a><span>›</span><a href="/borfrezy/">Борфрези</a><span>›</span><a href="${shapePath(product.shape)}">${esc(shape?.ua || product.shape)}</a><span>›</span>${esc(product.code)}
+    <a href="/${pageLang}/">FLAKS</a><span>›</span><a href="/${pageLang}/borfrezy/">Борфрези</a><span>›</span><a href="${shapePath(product.shape, pageLang)}">${esc(shape?.ua || product.shape)}</a><span>›</span>${esc(product.code)}
   </nav>
   <section class="product">
     <div class="photo"><img src="${esc(product.img)}" alt="${esc(product.name_ua)}" loading="eager"></div>
@@ -175,7 +180,7 @@ h1{font-size:clamp(28px,5vw,44px);line-height:1.08;color:#fff;margin-bottom:14px
   </section>
   <section class="section">
     <h2 data-ua="Схожі типорозміри" data-ru="Похожие типоразмеры">Схожі типорозміри</h2>
-    <div class="related">${relatedProducts(product)}</div>
+    <div class="related">${relatedProducts(product, pageLang)}</div>
   </section>
 </main>
 <script>
@@ -196,9 +201,6 @@ h1{font-size:clamp(28px,5vw,44px);line-height:1.08;color:#fff;margin-bottom:14px
   btn.addEventListener('click', function(){
     var next = (window.__lang==='ua') ? 'ru' : 'ua';
     localStorage.setItem('flaks-lang', next);
-    var u = new URL(location.href);
-    u.searchParams.set('lang', next);
-    location.href = u.toString();
   });
 })();
 </script>
@@ -211,6 +213,11 @@ for (const product of PRODUCTS) {
   const dir = join(outDir, String(product.code).toLowerCase());
   mkdirSync(dir, { recursive: true });
   writeFileSync(join(dir, 'index.html'), page(product), 'utf8');
+  for (const lang of LANGS) {
+    const langDir = join(__dirname, `../public/${lang}/borfrezy`, String(product.code).toLowerCase());
+    mkdirSync(langDir, { recursive: true });
+    writeFileSync(join(langDir, 'index.html'), page(product, lang), 'utf8');
+  }
   count++;
 }
 

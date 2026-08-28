@@ -1,4 +1,5 @@
 export const SITE = 'https://borfrezy.in.ua';
+export const LANGS = ['ua', 'ru'];
 
 export const SHAPE_SLUGS = {
   A: 'cilindrichna',
@@ -19,9 +20,17 @@ export const SHAPE_SLUGS = {
   Y: 'diskova-90',
 };
 
-export const productSlug = (product) => String(product?.code || `flaks-${product?.id || ''}`).toLowerCase();
-export const productPath = (product) => `/borfrezy/${productSlug(product)}/`;
-export const productUrl = (product) => `${SITE}${productPath(product)}`;
+const normalizeLang = (lang) => (LANGS.includes(lang) ? lang : '');
+export const localizedPath = (path, lang = '') => {
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const cleanLang = normalizeLang(lang);
+  return cleanLang ? `/${cleanLang}${cleanPath}` : cleanPath;
+};
+export const localizedUrl = (path, lang = '') => `${SITE}${localizedPath(path, lang)}`;
 
-export const shapePath = (shapeKey) => `/borfrezy/${SHAPE_SLUGS[shapeKey]}/`;
-export const shapeUrl = (shapeKey) => `${SITE}${shapePath(shapeKey)}`;
+export const productSlug = (product) => String(product?.code || `flaks-${product?.id || ''}`).toLowerCase();
+export const productPath = (product, lang = '') => localizedPath(`/borfrezy/${productSlug(product)}/`, lang);
+export const productUrl = (product, lang = '') => localizedUrl(`/borfrezy/${productSlug(product)}/`, lang);
+
+export const shapePath = (shapeKey, lang = '') => localizedPath(`/borfrezy/${SHAPE_SLUGS[shapeKey]}/`, lang);
+export const shapeUrl = (shapeKey, lang = '') => localizedUrl(`/borfrezy/${SHAPE_SLUGS[shapeKey]}/`, lang);

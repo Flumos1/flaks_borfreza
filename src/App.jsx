@@ -29,7 +29,17 @@ const catName = (p, lang) => {
 const letterOf = (p) => (shapeByKey(p.shape) || {}).letter || p.shape;
 const cutLabel = (p, lang) => (CUTS[p.cut] || CUTS.double)[lang];
 const dimStr = (p) => (p.headD ? `Ø${p.headD}×${p.headL}` : "—");
-const productHref = (p) => productPath(p);
+const pathLanguage = () => {
+  const first = window.location.pathname.split("/").filter(Boolean)[0];
+  return first === "ru" || first === "ua" ? first : null;
+};
+const unlocalizedPath = (path) => {
+  const parts = path.split("/").filter(Boolean);
+  if (parts[0] === "ru" || parts[0] === "ua") parts.shift();
+  if (parts.length === 0) return "/";
+  return `/${parts.join("/")}${path.endsWith("/") || parts.length === 0 ? "/" : ""}`;
+};
+const productHref = (p, lang) => productPath(p, lang);
 const uniqueNumbers = (items, key) => [...new Set(items.map((p) => p[key]).filter(Number.isFinite))].sort((a,b)=>a-b);
 
 // ─────────── ICONS ───────────
@@ -430,7 +440,7 @@ function Catalog({ t, lang, shape, setShape, view, setView, cart, onAdd, onOpen,
                       <span className="bf-tname-txt">
                         <span className="bf-tname-main">{catName(p, lang)}{p.alu ? " · Al" : ""}</span>
                         <span className="bf-tname-meta">
-                          {p.code && <a className="bf-product-link" href={productHref(p)} onClick={(e)=>e.stopPropagation()}>{p.code}</a>}
+                          {p.code && <a className="bf-product-link" href={productHref(p, lang)} onClick={(e)=>e.stopPropagation()}>{p.code}</a>}
                           {p.code ? " · " : ""}{t.mat}
                         </span>
                       </span>
@@ -462,7 +472,7 @@ function Catalog({ t, lang, shape, setShape, view, setView, cart, onAdd, onOpen,
                 <div className="bf-card-name">{dimStr(p)}{p.headD ? " · хв." + p.shankD : ""}</div>
                 <div className="bf-card-specs">
                   <span>{cutLabel(p, lang)}</span>
-                  {p.code && <a className="bf-product-link" href={productHref(p)} onClick={(e)=>e.stopPropagation()}>{p.code}</a>}
+                  {p.code && <a className="bf-product-link" href={productHref(p, lang)} onClick={(e)=>e.stopPropagation()}>{p.code}</a>}
                   <span>ВК</span>
                 </div>
                 <div className="bf-card-foot">
@@ -856,6 +866,8 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
 export default function App() {
   const [tw, setTweak] = useTweaks(TWEAK_DEFAULTS);
   const [lang, setLang] = useState(() => {
+    const pathLang = pathLanguage();
+    if (pathLang) return pathLang;
     const p = new URLSearchParams(window.location.search).get("lang");
     return p === "ru" ? "ru" : "ua";
   });
@@ -889,10 +901,12 @@ export default function App() {
   useEffect(() => {
     document.documentElement.lang = lang === "ua" ? "uk" : "ru";
     const p = new URLSearchParams(window.location.search);
-    if (lang !== "ua") p.set("lang", lang); else p.delete("lang");
+    p.delete("lang");
     if (shape !== "all") p.set("shape", shape); else p.delete("shape");
     const qs = p.toString();
-    window.history.replaceState({}, "", qs ? "?" + qs : window.location.pathname);
+    const basePath = unlocalizedPath(window.location.pathname);
+    const nextPath = `/${lang}${basePath === "/" ? "/" : basePath}`;
+    window.history.replaceState({}, "", nextPath + (qs ? "?" + qs : ""));
   }, [lang, shape]);
 
   const pickShape = (k) => { setShape(k); setTimeout(()=>catalogRef.current && catalogRef.current.scrollIntoView({behavior:"smooth",block:"start"}),60); };
