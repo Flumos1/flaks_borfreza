@@ -30,6 +30,7 @@ const letterOf = (p) => (shapeByKey(p.shape) || {}).letter || p.shape;
 const cutLabel = (p, lang) => (CUTS[p.cut] || CUTS.double)[lang];
 const dimStr = (p) => (p.headD ? `Ø${p.headD}×${p.headL}` : "—");
 const productHref = (p) => productPath(p);
+const uniqueNumbers = (items, key) => [...new Set(items.map((p) => p[key]).filter(Number.isFinite))].sort((a,b)=>a-b);
 
 // ─────────── ICONS ───────────
 const I = {
@@ -214,20 +215,50 @@ function Guide({ t, lang, onPick, flutes }) {
 function Catalog({ t, lang, shape, setShape, view, setView, cart, onAdd, onOpen, flutes, photos, refEl }) {
   const [query, setQuery] = useState(() => new URLSearchParams(window.location.search).get("q") || "");
   const [sort, setSort] = useState(() => new URLSearchParams(window.location.search).get("sort") || "default");
+  const [headD, setHeadD] = useState(() => new URLSearchParams(window.location.search).get("d") || "all");
+  const [headL, setHeadL] = useState(() => new URLSearchParams(window.location.search).get("l") || "all");
+  const [cutFilter, setCutFilter] = useState(() => new URLSearchParams(window.location.search).get("cut") || "all");
+  const [priceTo, setPriceTo] = useState(() => new URLSearchParams(window.location.search).get("price_to") || "");
   const [page, setPage] = useState(1);
-  useEffect(() => { setPage(1); }, [shape, query, sort, view]);
+  useEffect(() => { setPage(1); }, [shape, query, sort, view, headD, headL, cutFilter, priceTo]);
 
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
     if (query) p.set("q", query); else p.delete("q");
     if (sort !== "default") p.set("sort", sort); else p.delete("sort");
+    if (headD !== "all") p.set("d", headD); else p.delete("d");
+    if (headL !== "all") p.set("l", headL); else p.delete("l");
+    if (cutFilter !== "all") p.set("cut", cutFilter); else p.delete("cut");
+    if (priceTo.trim()) p.set("price_to", priceTo.trim()); else p.delete("price_to");
     const qs = p.toString();
     window.history.replaceState({}, "", qs ? "?" + qs : window.location.pathname);
-  }, [query, sort]);
+  }, [query, sort, headD, headL, cutFilter, priceTo]);
+
+  const baseItems = useMemo(() => {
+    return shape === "all" ? PRODUCTS : PRODUCTS.filter((p) => p.shape === shape);
+  }, [shape]);
+  const headDOptions = useMemo(() => uniqueNumbers(baseItems, "headD"), [baseItems]);
+  const headLOptions = useMemo(() => uniqueNumbers(baseItems, "headL"), [baseItems]);
+  const cutOptions = useMemo(() => [...new Set(baseItems.map((p) => p.cut).filter(Boolean))], [baseItems]);
+  const filterLabels = {
+    d: lang === "ua" ? "Ø головки" : "Ø головки",
+    l: lang === "ua" ? "L головки" : "L головки",
+    cut: lang === "ua" ? "Насічка" : "Насечка",
+    priceTo: lang === "ua" ? "Ціна до" : "Цена до",
+    all: lang === "ua" ? "Усі" : "Все",
+    double: CUTS.double[lang],
+    alu: CUTS.alu[lang],
+  };
+  const hasCatalogFilters = headD !== "all" || headL !== "all" || cutFilter !== "all" || priceTo.trim();
+  const clearCatalogFilters = () => {
+    setHeadD("all");
+    setHeadL("all");
+    setCutFilter("all");
+    setPriceTo("");
+  };
 
   const filtered = useMemo(() => {
-    let r = PRODUCTS;
-    if (shape !== "all") r = r.filter((p) => p.shape === shape);
+    let r = baseItems;
     if (query.trim()) {
       const q = query.toLowerCase();
       r = r.filter((p) => (lang === "ua" ? p.name_ua : p.name_ru).toLowerCase().includes(q)
@@ -235,6 +266,11 @@ function Catalog({ t, lang, shape, setShape, view, setView, cart, onAdd, onOpen,
         || catName(p, lang).toLowerCase().includes(q)
         || (p.headD && String(p.headD).includes(q)));
     }
+    if (headD !== "all") r = r.filter((p) => String(p.headD) === headD);
+    if (headL !== "all") r = r.filter((p) => String(p.headL) === headL);
+    if (cutFilter !== "all") r = r.filter((p) => p.cut === cutFilter);
+    const maxPrice = Number(priceTo);
+    if (Number.isFinite(maxPrice) && maxPrice > 0) r = r.filter((p) => p.price <= maxPrice);
     r = [...r];
     // За замовчуванням — за формою головки в алфавітному порядку (A C D E F G H J K L M N S T U Y), потім за Ø і ціною.
     if (sort === "default") r.sort((a,b)=>(SHAPE_ORDER[a.shape]-SHAPE_ORDER[b.shape])||(a.headD||0)-(b.headD||0)||a.price-b.price);
@@ -243,7 +279,7 @@ function Catalog({ t, lang, shape, setShape, view, setView, cart, onAdd, onOpen,
     if (sort === "p-asc") r.sort((a,b)=>a.price-b.price);
     if (sort === "p-desc") r.sort((a,b)=>b.price-a.price);
     return r;
-  }, [shape, query, sort, lang]);
+  }, [baseItems, query, headD, headL, cutFilter, priceTo, sort, lang]);
 
   const perPage = view === "cards" ? 9 : 12;
   const totalPages = Math.ceil(filtered.length / perPage);
@@ -279,6 +315,35 @@ function Catalog({ t, lang, shape, setShape, view, setView, cart, onAdd, onOpen,
             <button className={view === "table" ? "on" : ""} onClick={()=>setView("table")}>{t.view_table}</button>
             <button className={view === "cards" ? "on" : ""} onClick={()=>setView("cards")}>{t.view_cards}</button>
           </div>
+        </div>
+
+        <div className="bf-filterbar">
+          <label className="bf-filter">
+            <span>{filterLabels.d}</span>
+            <select value={headD} onChange={(e)=>setHeadD(e.target.value)}>
+              <option value="all">{filterLabels.all}</option>
+              {headDOptions.map((d)=><option key={d} value={String(d)}>Ø{d} {t.mm}</option>)}
+            </select>
+          </label>
+          <label className="bf-filter">
+            <span>{filterLabels.l}</span>
+            <select value={headL} onChange={(e)=>setHeadL(e.target.value)}>
+              <option value="all">{filterLabels.all}</option>
+              {headLOptions.map((l)=><option key={l} value={String(l)}>{l} {t.mm}</option>)}
+            </select>
+          </label>
+          <label className="bf-filter">
+            <span>{filterLabels.cut}</span>
+            <select value={cutFilter} onChange={(e)=>setCutFilter(e.target.value)}>
+              <option value="all">{filterLabels.all}</option>
+              {cutOptions.map((cut)=><option key={cut} value={cut}>{filterLabels[cut] || cut}</option>)}
+            </select>
+          </label>
+          <label className="bf-filter bf-filter-price">
+            <span>{filterLabels.priceTo}</span>
+            <input inputMode="numeric" value={priceTo} placeholder="1500" onChange={(e)=>setPriceTo(e.target.value.replace(/[^\d]/g, ""))}/>
+          </label>
+          {hasCatalogFilters && <button className="bf-reset" onClick={clearCatalogFilters}>{t.reset}</button>}
         </div>
 
         <div className="bf-results">

@@ -125,6 +125,14 @@
   .bf-view{display:flex;border:1px solid var(--line);border-radius:4px;overflow:hidden}
   .bf-view button{padding:9px 14px;font-family:var(--font-head);font-size:14px;letter-spacing:.5px;color:var(--fg-mid);background:var(--bg-dark);transition:.15s}
   .bf-view button.on{background:var(--flaks-orange);color:#fff}
+  .bf-filterbar{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin:-2px 0 16px;padding:12px;background:rgba(13,15,20,.35);border:1px solid var(--line-soft);border-radius:8px}
+  .bf-filter{display:flex;flex-direction:column;gap:5px;min-width:122px;flex:0 1 152px}
+  .bf-filter span{font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--fg-dim)}
+  .bf-filter select,.bf-filter input{width:100%;height:38px;background:var(--bg-dark);border:1px solid var(--line);border-radius:4px;padding:0 11px;font-size:13px;color:var(--fg-text)}
+  .bf-filter select:focus,.bf-filter input:focus{outline:none;border-color:var(--flaks-orange)}
+  .bf-filter-price{max-width:132px}
+  .bf-filterbar .bf-reset{height:38px;align-self:flex-end;background:var(--bg-dark);border:1px dashed var(--line);border-radius:4px;padding:0 13px;color:var(--fg-mid)}
+  .bf-filterbar .bf-reset:hover{color:var(--flaks-orange);border-color:var(--flaks-orange)}
   .bf-results{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
   .bf-results-l{font-size:13px;color:var(--fg-dim)}
   .bf-results-l b{color:var(--flaks-orange);font-weight:700}
@@ -179,6 +187,7 @@
   .bf-card-name{font-family:var(--font-head);font-size:20px;letter-spacing:.5px;color:#fff;line-height:1.1;min-height:44px}
   .bf-card-specs{display:flex;flex-wrap:wrap;gap:6px}
   .bf-card-specs span{font-size:11px;letter-spacing:.4px;color:var(--fg-mid);background:var(--bg-dark3);border:1px solid var(--line-soft);border-radius:4px;padding:3px 8px}
+  .bf-card-specs .bf-product-link{font-size:11px;letter-spacing:.4px;background:var(--bg-dark3);border:1px solid var(--line-soft);border-radius:4px;padding:3px 8px}
   .bf-card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:12px;border-top:1px solid var(--line-soft)}
   .bf-card-price{font-family:var(--font-head);font-size:26px;letter-spacing:.5px;color:var(--flaks-orange-hot)}
   .bf-card-price small{font-size:12px;color:var(--fg-dim);letter-spacing:1px;margin-left:3px}
@@ -437,4 +446,7 @@
     .bf-hero-stats{gap:20px}
     .bf-stat-div{display:none}
     .bf-art-grid{grid-template-columns:1fr}
+    .bf-filter{flex:1 1 calc(50% - 8px);min-width:130px}
+    .bf-filter-price{max-width:none}
+    .bf-filterbar .bf-reset{flex:1 1 100%}
   }
