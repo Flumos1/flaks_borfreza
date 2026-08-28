@@ -15,6 +15,50 @@ const TODAY = new Date().toISOString().slice(0, 10);
 const esc = (s) => String(s ?? '')
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const money = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2));
+const min = (items, key) => Math.min(...items.map((p) => p[key]));
+const max = (items, key) => Math.max(...items.map((p) => p[key]));
+
+function plural(n, lang, one, few, many) {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return one;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few;
+  return many;
+}
+
+function sizeWord(n, lang) {
+  return lang === 'ua'
+    ? plural(n, lang, 'типорозмір', 'типорозміри', 'типорозмірів')
+    : plural(n, lang, 'типоразмер', 'типоразмера', 'типоразмеров');
+}
+
+function shortSizeWord(n, lang) {
+  return lang === 'ua'
+    ? plural(n, lang, 'розмір', 'розміри', 'розмірів')
+    : plural(n, lang, 'размер', 'размера', 'размеров');
+}
+
+function rangeLabel(items, key, suffix = '') {
+  const lo = min(items, key);
+  const hi = max(items, key);
+  return lo === hi ? `${lo}${suffix}` : `${lo}–${hi}${suffix}`;
+}
+
+function rpmForDiameter(d) {
+  if (d <= 6) return '25 000–35 000';
+  if (d <= 8) return '20 000–30 000';
+  if (d <= 10) return '18 000–25 000';
+  if (d <= 12) return '15 000–22 000';
+  if (d <= 16) return '10 000–18 000';
+  return '6 000–12 000';
+}
+
+function rpmRows(items) {
+  return [...new Set(items.map((p) => p.headD).filter(Number.isFinite))]
+    .sort((a, b) => a - b)
+    .map((d) => `<tr><td>Ø${d} мм</td><td>${rpmForDiameter(d)} об/хв</td></tr>`)
+    .join('\n');
+}
 
 // Меню всех форм для перелинковки (одинаковое на каждой странице).
 const NAV = SHAPES.map((s) => ({ key: s.key, slug: SLUGS[s.key], ru: s.ru, ua: s.ua }));
@@ -105,11 +149,21 @@ function page(shape) {
   const items = PRODUCTS.filter((p) => p.shape === shape.key);
   const from = priceFrom(items);
   const url = `${SITE}/borfrezy/${slug}/`;
+  const headDRange = rangeLabel(items, 'headD', ' мм');
+  const headLRange = rangeLabel(items, 'headL', ' мм');
+  const countUa = `${items.length} ${sizeWord(items.length, 'ua')}`;
+  const countRu = `${items.length} ${sizeWord(items.length, 'ru')}`;
 
   const titleRu = `Борфреза ${shape.ru.toLowerCase()} ВК — купить в Украине | FLAKS`;
-  const descRu = `Борфреза ${shape.ru.toLowerCase()} (${shape.ru_sub}) твердосплавная ВК. ${shape.use_ru} ${items.length} типоразмеров Ø${Math.min(...items.map((p) => p.headD))}–${Math.max(...items.map((p) => p.headD))} мм, от ${money(from)} грн. Отправка в день заказа.`;
+  const descRu = `Борфреза ${shape.ru.toLowerCase()} (${shape.ru_sub}) твердосплавная ВК. ${shape.use_ru} ${countRu}, Ø${headDRange}, от ${money(from)} грн. Отправка в день заказа.`;
   const titleUa = `Борфреза ${shape.ua.toLowerCase()} ВК — купити в Україні | FLAKS`;
-  const descUa = `Борфреза ${shape.ua.toLowerCase()} (${shape.ua_sub}) твердосплавна ВК. ${shape.use_ua} ${items.length} типорозмірів Ø${Math.min(...items.map((p) => p.headD))}–${Math.max(...items.map((p) => p.headD))} мм, від ${money(from)} грн. Відправка в день замовлення.`;
+  const descUa = `Борфреза ${shape.ua.toLowerCase()} (${shape.ua_sub}) твердосплавна ВК. ${shape.use_ua} ${countUa}, Ø${headDRange}, від ${money(from)} грн. Відправка в день замовлення.`;
+  const chooseUa = `У цій формі доступно ${countUa}: Ø${headDRange}, робоча довжина ${headLRange}. Менший діаметр зручний для вузьких зон і точного зняття грату, більший — для швидшої зачистки площин, швів і радіусів.`;
+  const chooseRu = `В этой форме доступно ${countRu}: Ø${headDRange}, рабочая длина ${headLRange}. Меньший диаметр удобен для узких зон и точного снятия грата, больший — для более быстрой зачистки плоскостей, швов и радиусов.`;
+  const rpmUa = `Орієнтир для прямої шліфмашинки: що менший діаметр головки, то вищі оберти. Працюйте без сильного натиску, щоб борфреза різала стружкою, а не терла метал.`;
+  const rpmRu = `Ориентир для прямой шлифмашинки: чем меньше диаметр головки, тем выше обороты. Работайте без сильного нажима, чтобы борфреза резала стружкой, а не терла металл.`;
+  const mistakesUa = `Не затискайте хвостовик із биттям, не компенсуйте низькі оберти надмірним натиском і не використовуйте звичайну подвійну насічку для м'якого алюмінію, якщо потрібна чиста стружка без забивання.`;
+  const mistakesRu = `Не зажимайте хвостовик с биением, не компенсируйте низкие обороты сильным нажимом и не используйте обычную двойную насечку для мягкого алюминия, если нужна чистая стружка без забивания.`;
 
   return `<!DOCTYPE html>
 <html lang="uk">
@@ -168,6 +222,12 @@ a{text-decoration:none;color:inherit}
 .art-body h2:first-child{margin-top:0}
 .art-body p{font-size:15px;color:#e8eaf0;line-height:1.7;margin-bottom:16px;max-width:760px}
 .art-body strong{color:#fff;font-weight:600}
+.art-info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0 8px}
+.art-note{background:#1c2030;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:18px}
+.art-note h3{font-family:'Bebas Neue',sans-serif;font-size:21px;letter-spacing:1px;color:#fff;margin:0 0 10px}
+.art-note p{font-size:14px;color:#9aa0b8;margin:0;line-height:1.6}
+.mini-table{margin:10px 0 0;font-size:13px}
+.mini-table td{padding:8px 10px}
 .art-table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
 .art-table th{background:#252a3a;padding:10px 14px;text-align:left;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#5a6080;border-bottom:1px solid rgba(255,255,255,0.14)}
 .art-table td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,0.06);color:#e8eaf0;vertical-align:middle}
@@ -190,6 +250,7 @@ a{text-decoration:none;color:inherit}
 .art-footer{background:#0a0b0f;border-top:1px solid rgba(255,255,255,0.08);padding:24px 0;margin-top:60px}
 .art-footer-in{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:13px;color:#5a6080;max-width:1000px;margin:0 auto;padding:0 20px}
 .hidden{display:none!important}
+@media(max-width:820px){.art-info-grid{grid-template-columns:1fr}}
 </style>
 <script>
 (function(){
@@ -231,7 +292,7 @@ a{text-decoration:none;color:inherit}
     <h1 data-ua="Борфреза ${esc(shape.ua)}" data-ru="Борфреза ${esc(shape.ru)}">Борфреза ${esc(shape.ua)}</h1>
     <p class="lead" data-ua="${esc(shape.ua_sub)}. ${esc(shape.use_ua)}" data-ru="${esc(shape.ru_sub)}. ${esc(shape.use_ru)}">${esc(shape.ua_sub)}. ${esc(shape.use_ua)}</p>
     <div class="art-stats">
-      <div class="art-stat"><b>${items.length}</b><span data-ua="типорозмірів" data-ru="типоразмеров">типорозмірів</span></div>
+      <div class="art-stat"><b>${items.length}</b><span data-ua="${sizeWord(items.length, 'ua')}" data-ru="${sizeWord(items.length, 'ru')}">${sizeWord(items.length, 'ua')}</span></div>
       <div class="art-stat"><b>${money(from)}</b><span data-ua="від, грн" data-ru="от, грн">від, грн</span></div>
       <div class="art-stat"><b>ВК</b><span data-ua="твердий сплав" data-ru="твёрдый сплав">твердий сплав</span></div>
     </div>
@@ -242,6 +303,22 @@ a{text-decoration:none;color:inherit}
   <div class="wrap">
     <h2 data-ua="Застосування" data-ru="Применение">Застосування</h2>
     <p data-ua="Борфреза ${esc(shape.ua)} (${esc(shape.ua_sub)}) — це твердосплавна шарошка ВК із хвостовиком 6 мм. ${esc(shape.use_ua)} Підходить для сталі, нержавійки, чавуну, титану. Подвійна насічка ріже чисто, без припалів і вібрації." data-ru="Борфреза ${esc(shape.ru)} (${esc(shape.ru_sub)}) — это твердосплавная шарошка ВК с хвостовиком 6 мм. ${esc(shape.use_ru)} Подходит для стали, нержавейки, чугуна, титана. Двойная насечка режет чисто, без прижогов и вибрации.">Борфреза ${esc(shape.ua)} (${esc(shape.ua_sub)}) — це твердосплавна шарошка ВК із хвостовиком 6 мм. ${esc(shape.use_ua)} Підходить для сталі, нержавійки, чавуну, титану. Подвійна насічка ріже чисто, без припалів і вібрації.</p>
+
+    <div class="art-info-grid">
+      <section class="art-note">
+        <h3 data-ua="Як підібрати розмір" data-ru="Как подобрать размер">Як підібрати розмір</h3>
+        <p data-ua="${esc(chooseUa)}" data-ru="${esc(chooseRu)}">${esc(chooseUa)}</p>
+      </section>
+      <section class="art-note">
+        <h3 data-ua="Орієнтовні оберти" data-ru="Ориентировочные обороты">Орієнтовні оберти</h3>
+        <p data-ua="${esc(rpmUa)}" data-ru="${esc(rpmRu)}">${esc(rpmUa)}</p>
+        <table class="art-table mini-table"><tbody>${rpmRows(items)}</tbody></table>
+      </section>
+      <section class="art-note">
+        <h3 data-ua="Часті помилки" data-ru="Частые ошибки">Часті помилки</h3>
+        <p data-ua="${esc(mistakesUa)}" data-ru="${esc(mistakesRu)}">${esc(mistakesUa)}</p>
+      </section>
+    </div>
 
     <h2 data-ua="Типорозміри в наявності" data-ru="Типоразмеры в наличии">Типорозміри в наявності</h2>
     <table class="art-table" id="spec-ua">
@@ -316,9 +393,9 @@ function hubPage() {
   const minD = Math.min(...PRODUCTS.map((p) => p.headD));
   const maxD = Math.max(...PRODUCTS.map((p) => p.headD));
   const titleUa = `Борфрези твердосплавні ВК — каталог за формами | FLAKS`;
-  const descUa = `Каталог твердосплавних борфрез (шарошок) ВК за формами головки. ${SHAPES.length} форм, ${total} типорозмірів Ø${minD}–${maxD} мм, хвостовик 6 мм. Відправка в день замовлення по Україні.`;
+  const descUa = `Каталог твердосплавних борфрез (шарошок) ВК за формами головки. ${SHAPES.length} форм, ${total} ${sizeWord(total, 'ua')} Ø${minD}–${maxD} мм, хвостовик 6 мм. Відправка в день замовлення по Україні.`;
   const titleRu = `Борфрезы твердосплавные ВК — каталог по формам | FLAKS`;
-  const descRu = `Каталог твердосплавных борфрез (шарошек) ВК по формам головки. ${SHAPES.length} форм, ${total} типоразмеров Ø${minD}–${maxD} мм, хвостовик 6 мм. Отправка в день заказа по Украине.`;
+  const descRu = `Каталог твердосплавных борфрез (шарошек) ВК по формам головки. ${SHAPES.length} форм, ${total} ${sizeWord(total, 'ru')} Ø${minD}–${maxD} мм, хвостовик 6 мм. Отправка в день заказа по Украине.`;
 
   const cards = SHAPES.map((s) => {
     const items = PRODUCTS.filter((p) => p.shape === s.key);
@@ -327,7 +404,7 @@ function hubPage() {
       <span class="hub-letter">${esc(s.key)}</span>
       <span class="hub-name" data-ua="${esc(s.ua)}" data-ru="${esc(s.ru)}">${esc(s.ua)}</span>
       <span class="hub-sub" data-ua="${esc(s.ua_sub)}" data-ru="${esc(s.ru_sub)}">${esc(s.ua_sub)}</span>
-      <span class="hub-meta"><b>${items.length}</b> <span data-ua="розмірів · від" data-ru="размеров · от">розмірів · від</span> ${money(from)} ${'грн'}</span>
+      <span class="hub-meta"><b>${items.length}</b> <span data-ua="${shortSizeWord(items.length, 'ua')} · від" data-ru="${shortSizeWord(items.length, 'ru')} · от">${shortSizeWord(items.length, 'ua')} · від</span> ${money(from)} ${'грн'}</span>
     </a>`;
   }).join('\n');
 
@@ -427,7 +504,7 @@ a{text-decoration:none;color:inherit}
   <div class="wrap">
     <p class="art-eyebrow" data-ua="Каталог за формами" data-ru="Каталог по формам">Каталог за формами</p>
     <h1 data-ua="Борфрези твердосплавні ВК" data-ru="Борфрезы твердосплавные ВК">Борфрези твердосплавні ВК</h1>
-    <p class="lead" data-ua="${esc(SHAPES.length)} форм головки, ${total} типорозмірів Ø${minD}–${maxD} мм, хвостовик 6 мм. Оберіть форму під свою задачу." data-ru="${esc(SHAPES.length)} форм головки, ${total} типоразмеров Ø${minD}–${maxD} мм, хвостовик 6 мм. Выберите форму под свою задачу.">${esc(SHAPES.length)} форм головки, ${total} типорозмірів Ø${minD}–${maxD} мм, хвостовик 6 мм. Оберіть форму під свою задачу.</p>
+    <p class="lead" data-ua="${esc(SHAPES.length)} форм головки, ${total} ${sizeWord(total, 'ua')} Ø${minD}–${maxD} мм, хвостовик 6 мм. Оберіть форму під свою задачу." data-ru="${esc(SHAPES.length)} форм головки, ${total} ${sizeWord(total, 'ru')} Ø${minD}–${maxD} мм, хвостовик 6 мм. Выберите форму под свою задачу.">${esc(SHAPES.length)} форм головки, ${total} ${sizeWord(total, 'ua')} Ø${minD}–${maxD} мм, хвостовик 6 мм. Оберіть форму під свою задачу.</p>
   </div>
 </section>
 <main class="wrap">
