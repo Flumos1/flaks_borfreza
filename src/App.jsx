@@ -17,6 +17,26 @@ const TG_LINK = "https://t.me/+380675453115"; // прямой чат для св
 const shapeByKey = (k) => SHAPES.find((s) => s.key === k);
 // Порядок форм головки за алфавітом (A C D E F G H J K L M N S T U Y) — базовий порядок каталогу.
 const SHAPE_ORDER = Object.fromEntries(SHAPES.map((s, i) => [s.key, i]));
+const HOME_HEAD = {
+  ua: {
+    title: "FLAKS — Борфрези твердосплавні | Шарошки ВК",
+    description: "Твердосплавні борфрези (шарошки) ВК оптом і вроздріб. 16 форм головки, Ø 6–25 мм, хвостовик 6 мм, подвійна насічка. Відправка в день замовлення. Харків, Нова Пошта по Україні.",
+    ogTitle: "FLAKS — Борфрези твердосплавні ВК",
+    ogDescription: "16 форм головки, Ø 6–25 мм. Зачистка зварних швів, зняття грату, гравіювання. Відправка в день замовлення по Україні.",
+    ogLocale: "uk_UA",
+  },
+  ru: {
+    title: "FLAKS — Борфрезы твердосплавные | Шарошки ВК",
+    description: "Твердосплавные борфрезы (шарошки) ВК оптом и в розницу. 16 форм головки, Ø 6–25 мм, хвостовик 6 мм, двойная насечка. Отправка в день заказа. Харьков, Новая Почта по Украине.",
+    ogTitle: "FLAKS — Борфрезы твердосплавные ВК",
+    ogDescription: "16 форм головки, Ø 6–25 мм. Зачистка сварных швов, снятие грата, гравировка. Отправка в день заказа по Украине.",
+    ogLocale: "ru_UA",
+  },
+};
+const setMetaContent = (selector, content) => {
+  const meta = document.querySelector(selector);
+  if (meta) meta.setAttribute("content", content);
+};
 const hexToRgba = (hex, a) => {
   const h = hex.replace("#", "");
   return `rgba(${parseInt(h.slice(0,2),16)},${parseInt(h.slice(2,4),16)},${parseInt(h.slice(4,6),16)},${a})`;
@@ -900,6 +920,12 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.lang = lang === "ua" ? "uk" : "ru";
+    const head = HOME_HEAD[lang];
+    document.title = head.title;
+    setMetaContent('meta[name="description"]', head.description);
+    setMetaContent('meta[property="og:title"]', head.ogTitle);
+    setMetaContent('meta[property="og:description"]', head.ogDescription);
+    setMetaContent('meta[property="og:locale"]', head.ogLocale);
     const p = new URLSearchParams(window.location.search);
     p.delete("lang");
     if (shape !== "all") p.set("shape", shape); else p.delete("shape");
