@@ -147,6 +147,60 @@ function Hero({ t, flutes, onNav }) {
 }
 
 // ─────────── SHAPE SELECTOR ───────────
+function OrderConfidence({ lang, onNav }) {
+  const copy = lang === "ua"
+    ? {
+      title: "\u0417\u0430\u043c\u043e\u0432\u043b\u0435\u043d\u043d\u044f \u0431\u0435\u0437 \u0441\u044e\u0440\u043f\u0440\u0438\u0437\u0456\u0432",
+      lead: "\u041f\u0435\u0440\u0435\u0434 \u0432\u0456\u0434\u043f\u0440\u0430\u0432\u043a\u043e\u044e \u043f\u0456\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u043c\u043e \u043f\u043e\u0437\u0438\u0446\u0456\u0457, \u0441\u0443\u043c\u0443 \u0456 \u043d\u0430\u044f\u0432\u043d\u0456\u0441\u0442\u044c.",
+      delivery: "\u0414\u0435\u0442\u0430\u043b\u0456 \u0434\u043e\u0441\u0442\u0430\u0432\u043a\u0438",
+      contact: "\u0417\u0430\u0434\u0430\u0442\u0438 \u043f\u0438\u0442\u0430\u043d\u043d\u044f",
+      items: [
+        ["ship", "\u041d\u043e\u0432\u0430 \u041f\u043e\u0448\u0442\u0430", "\u0417\u0430\u043c\u043e\u0432\u043b\u0435\u043d\u043d\u044f \u0434\u043e 16:00 \u0457\u0434\u0435 \u0432 \u0442\u043e\u0439 \u0441\u0430\u043c\u0438\u0439 \u0434\u0435\u043d\u044c."],
+        ["pay", "\u041e\u043f\u043b\u0430\u0442\u0430 \u044f\u043a \u0437\u0440\u0443\u0447\u043d\u043e", "\u041d\u0430\u043a\u043b\u0430\u0434\u043d\u0438\u0439 \u043f\u043b\u0430\u0442\u0456\u0436, \u043a\u0430\u0440\u0442\u043a\u0430 \u0430\u0431\u043e \u0440\u0430\u0445\u0443\u043d\u043e\u043a \u0434\u043b\u044f \u043a\u043e\u043c\u043f\u0430\u043d\u0456\u0457."],
+        ["help", "\u041f\u0456\u0434\u0431\u0456\u0440 \u043f\u0456\u0434 \u0437\u0430\u0434\u0430\u0447\u0443", "\u041d\u0430\u043f\u0438\u0448\u0456\u0442\u044c \u043c\u0430\u0442\u0435\u0440\u0456\u0430\u043b \u0456 \u043e\u043f\u0435\u0440\u0430\u0446\u0456\u044e: \u0448\u043e\u0432, \u0444\u0430\u0441\u043a\u0430, \u043f\u0430\u0437, \u0430\u043b\u044e\u043c\u0456\u043d\u0456\u0439."],
+        ["min", "\u041c\u0456\u043d\u0456\u043c\u0443\u043c " + MIN_ORDER + " \u0433\u0440\u043d", "\u041a\u043e\u0448\u0438\u043a \u043f\u043e\u043a\u0430\u0436\u0435, \u0441\u043a\u0456\u043b\u044c\u043a\u0438 \u043b\u0438\u0448\u0438\u043b\u043e\u0441\u044c \u0434\u043e \u043c\u0456\u043d\u0456\u043c\u0430\u043b\u044c\u043d\u043e\u0457 \u0441\u0443\u043c\u0438."],
+      ],
+    }
+    : {
+      title: "\u0417\u0430\u043a\u0430\u0437 \u0431\u0435\u0437 \u0441\u044e\u0440\u043f\u0440\u0438\u0437\u043e\u0432",
+      lead: "\u041f\u0435\u0440\u0435\u0434 \u043e\u0442\u043f\u0440\u0430\u0432\u043a\u043e\u0439 \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u043c \u043f\u043e\u0437\u0438\u0446\u0438\u0438, \u0441\u0443\u043c\u043c\u0443 \u0438 \u043d\u0430\u043b\u0438\u0447\u0438\u0435.",
+      delivery: "\u0414\u0435\u0442\u0430\u043b\u0438 \u0434\u043e\u0441\u0442\u0430\u0432\u043a\u0438",
+      contact: "\u0417\u0430\u0434\u0430\u0442\u044c \u0432\u043e\u043f\u0440\u043e\u0441",
+      items: [
+        ["ship", "\u041d\u043e\u0432\u0430\u044f \u041f\u043e\u0447\u0442\u0430", "\u0417\u0430\u043a\u0430\u0437\u044b \u0434\u043e 16:00 \u0443\u0435\u0437\u0436\u0430\u044e\u0442 \u0432 \u0442\u043e\u0442 \u0436\u0435 \u0434\u0435\u043d\u044c."],
+        ["pay", "\u041e\u043f\u043b\u0430\u0442\u0430 \u043a\u0430\u043a \u0443\u0434\u043e\u0431\u043d\u043e", "\u041d\u0430\u043b\u043e\u0436\u0435\u043d\u043d\u044b\u0439 \u043f\u043b\u0430\u0442\u0451\u0436, \u043a\u0430\u0440\u0442\u0430 \u0438\u043b\u0438 \u0441\u0447\u0451\u0442 \u0434\u043b\u044f \u043a\u043e\u043c\u043f\u0430\u043d\u0438\u0438."],
+        ["help", "\u041f\u043e\u0434\u0431\u043e\u0440 \u043f\u043e\u0434 \u0437\u0430\u0434\u0430\u0447\u0443", "\u041d\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u043c\u0430\u0442\u0435\u0440\u0438\u0430\u043b \u0438 \u043e\u043f\u0435\u0440\u0430\u0446\u0438\u044e: \u0448\u043e\u0432, \u0444\u0430\u0441\u043a\u0430, \u043f\u0430\u0437, \u0430\u043b\u044e\u043c\u0438\u043d\u0438\u0439."],
+        ["min", "\u041c\u0438\u043d\u0438\u043c\u0443\u043c " + MIN_ORDER + " \u0433\u0440\u043d", "\u041a\u043e\u0440\u0437\u0438\u043d\u0430 \u043f\u043e\u043a\u0430\u0436\u0435\u0442, \u0441\u043a\u043e\u043b\u044c\u043a\u043e \u043e\u0441\u0442\u0430\u043b\u043e\u0441\u044c \u0434\u043e \u043c\u0438\u043d\u0438\u043c\u0430\u043b\u044c\u043d\u043e\u0439 \u0441\u0443\u043c\u043c\u044b."],
+      ],
+    };
+  const icons = { ship: I.truck, pay: I.check, help: I.msg, min: I.cart };
+  return (
+    <section className="bf-confidence" aria-labelledby="confidence-title">
+      <div className="wrap bf-confidence-in">
+        <div className="bf-confidence-head">
+          <h2 id="confidence-title">{copy.title}</h2>
+          <p>{copy.lead}</p>
+        </div>
+        <div className="bf-confidence-grid">
+          {copy.items.map(([key, title, body]) => {
+            const Icon = icons[key];
+            return (
+              <div className="bf-confidence-item" key={key}>
+                <span className="bf-confidence-ico"><Icon s={20}/></span>
+                <span><b>{title}</b><small>{body}</small></span>
+              </div>
+            );
+          })}
+        </div>
+        <div className="bf-confidence-actions">
+          <a href="/dostavka/">{copy.delivery}</a>
+          <button type="button" onClick={() => onNav("contact")}>{copy.contact}</button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function ShapeSelector({ t, lang, shape, setShape, counts, flutes, refEl }) {
   return (
     <section className="bf-sec bf-shapes" id="shapes" ref={refEl}>
@@ -856,6 +910,7 @@ export default function App() {
       <Header t={t} lang={lang} setLang={setLang} cartCount={cartCount} openCart={()=>setCartOpen(true)} onNav={onNav}/>
       <main>
       <Hero t={t} flutes={tw.flutes} onNav={onNav}/>
+      <OrderConfidence lang={lang} onNav={onNav}/>
       <ShapeSelector t={t} lang={lang} shape={shape} setShape={pickShape} counts={counts} flutes={tw.flutes} refEl={shapesRef}/>
       <Guide t={t} lang={lang} onPick={pickShape} flutes={tw.flutes}/>
       <Catalog t={t} lang={lang} shape={shape} setShape={setShape} view={tw.view} setView={(v)=>setTweak("view",v)} cart={cart} onAdd={addCart} onOpen={setActive} flutes={tw.flutes} photos={tw.photos} refEl={catalogRef}/>
