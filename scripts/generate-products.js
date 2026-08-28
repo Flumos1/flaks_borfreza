@@ -77,8 +77,17 @@ function page(product, lang = '') {
   const descRu = productDescription(product, shape, 'ru');
   const title = pageLang === 'ua' ? titleUa : titleRu;
   const desc = pageLang === 'ua' ? descUa : descRu;
+  const ogLocale = pageLang === 'ua' ? 'uk_UA' : 'ru_UA';
   const url = productUrl(product, pageLang);
-  const catalogUrl = `/?q=${encodeURIComponent(product.code)}#catalog`;
+  const catalogUrl = `/${pageLang}/?q=${encodeURIComponent(product.code)}#catalog`;
+  const productName = pageLang === 'ua' ? product.name_ua : product.name_ru;
+  const shapeName = pageLang === 'ua' ? (shape?.ua || product.shape) : (shape?.ru || product.shape);
+  const catalogName = pageLang === 'ua' ? 'Борфрези' : 'Борфрезы';
+  const orderText = pageLang === 'ua' ? 'Замовити' : 'Заказать';
+  const relatedTitle = pageLang === 'ua' ? 'Схожі типорозміри' : 'Похожие типоразмеры';
+  const applicationTitle = pageLang === 'ua' ? 'Застосування' : 'Применение';
+  const stockText = pageLang === 'ua' ? 'В наявності' : 'В наличии';
+  const cutTitle = pageLang === 'ua' ? 'Насічка' : 'Насечка';
 
   return `<!DOCTYPE html>
 <html lang="${pageLang === 'ua' ? 'uk' : 'ru'}">
@@ -97,6 +106,7 @@ function page(product, lang = '') {
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:image" content="${esc(product.img || `${SITE}/assets/og-image.jpg`)}">
+<meta property="og:locale" content="${ogLocale}">
 <link rel="icon" type="image/png" href="/assets/favicon.png">
 ${jsonLd(product, shape, pageLang)}
 <style>
@@ -146,40 +156,40 @@ h1{font-size:clamp(28px,5vw,44px);line-height:1.08;color:#fff;margin-bottom:14px
 </head>
 <body>
 <header class="header"><div class="wrap header-in">
-  <a class="logo" href="/"><span class="mark">F</span><span>FLAKS</span></a>
+  <a class="logo" href="/${pageLang}/"><span class="mark">F</span><span>FLAKS</span></a>
   <nav class="nav">
     <a class="lang-btn" href="${productPath(product, pageLang === 'ua' ? 'ru' : 'ua')}" id="langBtn">${pageLang === 'ua' ? 'RU' : 'UA'}</a>
-    <a class="btn" href="${shapePath(product.shape, pageLang)}" data-ua="Форма ${esc(shape?.ua || product.shape)}" data-ru="Форма ${esc(shape?.ru || product.shape)}">Форма ${esc(shape?.ua || product.shape)}</a>
+    <a class="btn" href="${shapePath(product.shape, pageLang)}" data-ua="Форма ${esc(shape?.ua || product.shape)}" data-ru="Форма ${esc(shape?.ru || product.shape)}">Форма ${esc(shapeName)}</a>
     <a class="btn" href="/${pageLang}/">Каталог</a>
   </nav>
 </div></header>
 <main class="wrap">
   <nav class="crumbs">
-    <a href="/${pageLang}/">FLAKS</a><span>›</span><a href="/${pageLang}/borfrezy/">Борфрези</a><span>›</span><a href="${shapePath(product.shape, pageLang)}">${esc(shape?.ua || product.shape)}</a><span>›</span>${esc(product.code)}
+    <a href="/${pageLang}/">FLAKS</a><span>›</span><a href="/${pageLang}/borfrezy/">${catalogName}</a><span>›</span><a href="${shapePath(product.shape, pageLang)}">${esc(shapeName)}</a><span>›</span>${esc(product.code)}
   </nav>
   <section class="product">
-    <div class="photo"><img src="${esc(product.img)}" alt="${esc(product.name_ua)}" loading="eager"></div>
+    <div class="photo"><img src="${esc(product.img)}" alt="${esc(productName)}" loading="eager"></div>
     <div>
       <p class="eyebrow" data-ua="Борфреза · ${esc(product.code)}" data-ru="Борфреза · ${esc(product.code)}">Борфреза · ${esc(product.code)}</p>
-      <h1 data-ua="${esc(product.name_ua)}" data-ru="${esc(product.name_ru)}">${esc(product.name_ua)}</h1>
-      <p class="lead" data-ua="${esc(descUa)}" data-ru="${esc(descRu)}">${esc(descUa)}</p>
-      <div class="price-row"><span class="price">${money(product.price)}</span><span class="unit">грн / шт</span><a class="cta" href="${catalogUrl}" data-ua="Замовити" data-ru="Заказать">Замовити</a></div>
+      <h1 data-ua="${esc(product.name_ua)}" data-ru="${esc(product.name_ru)}">${esc(productName)}</h1>
+      <p class="lead" data-ua="${esc(descUa)}" data-ru="${esc(descRu)}">${esc(desc)}</p>
+      <div class="price-row"><span class="price">${money(product.price)}</span><span class="unit">грн / шт</span><a class="cta" href="${catalogUrl}" data-ua="Замовити" data-ru="Заказать">${orderText}</a></div>
       <div class="specs">
-        <div class="spec"><b data-ua="Форма" data-ru="Форма">Форма</b><span data-ua="${esc(shape?.ua || product.shape)}" data-ru="${esc(shape?.ru || product.shape)}">${esc(shape?.ua || product.shape)}</span></div>
+        <div class="spec"><b data-ua="Форма" data-ru="Форма">Форма</b><span data-ua="${esc(shape?.ua || product.shape)}" data-ru="${esc(shape?.ru || product.shape)}">${esc(shapeName)}</span></div>
         <div class="spec"><b data-ua="Артикул" data-ru="Артикул">Артикул</b><span>${esc(product.code)}</span></div>
         <div class="spec"><b data-ua="Головка" data-ru="Головка">Головка</b><span>Ø${product.headD}×${product.headL} мм</span></div>
         <div class="spec"><b data-ua="Хвостовик" data-ru="Хвостовик">Хвостовик</b><span>Ø${product.shankD} мм</span></div>
-        <div class="spec"><b data-ua="Насічка" data-ru="Насечка">Насічка</b><span data-ua="${esc(cutLabel(product, 'ua'))}" data-ru="${esc(cutLabel(product, 'ru'))}">${esc(cutLabel(product, 'ua'))}</span></div>
-        <div class="spec"><b data-ua="Наявність" data-ru="Наличие">Наявність</b><span data-ua="В наявності" data-ru="В наличии">В наявності</span></div>
+        <div class="spec"><b data-ua="Насічка" data-ru="Насечка">${cutTitle}</b><span data-ua="${esc(cutLabel(product, 'ua'))}" data-ru="${esc(cutLabel(product, 'ru'))}">${esc(cutLabel(product, pageLang))}</span></div>
+        <div class="spec"><b data-ua="Наявність" data-ru="Наличие">${pageLang === 'ua' ? 'Наявність' : 'Наличие'}</b><span data-ua="В наявності" data-ru="В наличии">${stockText}</span></div>
       </div>
     </div>
   </section>
   <section class="section">
-    <h2 data-ua="Застосування" data-ru="Применение">Застосування</h2>
-    <p data-ua="${esc(shape?.use_ua || '')}" data-ru="${esc(shape?.use_ru || '')}">${esc(shape?.use_ua || '')}</p>
+    <h2 data-ua="Застосування" data-ru="Применение">${applicationTitle}</h2>
+    <p data-ua="${esc(shape?.use_ua || '')}" data-ru="${esc(shape?.use_ru || '')}">${esc(pageLang === 'ua' ? (shape?.use_ua || '') : (shape?.use_ru || ''))}</p>
   </section>
   <section class="section">
-    <h2 data-ua="Схожі типорозміри" data-ru="Похожие типоразмеры">Схожі типорозміри</h2>
+    <h2 data-ua="Схожі типорозміри" data-ru="Похожие типоразмеры">${relatedTitle}</h2>
     <div class="related">${relatedProducts(product, pageLang)}</div>
   </section>
 </main>

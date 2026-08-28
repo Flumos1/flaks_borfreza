@@ -101,10 +101,14 @@ function navLinks(currentKey, lang, pathLang = '') {
 
 function jsonLd(shape, items, slug, lang = 'ua') {
   const url = shapeUrl(shape.key, lang);
+  const isUa = lang === 'ua';
+  const shapeName = isUa ? shape.ua : shape.ru;
+  const catalogName = isUa ? 'Борфрези' : 'Борфрезы';
+  const homeName = isUa ? 'Головна' : 'Главная';
   const itemList = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: `Борфрезы ${shape.ru} — FLAKS`,
+    name: `${catalogName} ${shapeName} — FLAKS`,
     url,
     numberOfItems: items.length,
     itemListElement: items
@@ -115,12 +119,12 @@ function jsonLd(shape, items, slug, lang = 'ua') {
         position: i + 1,
         item: {
           '@type': 'Product',
-          name: p.name_ru,
+          name: isUa ? p.name_ua : p.name_ru,
           sku: p.code,
           mpn: p.code,
           image: p.img,
           brand: { '@type': 'Brand', name: 'FLAKS' },
-          category: `Борфрезы > ${shape.ru}`,
+          category: `${catalogName} > ${shapeName}`,
           offers: {
             '@type': 'Offer',
             price: money(p.price),
@@ -135,9 +139,9 @@ function jsonLd(shape, items, slug, lang = 'ua') {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Главная', item: `${SITE}/${lang}/` },
-      { '@type': 'ListItem', position: 2, name: 'Борфрезы', item: `${SITE}/${lang}/borfrezy/` },
-      { '@type': 'ListItem', position: 3, name: shape.ru, item: url },
+      { '@type': 'ListItem', position: 1, name: homeName, item: `${SITE}/${lang}/` },
+      { '@type': 'ListItem', position: 2, name: catalogName, item: `${SITE}/${lang}/borfrezy/` },
+      { '@type': 'ListItem', position: 3, name: shapeName, item: url },
     ],
   };
   return `<script type="application/ld+json">${JSON.stringify(itemList)}</script>
@@ -168,6 +172,32 @@ function page(shape, lang = '') {
 
   const title = pageLang === 'ua' ? titleUa : titleRu;
   const desc = pageLang === 'ua' ? descUa : descRu;
+  const ogLocale = pageLang === 'ua' ? 'uk_UA' : 'ru_UA';
+  const catalogLabel = pageLang === 'ua' ? 'Борфрези' : 'Борфрезы';
+  const shapeName = pageLang === 'ua' ? shape.ua : shape.ru;
+  const shapeSub = pageLang === 'ua' ? shape.ua_sub : shape.ru_sub;
+  const shapeUse = pageLang === 'ua' ? shape.use_ua : shape.use_ru;
+  const availableCount = pageLang === 'ua' ? sizeWord(items.length, 'ua') : sizeWord(items.length, 'ru');
+  const pricePrefix = pageLang === 'ua' ? 'від, грн' : 'от, грн';
+  const materialLabel = pageLang === 'ua' ? 'твердий сплав' : 'твёрдый сплав';
+  const applicationTitle = pageLang === 'ua' ? 'Застосування' : 'Применение';
+  const applicationText = pageLang === 'ua'
+    ? `Борфреза ${shape.ua} (${shape.ua_sub}) — це твердосплавна шарошка ВК із хвостовиком 6 мм. ${shape.use_ua} Підходить для сталі, нержавійки, чавуну, титану. Подвійна насічка ріже чисто, без припалів і вібрації.`
+    : `Борфреза ${shape.ru} (${shape.ru_sub}) — это твердосплавная шарошка ВК с хвостовиком 6 мм. ${shape.use_ru} Подходит для стали, нержавейки, чугуна, титана. Двойная насечка режет чисто, без прижогов и вибрации.`;
+  const chooseTitle = pageLang === 'ua' ? 'Як підібрати розмір' : 'Как подобрать размер';
+  const chooseText = pageLang === 'ua' ? chooseUa : chooseRu;
+  const rpmTitle = pageLang === 'ua' ? 'Орієнтовні оберти' : 'Ориентировочные обороты';
+  const rpmText = pageLang === 'ua' ? rpmUa : rpmRu;
+  const mistakesTitle = pageLang === 'ua' ? 'Часті помилки' : 'Частые ошибки';
+  const mistakesText = pageLang === 'ua' ? mistakesUa : mistakesRu;
+  const availableTitle = pageLang === 'ua' ? 'Типорозміри в наявності' : 'Типоразмеры в наличии';
+  const otherFormsTitle = pageLang === 'ua' ? 'Інші форми головки' : 'Другие формы головки';
+  const ctaTitle = pageLang === 'ua' ? 'Потрібна консультація?' : 'Нужна консультация?';
+  const ctaBody = pageLang === 'ua'
+    ? 'Не впевнені у формі чи діаметрі? Напишіть задачу — підберемо борфрезу й порахуємо замовлення.'
+    : 'Не уверены в форме или диаметре? Напишите задачу — подберём борфрезу и посчитаем заказ.';
+  const ctaLink = pageLang === 'ua' ? 'Дивитися в каталозі →' : 'Смотреть в каталоге →';
+  const footerTool = pageLang === 'ua' ? 'Твердосплавний інструмент' : 'Твёрдосплавный инструмент';
 
   return `<!DOCTYPE html>
 <html lang="${pageLang === 'ua' ? 'uk' : 'ru'}">
@@ -188,7 +218,7 @@ function page(shape, lang = '') {
 <meta property="og:image" content="${SITE}/assets/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:locale" content="uk_UA">
+<meta property="og:locale" content="${ogLocale}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Condensed:wght@300;400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -287,67 +317,67 @@ a{text-decoration:none;color:inherit}
 
 <div class="wrap">
   <nav class="crumbs">
-    <a href="/${pageLang}/">FLAKS</a><span>›</span><a href="/${pageLang}/borfrezy/" data-ua="Борфрези" data-ru="Борфрезы">Борфрези</a><span>›</span><span class="t" data-ua="${esc(shape.ua)}" data-ru="${esc(shape.ru)}">${esc(shape.ua)}</span>
+    <a href="/${pageLang}/">FLAKS</a><span>›</span><a href="/${pageLang}/borfrezy/" data-ua="Борфрези" data-ru="Борфрезы">${catalogLabel}</a><span>›</span><span class="t" data-ua="${esc(shape.ua)}" data-ru="${esc(shape.ru)}">${esc(shapeName)}</span>
   </nav>
 </div>
 
 <section class="art-hero">
   <div class="wrap">
     <p class="art-eyebrow" data-ua="Форма головки · ${esc(shape.key)}" data-ru="Форма головки · ${esc(shape.key)}">Форма головки · ${esc(shape.key)}</p>
-    <h1 data-ua="Борфреза ${esc(shape.ua)}" data-ru="Борфреза ${esc(shape.ru)}">Борфреза ${esc(shape.ua)}</h1>
-    <p class="lead" data-ua="${esc(shape.ua_sub)}. ${esc(shape.use_ua)}" data-ru="${esc(shape.ru_sub)}. ${esc(shape.use_ru)}">${esc(shape.ua_sub)}. ${esc(shape.use_ua)}</p>
+    <h1 data-ua="Борфреза ${esc(shape.ua)}" data-ru="Борфреза ${esc(shape.ru)}">Борфреза ${esc(shapeName)}</h1>
+    <p class="lead" data-ua="${esc(shape.ua_sub)}. ${esc(shape.use_ua)}" data-ru="${esc(shape.ru_sub)}. ${esc(shape.use_ru)}">${esc(shapeSub)}. ${esc(shapeUse)}</p>
     <div class="art-stats">
-      <div class="art-stat"><b>${items.length}</b><span data-ua="${sizeWord(items.length, 'ua')}" data-ru="${sizeWord(items.length, 'ru')}">${sizeWord(items.length, 'ua')}</span></div>
-      <div class="art-stat"><b>${money(from)}</b><span data-ua="від, грн" data-ru="от, грн">від, грн</span></div>
-      <div class="art-stat"><b>ВК</b><span data-ua="твердий сплав" data-ru="твёрдый сплав">твердий сплав</span></div>
+      <div class="art-stat"><b>${items.length}</b><span data-ua="${sizeWord(items.length, 'ua')}" data-ru="${sizeWord(items.length, 'ru')}">${availableCount}</span></div>
+      <div class="art-stat"><b>${money(from)}</b><span data-ua="від, грн" data-ru="от, грн">${pricePrefix}</span></div>
+      <div class="art-stat"><b>ВК</b><span data-ua="твердий сплав" data-ru="твёрдый сплав">${materialLabel}</span></div>
     </div>
   </div>
 </section>
 
 <main class="art-body">
   <div class="wrap">
-    <h2 data-ua="Застосування" data-ru="Применение">Застосування</h2>
-    <p data-ua="Борфреза ${esc(shape.ua)} (${esc(shape.ua_sub)}) — це твердосплавна шарошка ВК із хвостовиком 6 мм. ${esc(shape.use_ua)} Підходить для сталі, нержавійки, чавуну, титану. Подвійна насічка ріже чисто, без припалів і вібрації." data-ru="Борфреза ${esc(shape.ru)} (${esc(shape.ru_sub)}) — это твердосплавная шарошка ВК с хвостовиком 6 мм. ${esc(shape.use_ru)} Подходит для стали, нержавейки, чугуна, титана. Двойная насечка режет чисто, без прижогов и вибрации.">Борфреза ${esc(shape.ua)} (${esc(shape.ua_sub)}) — це твердосплавна шарошка ВК із хвостовиком 6 мм. ${esc(shape.use_ua)} Підходить для сталі, нержавійки, чавуну, титану. Подвійна насічка ріже чисто, без припалів і вібрації.</p>
+    <h2 data-ua="Застосування" data-ru="Применение">${applicationTitle}</h2>
+    <p data-ua="Борфреза ${esc(shape.ua)} (${esc(shape.ua_sub)}) — це твердосплавна шарошка ВК із хвостовиком 6 мм. ${esc(shape.use_ua)} Підходить для сталі, нержавійки, чавуну, титану. Подвійна насічка ріже чисто, без припалів і вібрації." data-ru="Борфреза ${esc(shape.ru)} (${esc(shape.ru_sub)}) — это твердосплавная шарошка ВК с хвостовиком 6 мм. ${esc(shape.use_ru)} Подходит для стали, нержавейки, чугуна, титана. Двойная насечка режет чисто, без прижогов и вибрации.">${esc(applicationText)}</p>
 
     <div class="art-info-grid">
       <section class="art-note">
-        <h3 data-ua="Як підібрати розмір" data-ru="Как подобрать размер">Як підібрати розмір</h3>
-        <p data-ua="${esc(chooseUa)}" data-ru="${esc(chooseRu)}">${esc(chooseUa)}</p>
+        <h3 data-ua="Як підібрати розмір" data-ru="Как подобрать размер">${chooseTitle}</h3>
+        <p data-ua="${esc(chooseUa)}" data-ru="${esc(chooseRu)}">${esc(chooseText)}</p>
       </section>
       <section class="art-note">
-        <h3 data-ua="Орієнтовні оберти" data-ru="Ориентировочные обороты">Орієнтовні оберти</h3>
-        <p data-ua="${esc(rpmUa)}" data-ru="${esc(rpmRu)}">${esc(rpmUa)}</p>
+        <h3 data-ua="Орієнтовні оберти" data-ru="Ориентировочные обороты">${rpmTitle}</h3>
+        <p data-ua="${esc(rpmUa)}" data-ru="${esc(rpmRu)}">${esc(rpmText)}</p>
         <table class="art-table mini-table"><tbody>${rpmRows(items)}</tbody></table>
       </section>
       <section class="art-note">
-        <h3 data-ua="Часті помилки" data-ru="Частые ошибки">Часті помилки</h3>
-        <p data-ua="${esc(mistakesUa)}" data-ru="${esc(mistakesRu)}">${esc(mistakesUa)}</p>
+        <h3 data-ua="Часті помилки" data-ru="Частые ошибки">${mistakesTitle}</h3>
+        <p data-ua="${esc(mistakesUa)}" data-ru="${esc(mistakesRu)}">${esc(mistakesText)}</p>
       </section>
     </div>
 
-    <h2 data-ua="Типорозміри в наявності" data-ru="Типоразмеры в наличии">Типорозміри в наявності</h2>
-    <table class="art-table" id="spec-ua">
+    <h2 data-ua="Типорозміри в наявності" data-ru="Типоразмеры в наличии">${availableTitle}</h2>
+    <table class="art-table${pageLang === 'ru' ? ' hidden' : ''}" id="spec-ua">
       <thead><tr><th data-ua="Артикул" data-ru="Артикул">Артикул</th><th>Ø×L</th><th data-ua="Насічка" data-ru="Насечка">Насічка</th><th data-ua="Ціна" data-ru="Цена">Ціна</th><th data-ua="Наявність" data-ru="Наличие">Наявність</th><th></th></tr></thead>
       <tbody>
 ${specRows(items, 'ua', pageLang)}
       </tbody>
     </table>
-    <table class="art-table hidden" id="spec-ru">
+    <table class="art-table${pageLang === 'ua' ? ' hidden' : ''}" id="spec-ru">
       <thead><tr><th>Артикул</th><th>Ø×L</th><th>Насечка</th><th>Цена</th><th>Наличие</th><th></th></tr></thead>
       <tbody>
 ${specRows(items, 'ru', pageLang)}
       </tbody>
     </table>
 
-    <h2 data-ua="Інші форми головки" data-ru="Другие формы головки">Інші форми головки</h2>
+    <h2 data-ua="Інші форми головки" data-ru="Другие формы головки">${otherFormsTitle}</h2>
     <div class="forms-nav">
-${navLinks(shape.key, 'ua', pageLang)}
+${navLinks(shape.key, pageLang, pageLang)}
     </div>
 
     <div class="art-cta">
-      <h3 data-ua="Потрібна консультація?" data-ru="Нужна консультация?">Потрібна консультація?</h3>
-      <p data-ua="Не впевнені у формі чи діаметрі? Напишіть задачу — підберемо борфрезу й порахуємо замовлення." data-ru="Не уверены в форме или диаметре? Напишите задачу — подберём борфрезу и посчитаем заказ.">Не впевнені у формі чи діаметрі? Напишіть задачу — підберемо борфрезу й порахуємо замовлення.</p>
-      <a class="art-cta-btn" href="/${pageLang}/?shape=${esc(shape.key)}" data-ua="Дивитися в каталозі →" data-ru="Смотреть в каталоге →">Дивитися в каталозі →</a>
+      <h3 data-ua="Потрібна консультація?" data-ru="Нужна консультация?">${ctaTitle}</h3>
+      <p data-ua="Не впевнені у формі чи діаметрі? Напишіть задачу — підберемо борфрезу й порахуємо замовлення." data-ru="Не уверены в форме или диаметре? Напишите задачу — подберём борфрезу и посчитаем заказ.">${ctaBody}</p>
+      <a class="art-cta-btn" href="/${pageLang}/?shape=${esc(shape.key)}" data-ua="Дивитися в каталозі →" data-ru="Смотреть в каталоге →">${ctaLink}</a>
     </div>
   </div>
 </main>
@@ -355,7 +385,7 @@ ${navLinks(shape.key, 'ua', pageLang)}
 <footer class="art-footer">
   <div class="art-footer-in">
     <span>© ${new Date().getFullYear()} FLAKS · ${SITE.replace('https://', '')}</span>
-    <span data-ua="Твердосплавний інструмент" data-ru="Твёрдосплавный инструмент">Твердосплавний інструмент</span>
+    <span data-ua="Твердосплавний інструмент" data-ru="Твёрдосплавный инструмент">${footerTool}</span>
   </div>
 </footer>
 
@@ -401,28 +431,37 @@ function hubPage(lang = '') {
   const descUa = `Каталог твердосплавних борфрез (шарошок) ВК за формами головки. ${SHAPES.length} форм, ${total} ${sizeWord(total, 'ua')} Ø${minD}–${maxD} мм, хвостовик 6 мм. Відправка в день замовлення по Україні.`;
   const titleRu = `Борфрезы твердосплавные ВК — каталог по формам | FLAKS`;
   const descRu = `Каталог твердосплавных борфрез (шарошек) ВК по формам головки. ${SHAPES.length} форм, ${total} ${sizeWord(total, 'ru')} Ø${minD}–${maxD} мм, хвостовик 6 мм. Отправка в день заказа по Украине.`;
+  const title = pageLang === 'ua' ? titleUa : titleRu;
+  const desc = pageLang === 'ua' ? descUa : descRu;
+  const ogLocale = pageLang === 'ua' ? 'uk_UA' : 'ru_UA';
+  const eyebrow = pageLang === 'ua' ? 'Каталог за формами' : 'Каталог по формам';
+  const h1 = pageLang === 'ua' ? 'Борфрези твердосплавні ВК' : 'Борфрезы твердосплавные ВК';
+  const leadUa = `${SHAPES.length} форм головки, ${total} ${sizeWord(total, 'ua')} Ø${minD}–${maxD} мм, хвостовик 6 мм. Оберіть форму під свою задачу.`;
+  const leadRu = `${SHAPES.length} форм головки, ${total} ${sizeWord(total, 'ru')} Ø${minD}–${maxD} мм, хвостовик 6 мм. Выберите форму под свою задачу.`;
+  const lead = pageLang === 'ua' ? leadUa : leadRu;
+  const footerTool = pageLang === 'ua' ? 'Твердосплавний інструмент' : 'Твёрдосплавный инструмент';
 
   const cards = SHAPES.map((s) => {
     const items = PRODUCTS.filter((p) => p.shape === s.key);
     const from = priceFrom(items);
+    const name = pageLang === 'ua' ? s.ua : s.ru;
+    const subtitle = pageLang === 'ua' ? s.ua_sub : s.ru_sub;
+    const meta = `${shortSizeWord(items.length, pageLang)} · ${pageLang === 'ua' ? 'від' : 'от'}`;
     return `<a class="hub-card" href="${shapePath(s.key, pageLang)}">
       <span class="hub-letter">${esc(s.key)}</span>
-      <span class="hub-name" data-ua="${esc(s.ua)}" data-ru="${esc(s.ru)}">${esc(s.ua)}</span>
-      <span class="hub-sub" data-ua="${esc(s.ua_sub)}" data-ru="${esc(s.ru_sub)}">${esc(s.ua_sub)}</span>
-      <span class="hub-meta"><b>${items.length}</b> <span data-ua="${shortSizeWord(items.length, 'ua')} · від" data-ru="${shortSizeWord(items.length, 'ru')} · от">${shortSizeWord(items.length, 'ua')} · від</span> ${money(from)} ${'грн'}</span>
+      <span class="hub-name" data-ua="${esc(s.ua)}" data-ru="${esc(s.ru)}">${esc(name)}</span>
+      <span class="hub-sub" data-ua="${esc(s.ua_sub)}" data-ru="${esc(s.ru_sub)}">${esc(subtitle)}</span>
+      <span class="hub-meta"><b>${items.length}</b> <span data-ua="${shortSizeWord(items.length, 'ua')} · від" data-ru="${shortSizeWord(items.length, 'ru')} · от">${esc(meta)}</span> ${money(from)} ${'грн'}</span>
     </a>`;
   }).join('\n');
 
   const ld = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'Борфрезы твердосплавные ВК — каталог по формам',
+    name: pageLang === 'ua' ? 'Борфрези твердосплавні ВК — каталог за формами' : 'Борфрезы твердосплавные ВК — каталог по формам',
     url,
-    description: descUa,
+    description: desc,
   };
-
-  const title = pageLang === 'ua' ? titleUa : titleRu;
-  const desc = pageLang === 'ua' ? descUa : descRu;
 
   return `<!DOCTYPE html>
 <html lang="${pageLang === 'ua' ? 'uk' : 'ru'}">
@@ -443,7 +482,7 @@ function hubPage(lang = '') {
 <meta property="og:image" content="${SITE}/assets/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:locale" content="uk_UA">
+<meta property="og:locale" content="${ogLocale}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto+Condensed:wght@300;400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -511,9 +550,9 @@ a{text-decoration:none;color:inherit}
 </header>
 <section class="art-hero">
   <div class="wrap">
-    <p class="art-eyebrow" data-ua="Каталог за формами" data-ru="Каталог по формам">Каталог за формами</p>
-    <h1 data-ua="Борфрези твердосплавні ВК" data-ru="Борфрезы твердосплавные ВК">Борфрези твердосплавні ВК</h1>
-    <p class="lead" data-ua="${esc(SHAPES.length)} форм головки, ${total} ${sizeWord(total, 'ua')} Ø${minD}–${maxD} мм, хвостовик 6 мм. Оберіть форму під свою задачу." data-ru="${esc(SHAPES.length)} форм головки, ${total} ${sizeWord(total, 'ru')} Ø${minD}–${maxD} мм, хвостовик 6 мм. Выберите форму под свою задачу.">${esc(SHAPES.length)} форм головки, ${total} ${sizeWord(total, 'ua')} Ø${minD}–${maxD} мм, хвостовик 6 мм. Оберіть форму під свою задачу.</p>
+    <p class="art-eyebrow" data-ua="Каталог за формами" data-ru="Каталог по формам">${eyebrow}</p>
+    <h1 data-ua="Борфрези твердосплавні ВК" data-ru="Борфрезы твердосплавные ВК">${h1}</h1>
+    <p class="lead" data-ua="${esc(leadUa)}" data-ru="${esc(leadRu)}">${esc(lead)}</p>
   </div>
 </section>
 <main class="wrap">
@@ -524,7 +563,7 @@ ${cards}
 <footer class="art-footer">
   <div class="art-footer-in">
     <span>© ${new Date().getFullYear()} FLAKS · ${SITE.replace('https://', '')}</span>
-    <span data-ua="Твердосплавний інструмент" data-ru="Твёрдосплавный инструмент">Твердосплавний інструмент</span>
+    <span data-ua="Твердосплавний інструмент" data-ru="Твёрдосплавный инструмент">${footerTool}</span>
   </div>
 </footer>
 <script>
