@@ -7,7 +7,10 @@
     "build": "vite build",
     "preview": "vite preview",
     "feed": "node scripts/generate-feed.js",
-    "landings": "node scripts/generate-landings.js"
+    "landings": "node scripts/generate-landings.js",
+    "products": "node scripts/generate-products.js",
+    "sitemap": "node scripts/generate-sitemap.js",
+    "seo": "npm run landings && npm run products && npm run feed && npm run sitemap"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -15,7 +18,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
-    "sharp": "^0.34.5",
+    "sharp": "^0.35.4",
     "vite": "^6.0.0"
   }
 }

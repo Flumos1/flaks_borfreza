@@ -3,34 +3,15 @@
 // Переиспользует SHAPES / PRODUCTS из burr-data.js (как generate-feed.js).
 // Запуск: npm run landings
 import { PRODUCTS, SHAPES } from '../src/data/burr-data.js';
+import { SITE, SHAPE_SLUGS as SLUGS, productUrl, productPath } from '../src/data/site-urls.js';
 import { writeFileSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SITE = 'https://borfrezy.in.ua';
 const TODAY = new Date().toISOString().slice(0, 10);
 
 // Slug под каждую форму — латиница, читаемо, без коллизий (F и G обе «гиперболические»).
-const SLUGS = {
-  A: 'cilindrichna',
-  C: 'sferocilindrichna',
-  D: 'sferychna',
-  E: 'ovalna',
-  F: 'giperbolichna',
-  G: 'giperbolichna-tochkova',
-  H: 'polumyapodibna',
-  J: 'konichna-60',
-  K: 'konichna-90',
-  L: 'sferokonichna',
-  M: 'konichna-zagostrena',
-  N: 'zvorotniy-konus',
-  S: 'konusna-zrizana',
-  T: 'diskova',
-  U: 'uvignuta-cilindrichna',
-  Y: 'diskova-90',
-};
-
 const esc = (s) => String(s ?? '')
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const money = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2));
@@ -60,7 +41,7 @@ function specRows(items, lang) {
         <td>${cut}</td>
         <td>${money(p.price)} ${lang === 'ua' ? 'грн' : 'грн'}</td>
         <td><span class="in-stock">${inStock}</span></td>
-        <td><a class="row-cta" href="/?q=${encodeURIComponent(p.code || '')}">${lang === 'ua' ? 'Купити' : 'Купить'}</a></td>
+        <td><a class="row-cta" href="${productPath(p)}">${lang === 'ua' ? 'Купити' : 'Купить'}</a></td>
       </tr>`;
     })
     .join('\n');
@@ -101,7 +82,7 @@ function jsonLd(shape, items, slug) {
             price: money(p.price),
             priceCurrency: 'UAH',
             availability: 'https://schema.org/InStock',
-            url: `${SITE}/?q=${encodeURIComponent(p.code || '')}`,
+            url: productUrl(p),
           },
         },
       })),

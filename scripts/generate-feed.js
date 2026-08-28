@@ -1,12 +1,12 @@
 // Генератор Google Merchant Center XML-фида
 // Запуск: npm run feed
 import { PRODUCTS, SHAPES } from '../src/data/burr-data.js';
+import { SITE, productUrl } from '../src/data/site-urls.js';
 import { writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const SITE  = 'https://borfrezy.in.ua';
 const BRAND = 'FLAKS';
 
 const esc = (s) => String(s ?? '')
@@ -29,7 +29,7 @@ function ptype(p) {
 }
 
 function link(p) {
-  return p.code ? `${SITE}/?q=${encodeURIComponent(p.code)}` : `${SITE}/#catalog`;
+  return p.code ? productUrl(p) : `${SITE}/#catalog`;
 }
 
 const items = PRODUCTS.map(p => `  <item>

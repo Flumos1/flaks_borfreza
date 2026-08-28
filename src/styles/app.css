@@ -386,6 +386,8 @@
   .bf-ticker-item{display:inline-flex;align-items:center;gap:12px;padding:13px 0;font-family:var(--font-head);font-size:18px;letter-spacing:1.5px;color:var(--fg-mid);white-space:nowrap}
   .bf-ticker-item b{color:#fff}
   .bf-ticker-dot{width:7px;height:7px;border-radius:50%;background:var(--flaks-orange);margin:0 30px;flex-shrink:0}
+  .bf-product-link{color:var(--flaks-orange);font-weight:600;text-decoration:none}
+  .bf-product-link:hover{text-decoration:underline;text-underline-offset:3px}
 
   @media (prefers-reduced-motion: reduce){
     .bf-reveal{transition:none;opacity:1;transform:none}

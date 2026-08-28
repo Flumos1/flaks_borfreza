@@ -3,6 +3,7 @@
 // ============================================================
 import { useState, useMemo, useEffect, useRef, Fragment } from 'react'
 import { SHAPES, CUTS, PRODUCTS, STRINGS } from './data/burr-data.js'
+import { productPath } from './data/site-urls.js'
 import { MIN_ORDER } from './data/constants.js'
 import { BurrShape } from './components/BurrShape.jsx'
 import { MotionCtx, Reveal, CountUp, RingSeal } from './motion/motion.jsx'
@@ -28,6 +29,7 @@ const catName = (p, lang) => {
 const letterOf = (p) => (shapeByKey(p.shape) || {}).letter || p.shape;
 const cutLabel = (p, lang) => (CUTS[p.cut] || CUTS.double)[lang];
 const dimStr = (p) => (p.headD ? `Ø${p.headD}×${p.headL}` : "—");
+const productHref = (p) => productPath(p);
 
 // ─────────── ICONS ───────────
 const I = {
@@ -308,7 +310,10 @@ function Catalog({ t, lang, shape, setShape, view, setView, cart, onAdd, onOpen,
                       <span className="bf-tglyph"><BurrShape type={p.shape} size={48} strokeWidth={3} flutes={flutes}/></span>
                       <span className="bf-tname-txt">
                         <span className="bf-tname-main">{catName(p, lang)}{p.alu ? " · Al" : ""}</span>
-                        <span className="bf-tname-meta">{p.code ? p.code + " · " : ""}{t.mat}</span>
+                        <span className="bf-tname-meta">
+                          {p.code && <a className="bf-product-link" href={productHref(p)} onClick={(e)=>e.stopPropagation()}>{p.code}</a>}
+                          {p.code ? " · " : ""}{t.mat}
+                        </span>
                       </span>
                     </div></td>
                     <td className="c"><span className="bf-tag">{letterOf(p)}</span></td>
@@ -338,7 +343,7 @@ function Catalog({ t, lang, shape, setShape, view, setView, cart, onAdd, onOpen,
                 <div className="bf-card-name">{dimStr(p)}{p.headD ? " · хв." + p.shankD : ""}</div>
                 <div className="bf-card-specs">
                   <span>{cutLabel(p, lang)}</span>
-                  {p.code && <span>{p.code}</span>}
+                  {p.code && <a className="bf-product-link" href={productHref(p)} onClick={(e)=>e.stopPropagation()}>{p.code}</a>}
                   <span>ВК</span>
                 </div>
                 <div className="bf-card-foot">
