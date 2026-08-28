@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { resolve } from 'node:path'
 
 function cssPreloadPlugin() {
   return {
@@ -15,4 +16,13 @@ function cssPreloadPlugin() {
 
 export default defineConfig({
   plugins: [react(), cssPreloadPlugin()],
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        ua: resolve(__dirname, 'ua/index.html'),
+        ru: resolve(__dirname, 'ru/index.html'),
+      },
+    },
+  },
 })

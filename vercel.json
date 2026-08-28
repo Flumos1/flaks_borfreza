@@ -10,12 +10,6 @@
       "permanent": true
     }
   ],
-  "rewrites": [
-    { "source": "/ua", "destination": "/" },
-    { "source": "/ua/", "destination": "/" },
-    { "source": "/ru", "destination": "/" },
-    { "source": "/ru/", "destination": "/" }
-  ],
   "headers": [
     {
       "source": "/assets/(.*)",
