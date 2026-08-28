@@ -10,7 +10,8 @@
     "landings": "node scripts/generate-landings.js",
     "products": "node scripts/generate-products.js",
     "sitemap": "node scripts/generate-sitemap.js",
-    "seo": "npm run landings && npm run products && npm run feed && npm run sitemap"
+    "check:seo": "node scripts/check-seo.js",
+    "seo": "npm run landings && npm run products && npm run feed && npm run sitemap && npm run check:seo"
   },
   "dependencies": {
     "react": "^18.3.1",
