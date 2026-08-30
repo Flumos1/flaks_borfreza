@@ -15,3 +15,7 @@ npm-debug.log*
 # Env
 .env
 .env.local
+secrets/
+
+# Local audit exports
+reports/
