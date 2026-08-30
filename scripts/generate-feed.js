@@ -29,7 +29,7 @@ function ptype(p) {
 }
 
 function link(p) {
-  return p.code ? productUrl(p, 'ua') : `${SITE}/ua/#catalog`;
+  return p.code ? productUrl(p, 'ru') : `${SITE}/ru/#catalog`;
 }
 
 function cutKey(p) {

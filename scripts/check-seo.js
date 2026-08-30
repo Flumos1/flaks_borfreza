@@ -261,7 +261,8 @@ function checkFeed() {
     fail('feed.xml still contains query-search product links');
   }
   for (const product of PRODUCTS) {
-    if (!xml.includes(productUrl(product, 'ua'))) fail(`feed.xml misses canonical UA product URL ${product.code}`);
+    if (!xml.includes(productUrl(product, 'ru'))) fail(`feed.xml misses RU product URL ${product.code}`);
+    if (xml.includes(productUrl(product, 'ua'))) fail(`feed.xml should not link RU feed item to UA product URL ${product.code}`);
     if (!xml.includes(`<g:custom_label_0>shape_${product.shape}</g:custom_label_0>`)) {
       fail(`feed.xml misses shape label for ${product.code}`);
     }
