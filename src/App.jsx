@@ -188,7 +188,7 @@ function OrderConfidence({ lang, onNav }) {
         ["ship", "\u041d\u043e\u0432\u0430 \u041f\u043e\u0448\u0442\u0430", "\u0417\u0430\u043c\u043e\u0432\u043b\u0435\u043d\u043d\u044f \u0434\u043e 16:00 \u0457\u0434\u0435 \u0432 \u0442\u043e\u0439 \u0441\u0430\u043c\u0438\u0439 \u0434\u0435\u043d\u044c."],
         ["pay", "\u041e\u043f\u043b\u0430\u0442\u0430 \u044f\u043a \u0437\u0440\u0443\u0447\u043d\u043e", "\u041d\u0430\u043a\u043b\u0430\u0434\u043d\u0438\u0439 \u043f\u043b\u0430\u0442\u0456\u0436, \u043a\u0430\u0440\u0442\u043a\u0430 \u0430\u0431\u043e \u0440\u0430\u0445\u0443\u043d\u043e\u043a \u0434\u043b\u044f \u043a\u043e\u043c\u043f\u0430\u043d\u0456\u0457."],
         ["help", "\u041f\u0456\u0434\u0431\u0456\u0440 \u043f\u0456\u0434 \u0437\u0430\u0434\u0430\u0447\u0443", "\u041d\u0430\u043f\u0438\u0448\u0456\u0442\u044c \u043c\u0430\u0442\u0435\u0440\u0456\u0430\u043b \u0456 \u043e\u043f\u0435\u0440\u0430\u0446\u0456\u044e: \u0448\u043e\u0432, \u0444\u0430\u0441\u043a\u0430, \u043f\u0430\u0437, \u0430\u043b\u044e\u043c\u0456\u043d\u0456\u0439."],
-        ["min", "\u041c\u0456\u043d\u0456\u043c\u0443\u043c " + MIN_ORDER + " \u0433\u0440\u043d", "\u041a\u043e\u0448\u0438\u043a \u043f\u043e\u043a\u0430\u0436\u0435, \u0441\u043a\u0456\u043b\u044c\u043a\u0438 \u043b\u0438\u0448\u0438\u043b\u043e\u0441\u044c \u0434\u043e \u043c\u0456\u043d\u0456\u043c\u0430\u043b\u044c\u043d\u043e\u0457 \u0441\u0443\u043c\u0438."],
+        ["single", "\u0412\u0456\u0434 \u043e\u0434\u043d\u0456\u0454\u0457 \u0448\u0442\u0443\u043a\u0438", "\u041c\u0456\u043d\u0456\u043c\u0430\u043b\u044c\u043d\u043e\u0457 \u0441\u0443\u043c\u0438 \u0437\u0430\u043c\u043e\u0432\u043b\u0435\u043d\u043d\u044f \u043d\u0435\u043c\u0430\u0454 \u2014 \u0431\u0435\u0440\u0456\u0442\u044c \u0441\u043a\u0456\u043b\u044c\u043a\u0438 \u0442\u0440\u0435\u0431\u0430."],
       ],
     }
     : {
@@ -200,10 +200,10 @@ function OrderConfidence({ lang, onNav }) {
         ["ship", "\u041d\u043e\u0432\u0430\u044f \u041f\u043e\u0447\u0442\u0430", "\u0417\u0430\u043a\u0430\u0437\u044b \u0434\u043e 16:00 \u0443\u0435\u0437\u0436\u0430\u044e\u0442 \u0432 \u0442\u043e\u0442 \u0436\u0435 \u0434\u0435\u043d\u044c."],
         ["pay", "\u041e\u043f\u043b\u0430\u0442\u0430 \u043a\u0430\u043a \u0443\u0434\u043e\u0431\u043d\u043e", "\u041d\u0430\u043b\u043e\u0436\u0435\u043d\u043d\u044b\u0439 \u043f\u043b\u0430\u0442\u0451\u0436, \u043a\u0430\u0440\u0442\u0430 \u0438\u043b\u0438 \u0441\u0447\u0451\u0442 \u0434\u043b\u044f \u043a\u043e\u043c\u043f\u0430\u043d\u0438\u0438."],
         ["help", "\u041f\u043e\u0434\u0431\u043e\u0440 \u043f\u043e\u0434 \u0437\u0430\u0434\u0430\u0447\u0443", "\u041d\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u043c\u0430\u0442\u0435\u0440\u0438\u0430\u043b \u0438 \u043e\u043f\u0435\u0440\u0430\u0446\u0438\u044e: \u0448\u043e\u0432, \u0444\u0430\u0441\u043a\u0430, \u043f\u0430\u0437, \u0430\u043b\u044e\u043c\u0438\u043d\u0438\u0439."],
-        ["min", "\u041c\u0438\u043d\u0438\u043c\u0443\u043c " + MIN_ORDER + " \u0433\u0440\u043d", "\u041a\u043e\u0440\u0437\u0438\u043d\u0430 \u043f\u043e\u043a\u0430\u0436\u0435\u0442, \u0441\u043a\u043e\u043b\u044c\u043a\u043e \u043e\u0441\u0442\u0430\u043b\u043e\u0441\u044c \u0434\u043e \u043c\u0438\u043d\u0438\u043c\u0430\u043b\u044c\u043d\u043e\u0439 \u0441\u0443\u043c\u043c\u044b."],
+        ["single", "\u041e\u0442 \u043e\u0434\u043d\u043e\u0439 \u0448\u0442\u0443\u043a\u0438", "\u041c\u0438\u043d\u0438\u043c\u0430\u043b\u044c\u043d\u043e\u0439 \u0441\u0443\u043c\u043c\u044b \u0437\u0430\u043a\u0430\u0437\u0430 \u043d\u0435\u0442 \u2014 \u0431\u0435\u0440\u0438\u0442\u0435 \u0441\u043a\u043e\u043b\u044c\u043a\u043e \u043d\u0443\u0436\u043d\u043e."],
       ],
     };
-  const icons = { ship: I.truck, pay: I.check, help: I.msg, min: I.cart };
+  const icons = { ship: I.truck, pay: I.check, help: I.msg, single: I.cart };
   return (
     <section className="bf-confidence" aria-labelledby="confidence-title">
       <div className="wrap bf-confidence-in">
@@ -782,7 +782,7 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
         {items.length > 0 && !sent && (
           <div className="bf-cart-foot">
             <div className="bf-cart-total"><span className="l">{t.total}</span><span className="v">{priceFmt(total)} грн</span></div>
-            {total < MIN_ORDER && (
+            {MIN_ORDER > 0 && total < MIN_ORDER && (
               <div className="bf-cart-minwarn">
                 <b>{t.cart_min_warn} — {MIN_ORDER} грн.</b> {t.cart_min_note}
                 <div className="bf-cart-minbar"><div className="bf-cart-minbar-fill" style={{width:Math.min(100,(total/MIN_ORDER)*100)+"%"}}/></div>
@@ -894,8 +894,19 @@ export default function App() {
   const [shape, setShape] = useState(() => {
     return new URLSearchParams(window.location.search).get("shape") || "all";
   });
-  const [cart, setCart] = useState([]);
-  const [cartOpen, setCartOpen] = useState(false);
+  // Страницы товаров (/ua|/ru/borfrezy/<код>/) — статические, своей корзины у них
+  // нет: каталог живёт в этом SPA. Их кнопка «Купити/Купить» ведёт сюда с
+  // ?add=<код>, и покупка продолжается там, где посетитель её начал. Без этого
+  // единственным действием на странице товара был переход на главную — за что
+  // Merchant Center и отклонил магазин.
+  const initialCart = useMemo(() => {
+    const code = new URLSearchParams(window.location.search).get("add");
+    if (!code) return [];
+    const p = PRODUCTS.find((x) => String(x.code).toLowerCase() === code.toLowerCase());
+    return p ? [{ ...p, qty: 1 }] : [];
+  }, []);
+  const [cart, setCart] = useState(initialCart);
+  const [cartOpen, setCartOpen] = useState(initialCart.length > 0);
   const [active, setActive] = useState(null);
   const [toast, setToast] = useState("");
   const toastTimer = useRef(null);
@@ -928,6 +939,8 @@ export default function App() {
     setMetaContent('meta[property="og:locale"]', head.ogLocale);
     const p = new URLSearchParams(window.location.search);
     p.delete("lang");
+    // Consumed once into the cart above; leaving it would re-add on reload.
+    p.delete("add");
     if (shape !== "all") p.set("shape", shape); else p.delete("shape");
     const qs = p.toString();
     const basePath = unlocalizedPath(window.location.pathname);

@@ -83,6 +83,11 @@ function checkProducts() {
       if (!langHtml.includes(`<meta property="og:locale" content="${expectedOgLocale(lang)}">`)) {
         fail(`${lang.toUpperCase()} product ${product.code} has wrong og:locale`);
       }
+      // Merchant Center requires a working buy control on the very page the feed
+      // points at, in the page's own language.
+      if (!langHtml.includes(`href="/${lang}/?add=${encodeURIComponent(product.code)}#catalog"`)) {
+        fail(`${lang.toUpperCase()} product ${product.code} has no add-to-cart CTA for its own language`);
+      }
       if (!langHtml.includes(`href="/${lang}/?q=${encodeURIComponent(product.code)}#catalog"`)) {
         fail(`${lang.toUpperCase()} product ${product.code} catalog CTA points outside the current language`);
       }
@@ -91,7 +96,7 @@ function checkProducts() {
         fail(`${lang.toUpperCase()} product ${product.code} has wrong raw breadcrumb language`);
       }
       expectVisibleText(langHtml, lang === 'ua' ? product.name_ua : product.name_ru, `${lang.toUpperCase()} product ${product.code}`);
-      expectVisibleText(langHtml, lang === 'ua' ? 'Замовити' : 'Заказать', `${lang.toUpperCase()} product ${product.code}`);
+      expectVisibleText(langHtml, lang === 'ua' ? 'Купити' : 'Купить', `${lang.toUpperCase()} product ${product.code}`);
       expectVisibleText(langHtml, lang === 'ua' ? 'В наявності' : 'В наличии', `${lang.toUpperCase()} product ${product.code}`);
       if (canRejectAsDistinct(product.name_ua, product.name_ru)) {
         rejectVisibleText(langHtml, lang === 'ua' ? product.name_ru : product.name_ua, `${lang.toUpperCase()} product ${product.code}`);

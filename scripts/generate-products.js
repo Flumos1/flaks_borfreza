@@ -79,11 +79,17 @@ function page(product, lang = '') {
   const desc = pageLang === 'ua' ? descUa : descRu;
   const ogLocale = pageLang === 'ua' ? 'uk_UA' : 'ru_UA';
   const url = productUrl(product, pageLang);
+  // Buy button. These pages are static and have no cart of their own, so the
+  // button hands the code to the catalogue SPA, which puts it in the cart and
+  // opens it — the purchase continues where the visitor started it.
+  const buyUrl = `/${pageLang}/?add=${encodeURIComponent(product.code)}#catalog`;
+  // Secondary: the same item inside the catalogue, filters and all.
   const catalogUrl = `/${pageLang}/?q=${encodeURIComponent(product.code)}#catalog`;
   const productName = pageLang === 'ua' ? product.name_ua : product.name_ru;
   const shapeName = pageLang === 'ua' ? (shape?.ua || product.shape) : (shape?.ru || product.shape);
   const catalogName = pageLang === 'ua' ? 'Борфрези' : 'Борфрезы';
-  const orderText = pageLang === 'ua' ? 'Замовити' : 'Заказать';
+  const buyText = pageLang === 'ua' ? 'Купити' : 'Купить';
+  const catalogText = pageLang === 'ua' ? 'Дивитись у каталозі' : 'Смотреть в каталоге';
   const relatedTitle = pageLang === 'ua' ? 'Схожі типорозміри' : 'Похожие типоразмеры';
   const applicationTitle = pageLang === 'ua' ? 'Застосування' : 'Применение';
   const stockText = pageLang === 'ua' ? 'В наявності' : 'В наличии';
@@ -133,6 +139,8 @@ h1{font-size:clamp(28px,5vw,44px);line-height:1.08;color:#fff;margin-bottom:14px
 .price{font-size:34px;color:#e85d04;font-weight:800}.unit{color:#9aa0b8}
 .cta{display:inline-flex;align-items:center;justify-content:center;background:#e85d04;color:#fff;border-radius:4px;padding:13px 26px;font-weight:800;letter-spacing:.5px}
 .cta:hover{background:#ff7c2a}
+.cta-secondary{display:inline-flex;align-items:center;justify-content:center;border:1px solid #e85d04;color:#e85d04;border-radius:4px;padding:12px 22px;font-weight:700;letter-spacing:.5px}
+.cta-secondary:hover{background:#e85d04;color:#fff}
 .specs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:24px 0}
 .spec{background:#1c2030;border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:12px}
 .spec b{display:block;color:#5a6080;font-size:12px;text-transform:uppercase;margin-bottom:4px}.spec span{color:#fff}
@@ -173,7 +181,7 @@ h1{font-size:clamp(28px,5vw,44px);line-height:1.08;color:#fff;margin-bottom:14px
       <p class="eyebrow" data-ua="Борфреза · ${esc(product.code)}" data-ru="Борфреза · ${esc(product.code)}">Борфреза · ${esc(product.code)}</p>
       <h1 data-ua="${esc(product.name_ua)}" data-ru="${esc(product.name_ru)}">${esc(productName)}</h1>
       <p class="lead" data-ua="${esc(descUa)}" data-ru="${esc(descRu)}">${esc(desc)}</p>
-      <div class="price-row"><span class="price">${money(product.price)}</span><span class="unit">грн / шт</span><a class="cta" href="${catalogUrl}" data-ua="Замовити" data-ru="Заказать">${orderText}</a></div>
+      <div class="price-row"><span class="price">${money(product.price)}</span><span class="unit">грн / шт</span><a class="cta" href="${buyUrl}" data-ua="Купити" data-ru="Купить">${buyText}</a><a class="cta-secondary" href="${catalogUrl}" data-ua="Дивитись у каталозі" data-ru="Смотреть в каталоге">${catalogText}</a></div>
       <div class="specs">
         <div class="spec"><b data-ua="Форма" data-ru="Форма">Форма</b><span data-ua="${esc(shape?.ua || product.shape)}" data-ru="${esc(shape?.ru || product.shape)}">${esc(shapeName)}</span></div>
         <div class="spec"><b data-ua="Артикул" data-ru="Артикул">Артикул</b><span>${esc(product.code)}</span></div>
