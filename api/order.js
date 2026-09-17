@@ -1,11 +1,11 @@
-import { MIN_ORDER } from "../src/data/constants.js";
+import { MIN_ORDER, MAX_ORDER_QTY } from "../src/data/constants.js";
 import { PRODUCTS } from "../src/data/burr-data.js";
 
 const TO_EMAIL = process.env.ORDER_TO_EMAIL || "tpolegat@gmail.com";
 
 // Серверный прайс: цена берётся по артикулу с сервера, а не из тела запроса,
 // чтобы клиент не мог прислать произвольную цену (см. отчёт, п.2).
-const PRICE_BY_CODE = Object.fromEntries(PRODUCTS.map((p) => [p.code, p.price]));
+const PRODUCT_BY_CODE = new Map(PRODUCTS.map((p) => [p.code, p]));
 
 // Разрешённые источники запроса (защита от кросс-сайтового спама, п.3).
 // Пускаем боевой домен, любые превью-деплои *.vercel.app и localhost.
@@ -130,19 +130,40 @@ async function sendTelegram(order) {
   const chatId = process.env.TELEGRAM_CHAT_ID;
   if (!token || !chatId) return { skipped: true };
 
-  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text: formatMessage(order).slice(0, 4096),
-      parse_mode: "HTML",
-      disable_web_page_preview: true,
-    }),
+  // Split only between complete lines: slicing HTML can lose products, the total,
+  // or a closing tag and make Telegram reject a large order altogether.
+  const chunks = [];
+  let chunk = "";
+  const lines = formatMessage(order).split("\n").flatMap((line) => {
+    if (line.length <= 4000) return [line];
+    // An escaped customer comment can exceed the limit; preserve HTML entities.
+    const parts = [];
+    let part = "";
+    for (const token of line.match(/&(?:amp|lt|gt);|[\s\S]/gu)) {
+      if (part.length + token.length > 4000) { parts.push(part); part = ""; }
+      part += token;
+    }
+    if (part) parts.push(part);
+    return parts;
   });
-  if (!res.ok) {
-    const txt = await res.text();
-    throw new Error(`Telegram ${res.status}: ${txt}`);
+  for (const line of lines) {
+    if (chunk && chunk.length + line.length + 1 > 4000) {
+      chunks.push(chunk);
+      chunk = "";
+    }
+    chunk += (chunk ? "\n" : "") + line;
+  }
+  if (chunk) chunks.push(chunk);
+  for (const text of chunks) {
+    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML", disable_web_page_preview: true }),
+    });
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(`Telegram ${res.status}: ${txt}`);
+    }
   }
   return { ok: true };
 }
@@ -226,20 +247,24 @@ export default async function handler(req, res) {
     const rawItems = Array.isArray(body.items) ? body.items : [];
     if (!rawItems.length) return res.status(400).json({ error: "Cart is empty" });
 
-    const items = rawItems.map((i) => {
-      const code = clean(i.code, 80);
-      // Цена строго с сервера по артикулу; если кода нет — 0 (в заказ не пройдёт по min).
-      const price = PRICE_BY_CODE[code] ?? 0;
-      return {
-        name_ua: clean(i.name_ua, 200),
-        name_ru: clean(i.name_ru, 200),
-        code,
-        headD:   Number(i.headD) || null,
-        headL:   Number(i.headL) || null,
-        price,
-        qty:     Math.min(9999, Math.max(1, Math.floor(Number(i.qty) || 1))),
-      };
-    });
+    if (rawItems.length > PRODUCTS.length) return res.status(400).json({ error: "Too many items" });
+    const items = [];
+    const codes = new Set();
+    for (const item of rawItems) {
+      if (!item || typeof item !== "object" || Array.isArray(item)) {
+        return res.status(400).json({ error: "Invalid item" });
+      }
+      const product = PRODUCT_BY_CODE.get(item.code);
+      if (!product) return res.status(400).json({ error: "Unknown product" });
+      if (codes.has(product.code)) return res.status(400).json({ error: "Duplicate product" });
+      if (!Number.isInteger(item.qty) || item.qty < 1 || item.qty > MAX_ORDER_QTY) {
+        return res.status(400).json({ error: "Invalid quantity" });
+      }
+      codes.add(product.code);
+      // All product details, including the price, come from the server catalog.
+      const { code, name_ua, name_ru, headD, headL, price } = product;
+      items.push({ code, name_ua, name_ru, headD, headL, price, qty: item.qty });
+    }
 
     const total = items.reduce((s, i) => s + i.price * i.qty, 0);
     if (total < MIN_ORDER) return res.status(400).json({ error: `Minimum order is ${MIN_ORDER} UAH` });

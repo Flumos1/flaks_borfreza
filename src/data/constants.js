@@ -12,3 +12,4 @@
 // Логика минимума в UI и в api/order.js сохранена и включается обратно одним
 // этим числом.
 export const MIN_ORDER = 0;
+export const MAX_ORDER_QTY = 9999;

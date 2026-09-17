@@ -316,6 +316,7 @@
   .bf-cart-send2.em{background:var(--flaks-orange-dim);border-color:var(--flaks-orange);color:var(--flaks-orange-hot)}
   .bf-cart-send2.em:hover{background:var(--flaks-orange);color:#fff}
   .bf-cart-note{font-size:11px;color:var(--fg-dim);line-height:1.5;margin:12px 0 0}
+  .bf-cart-note a{color:var(--fg-mid);text-decoration:underline}
 
   /* ─────────── CART ORDER FORM ─────────── */
   .bf-order-form{display:flex;flex-direction:column;gap:7px;padding-top:14px;border-top:1px solid var(--line)}
@@ -455,6 +456,7 @@
   .bf-art-card:hover .bf-art-read .arr{transform:translateX(4px)}
 
   @media (max-width:760px){
+    .bf-hero-title{font-size:clamp(36px,12vw,72px);letter-spacing:3px}
     .bf-nav{display:none}
     .bf-cta{display:none}
     .bf-shape-grid{grid-template-columns:repeat(2,1fr)}

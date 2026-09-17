@@ -5,6 +5,7 @@ import { useState, useMemo, useEffect, useRef, Fragment } from 'react'
 import { SHAPES, CUTS, PRODUCTS, STRINGS } from './data/burr-data.js'
 import { productPath } from './data/site-urls.js'
 import { MIN_ORDER } from './data/constants.js'
+import { CART_STORAGE_KEY, addToCart, clampQuantity, initialCartState, serializeCart } from './data/cart.js'
 import { BurrShape } from './components/BurrShape.jsx'
 import { MotionCtx, Reveal, CountUp, RingSeal } from './motion/motion.jsx'
 import {
@@ -117,8 +118,8 @@ function Header({ t, lang, setLang, cartCount, openCart, onNav }) {
           <a href="#shapes" onClick={(e)=>{e.preventDefault();onNav("shapes");}}>{t.nav_shapes}</a>
           <a href="#catalog" onClick={(e)=>{e.preventDefault();onNav("catalog");}}>{t.nav_catalog}</a>
           <a href="#about" onClick={(e)=>{e.preventDefault();onNav("about");}}>{t.nav_about}</a>
-          <a href="/dostavka/">{t.nav_delivery}</a>
-          <a href="/povernennya/">{t.nav_returns}</a>
+          <a href={`/dostavka/?lang=${lang}`}>{t.nav_delivery}</a>
+          <a href={`/povernennya/?lang=${lang}`}>{t.nav_returns}</a>
           <a href="#articles" onClick={(e)=>{e.preventDefault();onNav("articles");}}>{t.nav_articles}</a>
           <a href="#contact" onClick={(e)=>{e.preventDefault();onNav("contact");}}>{t.nav_contact}</a>
         </nav>
@@ -223,7 +224,7 @@ function OrderConfidence({ lang, onNav }) {
           })}
         </div>
         <div className="bf-confidence-actions">
-          <a href="/dostavka/">{copy.delivery}</a>
+          <a href={`/dostavka/?lang=${lang}`}>{copy.delivery}</a>
           <button type="button" onClick={() => onNav("contact")}>{copy.contact}</button>
         </div>
       </div>
@@ -689,9 +690,9 @@ function QtyInput({ qty, onCommit }) {
       onChange={(e) => {
         const v = e.target.value.replace(/[^\d]/g, "");
         setRaw(v);
-        if (v !== "") onCommit(Math.min(9999, Math.max(1, parseInt(v, 10))));
+        if (v !== "") onCommit(clampQuantity(v));
       }}
-      onBlur={() => { if (raw === "" || parseInt(raw, 10) < 1) setRaw(String(qty)); }} />
+      onBlur={() => setRaw(String(qty))} />
   );
 }
 
@@ -802,6 +803,10 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
               </button>
             </form>
             <p className="bf-cart-note">{t.order_note_new}</p>
+            <p className="bf-cart-note">
+              <a href={`/dostavka/?lang=${lang}`}>{lang === "ua" ? "Доставка і оплата" : "Доставка и оплата"}</a>
+              {" · "}<a href={`/povernennya/?lang=${lang}`}>{t.nav_returns}</a>
+            </p>
           </div>
         )}
 
@@ -901,12 +906,15 @@ export default function App() {
   // Merchant Center и отклонил магазин.
   const initialCart = useMemo(() => {
     const code = new URLSearchParams(window.location.search).get("add");
-    if (!code) return [];
-    const p = PRODUCTS.find((x) => String(x.code).toLowerCase() === code.toLowerCase());
-    return p ? [{ ...p, qty: 1 }] : [];
+    let saved = null;
+    try { saved = window.localStorage.getItem(CART_STORAGE_KEY); } catch { /* Storage may be disabled. */ }
+    return initialCartState(saved, code);
   }, []);
-  const [cart, setCart] = useState(initialCart);
-  const [cartOpen, setCartOpen] = useState(initialCart.length > 0);
+  const [cart, setCart] = useState(initialCart.items);
+  const [cartOpen, setCartOpen] = useState(initialCart.open);
+  useEffect(() => {
+    try { window.localStorage.setItem(CART_STORAGE_KEY, serializeCart(cart)); } catch { /* Keep the in-memory cart usable. */ }
+  }, [cart]);
   const [active, setActive] = useState(null);
   const [toast, setToast] = useState("");
   const toastTimer = useRef(null);
@@ -923,10 +931,10 @@ export default function App() {
 
   const showToast = (msg) => { setToast(msg); clearTimeout(toastTimer.current); toastTimer.current = setTimeout(()=>setToast(""),2200); };
   const addCart = (p) => {
-    setCart((prev)=>{ const f=prev.find((i)=>i.id===p.id); if(f) return prev.map((i)=>i.id===p.id?{...i,qty:i.qty+1}:i); return [...prev,{...p,qty:1}]; });
+    setCart((prev)=>addToCart(prev, p));
     showToast(lang==="ua"?"Додано в кошик":"Добавлено в корзину");
   };
-  const setQty = (id,q)=>setCart((prev)=>prev.map((i)=>i.id===id?{...i,qty:q}:i));
+  const setQty = (id,q)=>setCart((prev)=>prev.map((i)=>i.id===id?{...i,qty:clampQuantity(q)}:i));
   const remove = (id)=>setCart((prev)=>prev.filter((i)=>i.id!==id));
 
   useEffect(() => {
@@ -996,4 +1004,3 @@ export default function App() {
     </MotionCtx.Provider>
   );
 }
-
