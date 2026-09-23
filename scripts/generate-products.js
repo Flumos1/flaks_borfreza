@@ -1,5 +1,5 @@
 import { PRODUCTS, SHAPES, CUTS } from '../src/data/burr-data.js';
-import { availableQuantity } from '../src/data/checkout.js';
+import { availableQuantity, SHIPPING_NOTICE } from '../src/data/checkout.js';
 import { SITE, LANGS, productPath, productUrl, shapePath, shapeUrl } from '../src/data/site-urls.js';
 import { writeFileSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -175,6 +175,7 @@ h1{font-size:36px;line-height:1.15;color:#fff;margin-bottom:14px;overflow-wrap:a
       <p class="lead" data-ua="${esc(descUa)}" data-ru="${esc(descRu)}">${esc(desc)}</p>
       <div class="price-row"><span class="price">${money(product.price)}</span><span class="unit">грн / шт</span>${availableQuantity(product) ? `<a class="cta" href="${buyUrl}">${buyText}</a>` : `<span>${stockText}</span>`}<a class="cta-secondary" href="${catalogUrl}" data-ua="Дивитись у каталозі" data-ru="Смотреть в каталоге">${catalogText}</a></div>
       <p>${pageLang === 'ua' ? 'Від однієї штуки. Оплата при отриманні або за рахунком. Доставка Новою Поштою.' : 'От одной штуки. Оплата при получении или по счёту. Доставка Новой Почтой.'}</p>
+      <p>${esc(SHIPPING_NOTICE[pageLang])}</p>
       <p><a class="related-link" href="/dostavka/?lang=${pageLang}">${pageLang === 'ua' ? 'Доставка і оплата' : 'Доставка и оплата'}</a> <a class="related-link" href="/povernennya/?lang=${pageLang}">${pageLang === 'ua' ? 'Обмін і повернення' : 'Обмен и возврат'}</a></p>
       <div class="specs">
         <div class="spec"><b data-ua="Форма" data-ru="Форма">Форма</b><span data-ua="${esc(shape?.ua || product.shape)}" data-ru="${esc(shape?.ru || product.shape)}">${esc(shapeName)}</span></div>

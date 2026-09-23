@@ -5,7 +5,7 @@ import { useState, useMemo, useEffect, useRef, Fragment } from 'react'
 import { SHAPES, CUTS, PRODUCTS, STRINGS } from './data/burr-data.js'
 import { productPath } from './data/site-urls.js'
 import { MIN_ORDER } from './data/constants.js'
-import { PAYMENT_METHODS, validPhone, availableQuantity } from './data/checkout.js'
+import { PAYMENT_METHODS, SHIPPING_NOTICE, validPhone, availableQuantity } from './data/checkout.js'
 import { CART_STORAGE_KEY, addToCart, clampQuantity, cartQuantityLimit, initialCartState, serializeCart } from './data/cart.js'
 import { BurrShape } from './components/BurrShape.jsx'
 import { MotionCtx, Reveal, CountUp, RingSeal } from './motion/motion.jsx'
@@ -824,7 +824,8 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
         {/* ── order form ── */}
         {items.length > 0 && !sent && (
           <div className="bf-cart-foot">
-            <div className="bf-cart-total"><span className="l">{t.total}</span><span className="v">{priceFmt(total)} грн</span></div>
+            <div className="bf-cart-total"><span className="l">{lang === 'ua' ? 'Сума товарів' : 'Сумма товаров'}</span><span className="v">{priceFmt(total)} грн</span></div>
+            <p className="bf-cart-note">{SHIPPING_NOTICE[lang]}</p>
             {MIN_ORDER > 0 && total < MIN_ORDER && (
               <div className="bf-cart-minwarn">
                 <b>{t.cart_min_warn} — {MIN_ORDER} грн.</b> {t.cart_min_note}
