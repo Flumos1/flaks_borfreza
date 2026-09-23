@@ -8,6 +8,7 @@ const TOKEN_PATH = "secrets/google-merchant-token.json";
 const REPORT_DATE = new Date().toISOString().slice(0, 10);
 const REPORT_JSON = `reports/merchant-audit-${REPORT_DATE}.json`;
 const REPORT_MD = `reports/merchant-audit-${REPORT_DATE}.md`;
+const REGISTER_GCP = process.argv.includes("--register-gcp");
 
 function b64url(buf) {
   return buf.toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
@@ -237,7 +238,27 @@ await mkdir("reports", { recursive: true });
 
 const base = 'https://merchantapi.googleapis.com';
 const parent = `accounts/${MERCHANT_ID}`;
-const [account, accountStatus, datafeeds, products] = await Promise.all([
+
+if (REGISTER_GCP) {
+  const emailArg = process.argv.find((arg) => arg.startsWith("--developer-email="));
+  const developerEmail = emailArg?.slice("--developer-email=".length).trim();
+  if (!developerEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(developerEmail)) {
+    throw new Error("Pass a valid developer contact with --developer-email=name@example.com");
+  }
+
+  const registration = await api(
+    token,
+    `${base}/accounts/v1/${parent}/developerRegistration:registerGcp`,
+    { method: "POST", body: JSON.stringify({ developerEmail }) },
+  );
+  console.log(JSON.stringify({
+    merchantId: MERCHANT_ID,
+    developerEmail,
+    registration: registration.name,
+    gcpIds: registration.gcpIds || [],
+  }, null, 2));
+} else {
+  const [account, accountStatus, datafeeds, products] = await Promise.all([
   safe('account', () => api(token, `${base}/accounts/v1/${parent}`)),
   safe('accountStatus', () => listPages(token, `${base}/accounts/v1/${parent}/issues?pageSize=100&languageCode=ru`, 'accountIssues')),
   safe('datafeeds', () => listPages(token, `${base}/datasources/v1/${parent}/dataSources`, 'dataSources')),
@@ -358,4 +379,5 @@ console.log(JSON.stringify({
   reportJson: REPORT_JSON,
   reportMd: REPORT_MD,
 }, null, 2));
-if (apiErrors.length) process.exitCode = 1;
+  if (apiErrors.length) process.exitCode = 1;
+}
