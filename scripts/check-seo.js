@@ -86,8 +86,8 @@ function checkProducts() {
       }
       // Merchant Center requires a working buy control on the very page the feed
       // points at, in the page's own language.
-      if (availableQuantity(product) && !langHtml.includes(`href="/${lang}/?add=${encodeURIComponent(product.code)}#catalog"`)) {
-        fail(`${lang.toUpperCase()} product ${product.code} has no add-to-cart CTA for its own language`);
+      if (availableQuantity(product) && (!langHtml.includes('href="#checkout"') || !langHtml.includes('id="product-order"') || !langHtml.includes(`data-code="${product.code}"`) || !langHtml.includes(`data-language="${lang}"`))) {
+        fail(`${lang.toUpperCase()} product ${product.code} has no matching on-page checkout`);
       }
       if (!langHtml.includes(`href="/${lang}/?q=${encodeURIComponent(product.code)}#catalog"`)) {
         fail(`${lang.toUpperCase()} product ${product.code} catalog CTA points outside the current language`);

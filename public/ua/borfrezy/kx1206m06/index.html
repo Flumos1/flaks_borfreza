@@ -52,6 +52,8 @@ h1{font-size:36px;line-height:1.15;color:#fff;margin-bottom:14px;overflow-wrap:a
 .section h2{font-size:24px;color:#fff;margin-bottom:12px}
 .related{display:flex;gap:10px;flex-wrap:wrap}.related-link{display:inline-block;background:#1c2030;border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:8px 12px;color:#e8eaf0}.related-link:hover{border-color:#e85d04}
 .hidden{display:none!important}
+.checkout{scroll-margin-top:20px}.checkout fieldset{border:0;padding:18px 0;min-width:0}.checkout label{display:block;font-size:14px}.checkout input,.checkout select,.checkout textarea{display:block;width:100%;min-width:0;min-height:44px;padding:10px;margin:6px 0 0;border:1px solid #737b91;border-radius:4px;background:#1c2030;color:#fff;font:inherit}.checkout input:focus,.checkout select:focus,.checkout textarea:focus{outline:2px solid #ff7c2a;outline-offset:2px}.order-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:22px 0}.order-comment{grid-column:1/-1}.order-quantity{max-width:150px}.order-total{font-size:22px;font-weight:700;margin-top:16px}.order-shipping{margin-top:8px;color:#c3c7d4}.checkout .cta{border:0;font:inherit;font-weight:700;cursor:pointer;min-height:48px}.checkout :disabled{opacity:.65;cursor:default}#order-status{margin:12px 0;overflow-wrap:anywhere}#order-status:empty{margin:0}.order-links a{text-decoration:underline}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.product>div{min-width:0}.checkout{letter-spacing:0}
+@media(max-width:560px){.order-fields{grid-template-columns:minmax(0,1fr)}.checkout .cta{width:100%}.checkout input,.checkout select,.checkout textarea{font-size:16px}}
 @media(max-width:760px){.product{grid-template-columns:minmax(0,1fr)}.photo{min-height:260px}.specs{grid-template-columns:1fr}.nav{margin-left:0}h1{font-size:28px}}
 </style>
 </head>
@@ -74,7 +76,7 @@ h1{font-size:36px;line-height:1.15;color:#fff;margin-bottom:14px;overflow-wrap:a
       <p class="eyebrow" data-ua="Борфреза · KX1206M06" data-ru="Борфреза · KX1206M06">Борфреза · KX1206M06</p>
       <h1 data-ua="Борфреза конічна 90 KX1206M06" data-ru="Борфреза коническая 90 KX1206M06">Борфреза конічна 90 KX1206M06</h1>
       <p class="lead" data-ua="Борфреза конічна 90 KX1206M06. Твердосплавна борфреза ВК: Ø12×6 мм, хвостовик Ø6 мм, насічка Подвійна (хрест). Зняття фасок, зенкування отворів під 90°. FLAKS, відправка по Україні." data-ru="Борфреза коническая 90 KX1206M06. Твердосплавная борфреза ВК: Ø12×6 мм, хвостовик Ø6 мм, насечка Двойная (крест). Снятие фасок, зенковка отверстий под 90°. FLAKS, отправка по Украине.">Борфреза конічна 90 KX1206M06. Твердосплавна борфреза ВК: Ø12×6 мм, хвостовик Ø6 мм, насічка Подвійна (хрест). Зняття фасок, зенкування отворів під 90°. FLAKS, відправка по Україні.</p>
-      <div class="price-row"><span class="price">810</span><span class="unit">грн / шт</span><a class="cta" href="/ua/?add=KX1206M06#catalog">Купити</a><a class="cta-secondary" href="/ua/?q=KX1206M06#catalog" data-ua="Дивитись у каталозі" data-ru="Смотреть в каталоге">Дивитись у каталозі</a></div>
+      <div class="price-row"><span class="price">810</span><span class="unit">грн / шт</span><a class="cta" href="#checkout">Купити</a><a class="cta-secondary" href="/ua/?q=KX1206M06#catalog" data-ua="Дивитись у каталозі" data-ru="Смотреть в каталоге">Дивитись у каталозі</a></div>
       <p>Від однієї штуки. Оплата при отриманні або за рахунком. Доставка Новою Поштою.</p>
       <p>Доставку оплачує покупець за тарифами перевізника. Вартість доставки не входить у суму товарів.</p>
       <p><a class="related-link" href="/dostavka/?lang=ua">Доставка і оплата</a> <a class="related-link" href="/povernennya/?lang=ua">Обмін і повернення</a></p>
@@ -88,6 +90,31 @@ h1{font-size:36px;line-height:1.15;color:#fff;margin-bottom:14px;overflow-wrap:a
       </div>
     </div>
   </section>
+  <section class="section checkout" id="checkout" aria-labelledby="checkout-title">
+    <h2 id="checkout-title">Оформлення замовлення</h2>
+    <p>Борфреза конічна 90 KX1206M06 · KX1206M06 · 810 грн / шт</p>
+    <form id="product-order" action="/api/order" method="post" data-code="KX1206M06" data-price="810" data-language="ua"
+      data-sending="Надсилаємо замовлення..." data-success="Замовлення прийнято. Ми зв’яжемося з вами для підтвердження доставки та оплати." data-failure="Замовлення не надіслано. Перевірте дані та спробуйте ще раз або зателефонуйте нам." data-uncertain="Не вдалося отримати підтвердження. Перед повторним надсиланням уточніть статус замовлення за телефоном +38 (067) 545-31-15." data-invalid="Перевірте заповнення поля." data-invalid-phone="Введіть телефон: від 10 до 15 цифр.">
+      <fieldset disabled>
+        <legend class="sr-only">Оформлення замовлення</legend>
+        <label class="order-quantity" for="order-qty">Кількість<input id="order-qty" name="qty" type="number" min="1" max="1000" step="1" value="1" required></label>
+        <p class="order-total">Сума товарів: <output id="order-total" for="order-qty">810</output> грн</p>
+        <p class="order-shipping">Доставку оплачує покупець за тарифами перевізника. Вартість доставки не входить у суму товарів.</p>
+        <div class="order-fields">
+          <label for="order-name">Ваше ім&#39;я *<input id="order-name" name="name" type="text" autocomplete="name" maxlength="140" required></label><label for="order-phone">Телефон *<input id="order-phone" name="phone" type="tel" autocomplete="tel" maxlength="80" required></label>
+          <label for="order-email">Email (необов’язково)<input id="order-email" name="email" type="email" autocomplete="email" maxlength="140" ></label><label for="order-city">Місто *<input id="order-city" name="city" type="text" autocomplete="address-level2" maxlength="140" required></label>
+          <label for="order-address">Нова Пошта: відділення або адреса *<input id="order-address" name="address" type="text" autocomplete="street-address" maxlength="200" required></label>
+          <label for="order-payment">Спосіб оплати<select id="order-payment" name="paymentMethod"><option value="cod">Оплата при отриманні</option><option value="invoice">Оплата за рахунком</option></select></label>
+          <label class="order-comment" for="order-comment">Коментар (необов’язково)<textarea id="order-comment" name="comment" maxlength="1200" rows="3"></textarea></label>
+        </div>
+        <div hidden aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off"></label></div>
+        <button class="cta" type="submit">Підтвердити замовлення</button>
+      </fieldset>
+      <p id="order-status" role="status" tabindex="-1" aria-live="polite"></p>
+      <noscript><p>Для надсилання замовлення увімкніть JavaScript або зателефонуйте +38 (067) 545-31-15.</p></noscript>
+    </form>
+    <p class="order-links"><a href="/dostavka/?lang=ua">Доставка і оплата</a> · <a href="/povernennya/?lang=ua">Обмін і повернення</a> · <a href="tel:+380675453115">+38 (067) 545-31-15</a></p>
+  </section>
   <section class="section">
     <h2 data-ua="Застосування" data-ru="Применение">Застосування</h2>
     <p data-ua="Зняття фасок, зенкування отворів під 90°." data-ru="Снятие фасок, зенковка отверстий под 90°.">Зняття фасок, зенкування отворів під 90°.</p>
@@ -98,5 +125,6 @@ h1{font-size:36px;line-height:1.15;color:#fff;margin-bottom:14px;overflow-wrap:a
   </section>
 </main>
 <footer class="section"><div class="wrap">FLAKS · <a href="tel:+380675453115">+38 (067) 545-31-15</a> · <a href="mailto:tpolegat@gmail.com">tpolegat@gmail.com</a></div></footer>
+<script src="/product-checkout.js?v=6b0f94b99d93" defer></script>
 </body>
 </html>

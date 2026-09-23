@@ -22,7 +22,7 @@ async function worker() {
       if (data?.sku !== product.code) throw new Error('Wrong product');
       if (Number(data.offers?.price) !== product.price) throw new Error('Wrong price');
       if (!data.offers?.availability.endsWith(availableQuantity(product) ? '/InStock' : '/OutOfStock')) throw new Error('Wrong availability');
-      if (availableQuantity(product) && !html.includes(`href="/${lang}/?add=${encodeURIComponent(product.code)}#catalog"`)) throw new Error('Missing buy link');
+      if (availableQuantity(product) && (!html.includes('href="#checkout"') || !html.includes('id="product-order"') || !html.includes(`data-code="${product.code}"`))) throw new Error('Missing on-page checkout');
       checked++;
     } catch (error) { errors.push({ path, error: error.message }); }
   }

@@ -1,12 +1,15 @@
 import { PRODUCTS, SHAPES, CUTS } from '../src/data/burr-data.js';
 import { availableQuantity, SHIPPING_NOTICE } from '../src/data/checkout.js';
+import { checkoutTemplate } from './product-checkout-template.js';
+import { createHash } from 'node:crypto';
 import { SITE, LANGS, productPath, productUrl, shapePath, shapeUrl } from '../src/data/site-urls.js';
-import { writeFileSync, mkdirSync } from 'fs';
+import { writeFileSync, mkdirSync, readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outDir = join(__dirname, '../public/borfrezy');
+const checkoutVersion = createHash('sha256').update(readFileSync(join(__dirname, '../public/product-checkout.js'))).digest('hex').slice(0, 12);
 
 const esc = (s) => String(s ?? '')
   .replace(/&/g, '&amp;')
@@ -80,10 +83,7 @@ function page(product, lang = '') {
   const desc = pageLang === 'ua' ? descUa : descRu;
   const ogLocale = pageLang === 'ua' ? 'uk_UA' : 'ru_UA';
   const url = productUrl(product, pageLang);
-  // Buy button. These pages are static and have no cart of their own, so the
-  // button hands the code to the catalogue SPA, which puts it in the cart and
-  // opens it — the purchase continues where the visitor started it.
-  const buyUrl = `/${pageLang}/?add=${encodeURIComponent(product.code)}#catalog`;
+  const buyUrl = '#checkout';
   // Secondary: the same item inside the catalogue, filters and all.
   const catalogUrl = `/${pageLang}/?q=${encodeURIComponent(product.code)}#catalog`;
   const productName = pageLang === 'ua' ? product.name_ua : product.name_ru;
@@ -151,6 +151,8 @@ h1{font-size:36px;line-height:1.15;color:#fff;margin-bottom:14px;overflow-wrap:a
 .section h2{font-size:24px;color:#fff;margin-bottom:12px}
 .related{display:flex;gap:10px;flex-wrap:wrap}.related-link{display:inline-block;background:#1c2030;border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:8px 12px;color:#e8eaf0}.related-link:hover{border-color:#e85d04}
 .hidden{display:none!important}
+.checkout{scroll-margin-top:20px}.checkout fieldset{border:0;padding:18px 0;min-width:0}.checkout label{display:block;font-size:14px}.checkout input,.checkout select,.checkout textarea{display:block;width:100%;min-width:0;min-height:44px;padding:10px;margin:6px 0 0;border:1px solid #737b91;border-radius:4px;background:#1c2030;color:#fff;font:inherit}.checkout input:focus,.checkout select:focus,.checkout textarea:focus{outline:2px solid #ff7c2a;outline-offset:2px}.order-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:22px 0}.order-comment{grid-column:1/-1}.order-quantity{max-width:150px}.order-total{font-size:22px;font-weight:700;margin-top:16px}.order-shipping{margin-top:8px;color:#c3c7d4}.checkout .cta{border:0;font:inherit;font-weight:700;cursor:pointer;min-height:48px}.checkout :disabled{opacity:.65;cursor:default}#order-status{margin:12px 0;overflow-wrap:anywhere}#order-status:empty{margin:0}.order-links a{text-decoration:underline}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}.product>div{min-width:0}.checkout{letter-spacing:0}
+@media(max-width:560px){.order-fields{grid-template-columns:minmax(0,1fr)}.checkout .cta{width:100%}.checkout input,.checkout select,.checkout textarea{font-size:16px}}
 @media(max-width:760px){.product{grid-template-columns:minmax(0,1fr)}.photo{min-height:260px}.specs{grid-template-columns:1fr}.nav{margin-left:0}h1{font-size:28px}}
 </style>
 </head>
@@ -187,6 +189,7 @@ h1{font-size:36px;line-height:1.15;color:#fff;margin-bottom:14px;overflow-wrap:a
       </div>
     </div>
   </section>
+  ${checkoutTemplate(product, pageLang)}
   <section class="section">
     <h2 data-ua="Застосування" data-ru="Применение">${applicationTitle}</h2>
     <p data-ua="${esc(shape?.use_ua || '')}" data-ru="${esc(shape?.use_ru || '')}">${esc(pageLang === 'ua' ? (shape?.use_ua || '') : (shape?.use_ru || ''))}</p>
@@ -197,6 +200,7 @@ h1{font-size:36px;line-height:1.15;color:#fff;margin-bottom:14px;overflow-wrap:a
   </section>
 </main>
 <footer class="section"><div class="wrap">FLAKS · <a href="tel:+380675453115">+38 (067) 545-31-15</a> · <a href="mailto:tpolegat@gmail.com">tpolegat@gmail.com</a></div></footer>
+<script src="/product-checkout.js?v=${checkoutVersion}" defer></script>
 </body>
 </html>`;
 }
