@@ -2,6 +2,7 @@
 // Запуск: npm run feed
 import { PRODUCTS, SHAPES } from '../src/data/burr-data.js';
 import { SITE, productUrl } from '../src/data/site-urls.js';
+import { availableQuantity } from '../src/data/checkout.js';
 import { writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -43,7 +44,7 @@ const items = PRODUCTS.map(p => `  <item>
     <g:link>${esc(link(p))}</g:link>
     <g:image_link>${esc(p.img)}</g:image_link>
     <g:price>${money(p.price)} UAH</g:price>
-    <g:availability>in_stock</g:availability>
+    <g:availability>${availableQuantity(p) ? 'in_stock' : 'out_of_stock'}</g:availability>
     <g:brand>${BRAND}</g:brand>
     <g:condition>new</g:condition>
     <g:mpn>${esc(p.code || `FLAKS-${p.id}`)}</g:mpn>

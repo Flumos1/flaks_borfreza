@@ -5,6 +5,7 @@
   "scripts": {
     "test": "node --test tests/*.test.js",
     "dev": "vite",
+    "prebuild": "npm run seo",
     "build": "vite build",
     "preview": "vite preview",
     "feed": "node scripts/generate-feed.js",

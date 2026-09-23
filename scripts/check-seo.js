@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { PRODUCTS, SHAPES } from '../src/data/burr-data.js';
+import { availableQuantity } from '../src/data/checkout.js';
 import { SITE, LANGS, productPath, productUrl, shapePath, shapeUrl } from '../src/data/site-urls.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -85,7 +86,7 @@ function checkProducts() {
       }
       // Merchant Center requires a working buy control on the very page the feed
       // points at, in the page's own language.
-      if (!langHtml.includes(`href="/${lang}/?add=${encodeURIComponent(product.code)}#catalog"`)) {
+      if (availableQuantity(product) && !langHtml.includes(`href="/${lang}/?add=${encodeURIComponent(product.code)}#catalog"`)) {
         fail(`${lang.toUpperCase()} product ${product.code} has no add-to-cart CTA for its own language`);
       }
       if (!langHtml.includes(`href="/${lang}/?q=${encodeURIComponent(product.code)}#catalog"`)) {
@@ -96,8 +97,13 @@ function checkProducts() {
         fail(`${lang.toUpperCase()} product ${product.code} has wrong raw breadcrumb language`);
       }
       expectVisibleText(langHtml, lang === 'ua' ? product.name_ua : product.name_ru, `${lang.toUpperCase()} product ${product.code}`);
-      expectVisibleText(langHtml, lang === 'ua' ? 'Купити' : 'Купить', `${lang.toUpperCase()} product ${product.code}`);
-      expectVisibleText(langHtml, lang === 'ua' ? 'В наявності' : 'В наличии', `${lang.toUpperCase()} product ${product.code}`);
+      if (availableQuantity(product)) {
+        expectVisibleText(langHtml, lang === 'ua' ? 'Купити' : 'Купить', `${lang.toUpperCase()} product ${product.code}`);
+        expectVisibleText(langHtml, lang === 'ua' ? 'В наявності' : 'В наличии', `${lang.toUpperCase()} product ${product.code}`);
+      }
+      const [productLd] = jsonLdObjects(langHtml, `${lang} ${product.code}`);
+      if (Number(productLd?.offers?.price) !== product.price) fail(`${lang} ${product.code} structured price differs from catalog`);
+      if (productLd?.offers?.availability !== `https://schema.org/${availableQuantity(product) ? 'InStock' : 'OutOfStock'}`) fail(`${lang} ${product.code} structured stock differs from catalog`);
       if (canRejectAsDistinct(product.name_ua, product.name_ru)) {
         rejectVisibleText(langHtml, lang === 'ua' ? product.name_ru : product.name_ua, `${lang.toUpperCase()} product ${product.code}`);
       }
@@ -266,6 +272,9 @@ function checkFeed() {
     fail('feed.xml still contains query-search product links');
   }
   for (const product of PRODUCTS) {
+    const item = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/g)].find(([, content]) => content.includes(`<g:mpn>${product.code}</g:mpn>`))?.[1];
+    if (!item?.includes(`<g:availability>${availableQuantity(product) ? 'in_stock' : 'out_of_stock'}</g:availability>`)) fail(`Feed stock mismatch: ${product.code}`);
+    if (!item?.includes(`<g:price>${Number.isInteger(product.price) ? product.price : product.price.toFixed(2)} UAH</g:price>`)) fail(`Feed price mismatch: ${product.code}`);
     if (!xml.includes(productUrl(product, 'ru'))) fail(`feed.xml misses RU product URL ${product.code}`);
     if (xml.includes(productUrl(product, 'ua'))) fail(`feed.xml should not link RU feed item to UA product URL ${product.code}`);
     if (!xml.includes(`<g:custom_label_0>shape_${product.shape}</g:custom_label_0>`)) {

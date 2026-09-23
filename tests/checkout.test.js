@@ -3,9 +3,10 @@ import assert from 'node:assert/strict';
 import handler from '../api/order.js';
 import { PRODUCTS } from '../src/data/burr-data.js';
 import { MAX_ORDER_QTY } from '../src/data/constants.js';
-import { addToCart, initialCartState, restoreCart, serializeCart } from '../src/data/cart.js';
+import { addToCart, clampQuantity, initialCartState, restoreCart, serializeCart } from '../src/data/cart.js';
 
 const product = PRODUCTS[0];
+const customer = { name: 'Local test', phone: '+380670000000', city: 'Kyiv', deliveryAddress: 'Branch 1' };
 
 test('cart survives reload and adding a second product from its page', () => {
   const first = initialCartState(null, product.code.toLowerCase());
@@ -18,6 +19,7 @@ test('cart survives reload and adding a second product from its page', () => {
   const second = initialCartState(saved, PRODUCTS[1].code);
   assert.deepEqual(second.items.map((p) => p.code), [product.code, PRODUCTS[1].code]);
   assert.equal(initialCartState(saved, product.code).items[0].qty, 2);
+  assert.equal(clampQuantity(3, reloaded.items[0]), 3);
   assert.deepEqual(restoreCart(serializeCart([])), []);
 });
 
@@ -30,18 +32,20 @@ test('stored cart ignores corrupt data and restores current catalog prices', () 
     { code: PRODUCTS[1].code, qty: -1 },
   ]));
   assert.deepEqual(cart, [{ ...product, qty: 5 }]);
-  const max = [{ ...product, qty: MAX_ORDER_QTY }];
-  assert.equal(addToCart(max, product)[0].qty, MAX_ORDER_QTY);
+  const max = [{ ...product, qty: product.qty }];
+  assert.equal(addToCart(max, product)[0].qty, product.qty);
+  assert.deepEqual(addToCart([], { ...product, qty: 0 }), []);
+  assert.equal(restoreCart(JSON.stringify([{ code: product.code, qty: MAX_ORDER_QTY }]))[0].qty, product.qty);
 });
 
-async function request(body) {
+async function request(body, headers = {}, method = 'POST') {
   const response = {
     code: 200,
     setHeader() {},
     status(code) { this.code = code; return this; },
     json(data) { this.data = data; return this; },
   };
-  await handler({ method: 'POST', headers: { origin: 'https://borfrezy.in.ua' }, body }, response);
+  await handler({ method, headers: { origin: 'https://borfrezy.in.ua', 'content-type': 'application/json', ...headers }, body }, response);
   return response;
 }
 
@@ -54,7 +58,7 @@ test('checkout rejects malformed items before attempting delivery', async (t) =>
     [{ code: product.code, qty: 1 }, { code: product.code, qty: 1 }],
   ];
   for (const items of invalidItems) {
-    const res = await request({ customer: { phone: '0000000000' }, items });
+    const res = await request({ customer, paymentMethod: 'cod', items });
     assert.equal(res.code, 400, JSON.stringify(items));
   }
   assert.equal(fetchMock.mock.callCount(), 0);
@@ -76,7 +80,7 @@ test('one-item checkout uses canonical product data and accepts orders below 200
     return { ok: true };
   });
   const result = await request({
-    language: 'ru', customer: { name: 'Local test', phone: '0000000000' },
+    language: 'ru', customer, paymentMethod: 'cod',
     items: [{ code: product.code, qty: 1, price: 1, name_ru: 'FAKE PRODUCT', headD: 999 }],
   });
   assert.equal(result.code, 200);
@@ -85,9 +89,11 @@ test('one-item checkout uses canonical product data and accepts orders below 200
   assert.ok(messages[0].text.includes(`Разом: ${product.price} грн`));
   assert.ok(!messages[0].text.includes('FAKE PRODUCT'));
   assert.ok(!messages[0].text.includes('Ø999'));
+  assert.ok(messages[0].text.includes('Нова Пошта: Branch 1'));
+  assert.ok(messages[0].text.includes('Оплата: Оплата при отриманні'));
 
   messages.length = 0;
-  const large = await request({ customer: { phone: '0000000000', comment: '&'.repeat(1200) }, items: PRODUCTS.map((p) => ({ code: p.code, qty: 1 })) });
+  const large = await request({ customer: { ...customer, comment: '&'.repeat(1200) }, paymentMethod: 'invoice', items: PRODUCTS.map((p) => ({ code: p.code, qty: 1 })) });
   assert.equal(large.code, 200);
   assert.ok(messages.length > 1);
   const fullText = messages.map((m) => m.text).join('\n');
@@ -98,4 +104,60 @@ test('one-item checkout uses canonical product data and accepts orders below 200
     assert.ok(!message.text.replaceAll('&amp;', '').includes('&'));
     assert.equal((message.text.match(/<b>/g) || []).length, (message.text.match(/<\/b>/g) || []).length);
   }
+});
+
+test('checkout validates customer, payment and stock before calling providers', async (t) => {
+  const fetchMock = t.mock.method(globalThis, 'fetch', async () => { throw new Error('No network allowed'); });
+  const valid = { customer, paymentMethod: 'cod', items: [{ code: product.code, qty: 1 }] };
+  const invalid = [
+    { ...valid, customer: { ...customer, name: '' } },
+    { ...valid, customer: { ...customer, phone: '123' } },
+    { ...valid, customer: { ...customer, phone: '1234567890spam' } },
+    { ...valid, customer: { ...customer, email: 'invalid' } },
+    { ...valid, customer: { ...customer, city: {} } },
+    { ...valid, customer: { ...customer, deliveryAddress: '' } },
+    { ...valid, paymentMethod: '__proto__' },
+    { ...valid, paymentMethod: 'toString' },
+    { ...valid, items: [{ code: product.code, qty: product.qty + 1 }] },
+    null, [], 1, '{',
+  ];
+  for (const body of invalid) assert.equal((await request(body)).code, 400, JSON.stringify(body));
+  assert.equal((await request(valid, { origin: 'https://attacker.vercel.app' })).code, 403);
+  assert.equal((await request(valid, { origin: 'https://evil.borfrezy.in.ua' })).code, 403);
+  assert.equal((await request(valid, { 'content-type': 'text/plain' })).code, 415);
+  assert.equal((await request(' '.repeat(32769))).code, 413);
+  assert.equal((await request(valid, {}, 'GET')).code, 405);
+  assert.equal(fetchMock.mock.callCount(), 0);
+});
+
+test('email backup runs concurrently with a failed Telegram delivery; failures never report success', async (t) => {
+  const keys = ['TELEGRAM_BOT_TOKEN', 'TELEGRAM_CHAT_ID', 'RESEND_API_KEY'];
+  const saved = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  for (const key of keys) process.env[key] = 'local-test';
+  t.after(() => {
+    for (const key of keys) {
+      if (saved[key] === undefined) delete process.env[key]; else process.env[key] = saved[key];
+    }
+  });
+  let rejectTelegram;
+  const calls = [];
+  t.mock.method(globalThis, 'fetch', async (url, options) => {
+    calls.push(url);
+    assert.ok(options.signal instanceof AbortSignal);
+    if (url.startsWith('https://api.telegram.org/')) {
+      return new Promise((_, reject) => { rejectTelegram = reject; });
+    }
+    rejectTelegram(new Error('Fake private provider error'));
+    const email = JSON.parse(options.body);
+    assert.ok(email.text.includes('Нова Пошта: Branch 1'));
+    return { ok: true };
+  });
+  const body = { customer, paymentMethod: 'invoice', items: [{ code: product.code, qty: 1 }] };
+  assert.equal((await request(body)).code, 200);
+  assert.equal(calls.length, 2);
+  for (const key of keys) delete process.env[key];
+  const failed = await request(body);
+  assert.equal(failed.code, 500);
+  assert.equal(failed.data.ok, undefined);
+  assert.ok(!JSON.stringify(failed.data).includes('private'));
 });

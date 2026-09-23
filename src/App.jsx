@@ -5,7 +5,8 @@ import { useState, useMemo, useEffect, useRef, Fragment } from 'react'
 import { SHAPES, CUTS, PRODUCTS, STRINGS } from './data/burr-data.js'
 import { productPath } from './data/site-urls.js'
 import { MIN_ORDER } from './data/constants.js'
-import { CART_STORAGE_KEY, addToCart, clampQuantity, initialCartState, serializeCart } from './data/cart.js'
+import { PAYMENT_METHODS, validPhone, availableQuantity } from './data/checkout.js'
+import { CART_STORAGE_KEY, addToCart, clampQuantity, cartQuantityLimit, initialCartState, serializeCart } from './data/cart.js'
 import { BurrShape } from './components/BurrShape.jsx'
 import { MotionCtx, Reveal, CountUp, RingSeal } from './motion/motion.jsx'
 import {
@@ -469,10 +470,10 @@ function Catalog({ t, lang, shape, setShape, view, setView, cart, onAdd, onOpen,
                     <td className="c"><span className="bf-tag">{letterOf(p)}</span></td>
                     <td><span className="bf-tdim">{dimStr(p)}</span><br/><span className="bf-tcut">хв. Ø{p.shankD} {t.mm}</span></td>
                     <td><span className="bf-tcut">{cutLabel(p, lang)}</span></td>
-                    <td><span className="bf-tqty"><span className="bf-tstockdot"/>{t.in_stock}</span></td>
+                    <td><span className="bf-tqty">{availableQuantity(p) ? t.in_stock : t.out_of_stock}</span></td>
                     <td className="r"><span className="bf-tprice">{priceFmt(p.price)}</span></td>
                     <td className="r" onClick={(e)=>e.stopPropagation()}>
-                      <button className={"bf-add" + (inCart(p.id) ? " in" : "")} onClick={()=>onAdd(p)}>
+                      <button disabled={!availableQuantity(p)} className={"bf-add" + (inCart(p.id) ? " in" : "")} onClick={()=>onAdd(p)}>
                         {inCart(p.id) ? <I.check s={14}/> : "+"} {inCart(p.id) ? (lang==="ua"?"Додано":"Добавлено") : t.add}
                       </button>
                     </td>
@@ -487,7 +488,7 @@ function Catalog({ t, lang, shape, setShape, view, setView, cart, onAdd, onOpen,
               <div key={p.id} className="bf-card" onClick={()=>onOpen(p)}>
                 <div className="bf-card-top">
                   <span className="bf-card-cat">{catName(p, lang)} · {letterOf(p)}</span>
-                  <span className="bf-card-stock"><span className="bf-tstockdot"/>{t.in_stock}</span>
+                  <span className="bf-card-stock">{availableQuantity(p) ? t.in_stock : t.out_of_stock}</span>
                 </div>
                 <div className="bf-card-art"><ProdImage p={p} size={150} sw={2.6} flutes={flutes} photos={photos} frame/></div>
                 <div className="bf-card-name">{dimStr(p)}{p.headD ? " · хв." + p.shankD : ""}</div>
@@ -498,7 +499,7 @@ function Catalog({ t, lang, shape, setShape, view, setView, cart, onAdd, onOpen,
                 </div>
                 <div className="bf-card-foot">
                   <span className="bf-card-price">{priceFmt(p.price)}<small>грн</small></span>
-                  <button className={"bf-add" + (inCart(p.id) ? " in" : "")} onClick={(e)=>{e.stopPropagation();onAdd(p);}}>
+                  <button disabled={!availableQuantity(p)} className={"bf-add" + (inCart(p.id) ? " in" : "")} onClick={(e)=>{e.stopPropagation();onAdd(p);}}>
                     {inCart(p.id) ? <I.check s={14}/> : "+"} {inCart(p.id) ? (lang==="ua"?"Додано":"Добавлено") : t.add}
                   </button>
                 </div>
@@ -566,14 +567,14 @@ function Contact({ t, lang }) {
   ];
   const submit = async (e) => {
     e.preventDefault();
-    if (company) return; // honeypot сработал — тихо игнорируем
+    if (company || submitting) return;
     if (!name.trim()) { setErr(lang==="ua"?"Введіть ваше ім'я":"Введите ваше имя"); return; }
-    const digits = phone.replace(/\D/g, "");
-    if (digits.length < 10) { setErr(lang==="ua"?"Введіть телефон (мін. 10 цифр)":"Введите телефон (мин. 10 цифр)"); return; }
+    if (!validPhone(phone)) { setErr(lang==="ua"?"Введіть телефон (10–15 цифр)":"Введите телефон (10–15 цифр)"); return; }
     setSubmitting(true); setErr("");
     try {
       const res = await fetch("/api/order", {
         method: "POST",
+        signal: AbortSignal.timeout(25000),
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({
           type: "lead", language: lang,
@@ -581,7 +582,8 @@ function Contact({ t, lang }) {
           company,
         }),
       });
-      if (!res.ok) throw new Error("request failed");
+      const result = await res.json();
+      if (!res.ok || result.ok !== true) throw new Error("request failed");
       setSent(true); setName(""); setPhone(""); setMsg("");
     } catch {
       setErr(lang==="ua"
@@ -682,11 +684,11 @@ function Footer({ t }) {
 
 // Поле количества: держит локальную строку, чтобы её можно было очистить и
 // набрать новое значение (без мгновенного «схлопывания» в 1 при стирании).
-function QtyInput({ qty, onCommit }) {
+function QtyInput({ qty, onCommit, disabled, label }) {
   const [raw, setRaw] = useState(String(qty));
   useEffect(() => { setRaw(String(qty)); }, [qty]);
   return (
-    <input className="bf-qty-inp" inputMode="numeric" value={raw}
+    <input className="bf-qty-inp" inputMode="numeric" value={raw} disabled={disabled} aria-label={label}
       onChange={(e) => {
         const v = e.target.value.replace(/[^\d]/g, "");
         setRaw(v);
@@ -705,39 +707,78 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
   const [cPhone,   setCPhone]   = useState("");
   const [cEmail,   setCEmail]   = useState("");
   const [cCity,    setCCity]    = useState("");
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("cod");
   const [cComment, setCComment] = useState("");
   const [company, setCompany] = useState(""); // honeypot — заполняют только боты
   const [submitting, setSubmitting] = useState(false);
   const [sent,  setSent]  = useState(false);
   const [orderError, setOrderError] = useState("");
+  const cartRef = useRef(null);
+  const closeRef = useRef(onClose);
+  closeRef.current = () => { if (!submitting) onClose(); };
+
+  useEffect(() => {
+    if (!open) return;
+    const previousFocus = document.activeElement;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    cartRef.current?.focus();
+    const onKey = (event) => {
+      if (event.key === 'Escape') closeRef.current();
+      if (event.key !== 'Tab') return;
+      const focusable = [...cartRef.current.querySelectorAll('a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled)')]
+        .filter((element) => element.tabIndex >= 0 && element.getClientRects().length);
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (event.shiftKey && (document.activeElement === first || document.activeElement === cartRef.current)) {
+        event.preventDefault(); last?.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || document.activeElement === cartRef.current)) {
+        event.preventDefault(); first?.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', onKey);
+      if (previousFocus?.isConnected) previousFocus.focus();
+    };
+  }, [open]);
 
   useEffect(() => {
     if (!open) { const id = setTimeout(()=>{ setSent(false); setOrderError(""); }, 350); return ()=>clearTimeout(id); }
   }, [open]);
 
+  useEffect(() => {
+    if (sent && open) cartRef.current?.focus();
+  }, [sent, open]);
+
   const submitOrder = async (e) => {
     e.preventDefault();
-    if (company) return; // honeypot сработал — тихо игнорируем
+    if (company || submitting || !items.length || total < MIN_ORDER) return;
     if (!cName.trim()) { setOrderError(lang==="ua"?"Введіть ваше ім'я":"Введите ваше имя"); return; }
-    const digits = cPhone.replace(/\D/g, "");
-    if (digits.length < 10) { setOrderError(lang==="ua"?"Введіть повний номер телефону (мін. 10 цифр)":"Введите полный номер телефона (мин. 10 цифр)"); return; }
-    if (!cEmail.trim()) { setOrderError(lang==="ua"?"Введіть ваш email":"Введите ваш email"); return; }
+    if (!validPhone(cPhone)) { setOrderError(lang==="ua"?"Введіть телефон (10–15 цифр)":"Введите телефон (10–15 цифр)"); return; }
     if (!cCity.trim()) { setOrderError(lang==="ua"?"Введіть місто доставки":"Введите город доставки"); return; }
+    if (!deliveryAddress.trim()) { setOrderError(t.delivery_required); return; }
     setSubmitting(true); setOrderError("");
     try {
       const res = await fetch("/api/order", {
         method: "POST",
+        signal: AbortSignal.timeout(25000),
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({
           language: lang,
-          customer: { name: cName.trim(), phone: cPhone.trim(), email: cEmail.trim(), city: cCity.trim(), comment: cComment.trim() },
-          items: items.map((i)=>({ name_ua:i.name_ua, name_ru:i.name_ru, code:i.code, headD:i.headD, headL:i.headL, qty:i.qty })),
+          customer: { name: cName.trim(), phone: cPhone.trim(), email: cEmail.trim(), city: cCity.trim(), deliveryAddress: deliveryAddress.trim(), comment: cComment.trim() },
+          paymentMethod,
+          items: items.map(({ code, qty }) => ({ code, qty })),
           company,
         }),
       });
-      if (!res.ok) { const d = await res.json().catch(()=>({})); throw new Error(d.error||"error"); }
+      const result = await res.json();
+      if (!res.ok || result.ok !== true) throw new Error("Order not accepted");
       setSent(true);
       onClearCart();
+      setCName(''); setCPhone(''); setCEmail(''); setCCity(''); setDeliveryAddress(''); setCComment('');
     } catch {
       setOrderError(t.order_failed);
     } finally {
@@ -747,11 +788,11 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
 
   return (
     <Fragment>
-      <div className={"bf-overlay"+(open?" on":"")} onClick={onClose}/>
-      <aside className={"bf-cart"+(open?" on":"")}>
+      <div className={"bf-overlay"+(open?" on":"")} onClick={() => closeRef.current()}/>
+      <aside ref={cartRef} role="dialog" aria-modal={open ? "true" : undefined} aria-label={t.cart} aria-hidden={!open} tabIndex={-1} className={"bf-cart"+(open?" on":"")}>
         <div className="bf-cart-head">
           <h3 className="bf-cart-title">{t.cart} {count>0 && !sent && <small>{count} {t.positions}</small>}</h3>
-          <button className="bf-cart-close" onClick={onClose}>✕</button>
+          <button className="bf-cart-close" onClick={onClose} disabled={submitting} aria-label={t.order_close}>✕</button>
         </div>
 
         {/* ── items panel ── */}
@@ -764,14 +805,15 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
                 <span className="bf-citemc-art"><BurrShape type={it.shape} size={46} strokeWidth={3} flutes={flutes}/></span>
                 <div className="bf-citemc-body">
                   <div className="bf-citemc-name">{catName(it,lang)} · {dimStr(it)}{it.headD?" · хв."+it.shankD:""}</div>
+                  <div className="bf-cart-note">{it.code} · {priceFmt(it.price)} грн / {t.pcs}</div>
                   <div className="bf-citemc-row">
                     <div className="bf-qty">
-                      <button className="bf-qty-btn" onClick={()=>onQty(it.id, Math.max(1,it.qty-1))}>−</button>
-                      <QtyInput qty={it.qty} onCommit={(q)=>onQty(it.id, q)}/>
-                      <button className="bf-qty-btn" onClick={()=>onQty(it.id, it.qty+1)}>+</button>
+                      <button className="bf-qty-btn" disabled={submitting || it.qty <= 1} aria-label={t.qty_less} onClick={()=>onQty(it.id, Math.max(1,it.qty-1))}>−</button>
+                      <QtyInput qty={it.qty} disabled={submitting} label={t.quantity} onCommit={(q)=>onQty(it.id, q)}/>
+                      <button className="bf-qty-btn" disabled={submitting || it.qty >= cartQuantityLimit(it)} aria-label={t.qty_more} onClick={()=>onQty(it.id, it.qty+1)}>+</button>
                     </div>
                     <span className="bf-citemc-price">{priceFmt(it.price*it.qty)} грн</span>
-                    <button className="bf-citemc-rem" onClick={()=>onRemove(it.id)}>✕</button>
+                    <button className="bf-citemc-rem" disabled={submitting} aria-label={t.remove_item} onClick={()=>onRemove(it.id)}>✕</button>
                   </div>
                 </div>
               </div>
@@ -791,13 +833,15 @@ function Cart({ t, lang, open, onClose, items, onQty, onRemove, flutes, onClearC
             )}
             <form className="bf-order-form" onSubmit={submitOrder}>
               <p className="bf-order-form-label">{t.order_form_title}</p>
-              <input className="bf-order-inp" placeholder={t.f_name_ph+" *"} value={cName} onChange={(e)=>setCName(e.target.value)}/>
-              <input className="bf-order-inp" type="tel" placeholder={t.f_phone_ph+" *"} value={cPhone} onChange={(e)=>setCPhone(e.target.value)}/>
-              <input className="bf-order-inp" type="email" placeholder={"Email *"} value={cEmail} onChange={(e)=>setCEmail(e.target.value)}/>
-              <input className="bf-order-inp" placeholder={t.f_city_ph+" *"} value={cCity} onChange={(e)=>setCCity(e.target.value)}/>
-              <textarea className="bf-order-inp" rows={2} placeholder={t.f_msg_ph} value={cComment} onChange={(e)=>setCComment(e.target.value)}/>
+              <label className="bf-order-label">{t.f_name}<input className="bf-order-inp" required autoComplete="name" maxLength={140} placeholder={t.f_name_ph} value={cName} onChange={(e)=>setCName(e.target.value)}/></label>
+              <label className="bf-order-label">{t.f_phone}<input className="bf-order-inp" required autoComplete="tel" maxLength={80} type="tel" placeholder={t.f_phone_ph} value={cPhone} onChange={(e)=>setCPhone(e.target.value)}/></label>
+              <label className="bf-order-label">{t.email_optional}<input className="bf-order-inp" type="email" autoComplete="email" maxLength={140} value={cEmail} onChange={(e)=>setCEmail(e.target.value)}/></label>
+              <label className="bf-order-label">{t.f_city_ph} *<input className="bf-order-inp" required autoComplete="address-level2" maxLength={140} value={cCity} onChange={(e)=>setCCity(e.target.value)}/></label>
+              <label className="bf-order-label">{t.delivery_address} *<input className="bf-order-inp" required maxLength={200} value={deliveryAddress} onChange={(e)=>setDeliveryAddress(e.target.value)}/></label>
+              <label className="bf-order-label">{t.payment_method}<select className="bf-order-inp" value={paymentMethod} onChange={(e)=>setPaymentMethod(e.target.value)}>{Object.entries(PAYMENT_METHODS).map(([key, labels]) => <option key={key} value={key}>{labels[lang]}</option>)}</select></label>
+              <label className="bf-order-label">{t.order_comment}<textarea className="bf-order-inp" rows={2} maxLength={1200} value={cComment} onChange={(e)=>setCComment(e.target.value)}/></label>
               <input type="text" name="company" tabIndex={-1} autoComplete="off" value={company} onChange={(e)=>setCompany(e.target.value)} style={{position:"absolute",left:"-9999px",width:1,height:1,opacity:0}} aria-hidden="true"/>
-              {orderError && <p className="bf-order-err">{orderError}</p>}
+              {orderError && <p className="bf-order-err" role="alert">{orderError}</p>}
               <button type="submit" className="bf-cart-send-tg" disabled={submitting||total<MIN_ORDER}>
                 {submitting ? t.order_sending : t.order_submit}
               </button>
@@ -846,7 +890,7 @@ function Modal({ t, lang, p, onClose, onAdd, flutes, photos }) {
     ...(p.headD ? [[t.spec_headD, `Ø${p.headD} ${t.mm}`], [t.spec_headL, `${p.headL} ${t.mm}`], [t.spec_shankD, `Ø${p.shankD} ${t.mm}`]] : []),
     [t.spec_cut, cutLabel(p,lang)],
     [t.spec_mat, t.mat],
-    [t.spec_stock, t.in_stock],
+    [t.spec_stock, availableQuantity(p) ? t.in_stock : t.out_of_stock],
   ];
   const useText = s ? (lang==="ua"?s.use_ua:s.use_ru) : null;
   return (
@@ -869,7 +913,7 @@ function Modal({ t, lang, p, onClose, onAdd, flutes, photos }) {
           </div>
           <div className="bf-modal-actions">
             <a className="bf-modal-wa" href={TG_LINK} target="_blank" rel="noopener noreferrer"><I.tg/> Telegram</a>
-            <button className="bf-modal-cart" onClick={()=>{onAdd(p);onClose();}}><I.cart s={18}/> {t.to_cart}</button>
+            <button className="bf-modal-cart" disabled={!availableQuantity(p)} onClick={()=>{onAdd(p);onClose();}}><I.cart s={18}/> {t.to_cart}</button>
           </div>
         </div>
       </div>
@@ -934,7 +978,7 @@ export default function App() {
     setCart((prev)=>addToCart(prev, p));
     showToast(lang==="ua"?"Додано в кошик":"Добавлено в корзину");
   };
-  const setQty = (id,q)=>setCart((prev)=>prev.map((i)=>i.id===id?{...i,qty:clampQuantity(q)}:i));
+  const setQty = (id,q)=>setCart((prev)=>prev.map((i)=>i.id===id?{...i,qty:clampQuantity(q,i)}:i));
   const remove = (id)=>setCart((prev)=>prev.filter((i)=>i.id!==id));
 
   useEffect(() => {
@@ -945,6 +989,8 @@ export default function App() {
     setMetaContent('meta[property="og:title"]', head.ogTitle);
     setMetaContent('meta[property="og:description"]', head.ogDescription);
     setMetaContent('meta[property="og:locale"]', head.ogLocale);
+    setMetaContent('meta[property="og:url"]', `https://borfrezy.in.ua/${lang}/`);
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', `https://borfrezy.in.ua/${lang}/`);
     const p = new URLSearchParams(window.location.search);
     p.delete("lang");
     // Consumed once into the cart above; leaving it would re-add on reload.
@@ -953,7 +999,7 @@ export default function App() {
     const qs = p.toString();
     const basePath = unlocalizedPath(window.location.pathname);
     const nextPath = `/${lang}${basePath === "/" ? "/" : basePath}`;
-    window.history.replaceState({}, "", nextPath + (qs ? "?" + qs : ""));
+    window.history.replaceState({}, "", nextPath + (qs ? "?" + qs : "") + window.location.hash);
   }, [lang, shape]);
 
   const pickShape = (k) => { setShape(k); setTimeout(()=>catalogRef.current && catalogRef.current.scrollIntoView({behavior:"smooth",block:"start"}),60); };

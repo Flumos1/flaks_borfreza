@@ -1,5 +1,6 @@
 import { MIN_ORDER, MAX_ORDER_QTY } from "../src/data/constants.js";
 import { PRODUCTS } from "../src/data/burr-data.js";
+import { PAYMENT_METHODS, validPhone, validEmail, availableQuantity } from "../src/data/checkout.js";
 
 const TO_EMAIL = process.env.ORDER_TO_EMAIL || "tpolegat@gmail.com";
 
@@ -7,33 +8,17 @@ const TO_EMAIL = process.env.ORDER_TO_EMAIL || "tpolegat@gmail.com";
 // чтобы клиент не мог прислать произвольную цену (см. отчёт, п.2).
 const PRODUCT_BY_CODE = new Map(PRODUCTS.map((p) => [p.code, p]));
 
-// Разрешённые источники запроса (защита от кросс-сайтового спама, п.3).
-// Пускаем боевой домен, любые превью-деплои *.vercel.app и localhost.
-function isAllowedHost(host) {
-  return (
-    host === "localhost" ||
-    host === "127.0.0.1" ||
-    host === "borfrezy.in.ua" ||
-    host.endsWith(".borfrezy.in.ua") ||
-    host.endsWith(".vercel.app")
-  );
-}
-
 // Управляющие символы (кроме \t и \n) — вырезаем из пользовательского ввода.
 const CTRL_CHARS = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g;
 
 function clean(v, max) {
-  if (!v) return "";
-  return String(v).replace(CTRL_CHARS, "").trim().slice(0, max);
+  if (typeof v !== "string") return "";
+  return v.replace(CTRL_CHARS, "").trim().slice(0, max);
 }
 
 // Экранирование для Telegram parse_mode:"HTML" (п.1 — иначе HTML-инъекция).
 function escHtml(s) {
   return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
-function isValidEmail(s) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 }
 
 function money(n) {
@@ -44,7 +29,15 @@ function originAllowed(req) {
   const origin = req.headers.origin || req.headers.referer || "";
   if (!origin) return true; // запрос без Origin (server-to-server, curl) не блокируем
   try {
-    return isAllowedHost(new URL(origin).hostname);
+    const url = new URL(origin);
+    const allowed = new Set(['https://borfrezy.in.ua', 'https://www.borfrezy.in.ua']);
+    for (const host of [process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL]) {
+      if (host) allowed.add(`https://${host}`);
+    }
+    if (process.env.NODE_ENV !== 'production' && ['localhost', '127.0.0.1'].includes(url.hostname)) {
+      return ['http:', 'https:'].includes(url.protocol);
+    }
+    return allowed.has(url.origin);
   } catch {
     return false;
   }
@@ -71,6 +64,8 @@ function formatMessage(order) {
     `📞 ${escHtml(c.phone)}`,
     c.email  ? `📧 ${escHtml(c.email)}`  : null,
     c.city   ? `📍 ${escHtml(c.city)}`   : null,
+    `Нова Пошта: ${escHtml(c.deliveryAddress)}`,
+    `Оплата: ${PAYMENT_METHODS[order.paymentMethod].ua}`,
     c.comment? `💬 ${escHtml(c.comment)}`: null,
     ``,
     `<b>Товари:</b>`,
@@ -114,6 +109,8 @@ function formatEmail(order) {
     `Телефон:  ${c.phone}`,
     `Email:    ${c.email   || "—"}`,
     `Місто:    ${c.city    || "—"}`,
+    `Нова Пошта: ${c.deliveryAddress}`,
+    `Оплата: ${PAYMENT_METHODS[order.paymentMethod].ua}`,
     `Коментар: ${c.comment || "—"}`,
     "",
     "Товари:",
@@ -154,9 +151,11 @@ async function sendTelegram(order) {
     chunk += (chunk ? "\n" : "") + line;
   }
   if (chunk) chunks.push(chunk);
+  const signal = AbortSignal.timeout(8000);
   for (const text of chunks) {
     const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: "POST",
+      signal,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML", disable_web_page_preview: true }),
     });
@@ -180,6 +179,7 @@ async function sendEmail(order) {
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
+    signal: AbortSignal.timeout(8000),
     headers: {
       Authorization: `Bearer ${key}`,
       "Content-Type": "application/json",
@@ -188,7 +188,7 @@ async function sendEmail(order) {
       from:     process.env.RESEND_FROM || "FLAKS <onboarding@resend.dev>",
       to:       [TO_EMAIL],
       // reply_to ставим только если email прошёл валидацию (п.5).
-      reply_to: c.email && isValidEmail(c.email) ? c.email : undefined,
+      reply_to: c.email && validEmail(c.email) ? c.email : undefined,
       subject:  subj,
       text:     body,
     }),
@@ -201,6 +201,7 @@ async function sendEmail(order) {
 }
 
 export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store');
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -210,8 +211,15 @@ export default async function handler(req, res) {
     return res.status(403).json({ error: "Forbidden" });
   }
 
+  if (!/^application\/json(?:\s*;|$)/i.test(req.headers['content-type'] || '')) {
+    return res.status(415).json({ error: 'Expected application/json' });
+  }
+
   // parse body
   let body = req.body;
+  if (Number(req.headers['content-length']) > 32768 || (typeof body === 'string' && Buffer.byteLength(body) > 32768)) {
+    return res.status(413).json({ error: 'Request too large' });
+  }
   if (typeof body === "string") {
     try { body = JSON.parse(body); } catch { return res.status(400).json({ error: "Invalid JSON" }); }
   }
@@ -227,7 +235,7 @@ export default async function handler(req, res) {
 
   // validate
   const phone = clean(body.customer?.phone, 80);
-  if (!phone) return res.status(400).json({ error: "Phone is required" });
+  if (!validPhone(phone)) return res.status(400).json({ error: "Valid phone is required" });
 
   const language = body.language === "ru" ? "ru" : "ua";
   const isLead = body.type === "lead";
@@ -237,13 +245,18 @@ export default async function handler(req, res) {
     phone,
     email:   clean(body.customer?.email,   140),
     city:    clean(body.customer?.city,    140),
+    deliveryAddress: clean(body.customer?.deliveryAddress, 200),
     comment: clean(body.customer?.comment, 1200),
   };
+  if (!customer.name) return res.status(400).json({ error: 'Name is required' });
+  if (customer.email && !validEmail(customer.email)) return res.status(400).json({ error: 'Invalid email' });
 
   let order;
   if (isLead) {
     order = { type: "lead", language, customer };
   } else {
+    if (!customer.city || !customer.deliveryAddress) return res.status(400).json({ error: 'Delivery city and branch or address are required' });
+    if (!Object.hasOwn(PAYMENT_METHODS, body.paymentMethod)) return res.status(400).json({ error: 'Invalid payment method' });
     const rawItems = Array.isArray(body.items) ? body.items : [];
     if (!rawItems.length) return res.status(400).json({ error: "Cart is empty" });
 
@@ -260,6 +273,7 @@ export default async function handler(req, res) {
       if (!Number.isInteger(item.qty) || item.qty < 1 || item.qty > MAX_ORDER_QTY) {
         return res.status(400).json({ error: "Invalid quantity" });
       }
+      if (item.qty > availableQuantity(product)) return res.status(400).json({ error: 'Insufficient stock' });
       codes.add(product.code);
       // All product details, including the price, come from the server catalog.
       const { code, name_ua, name_ru, headD, headL, price } = product;
@@ -269,16 +283,15 @@ export default async function handler(req, res) {
     const total = items.reduce((s, i) => s + i.price * i.qty, 0);
     if (total < MIN_ORDER) return res.status(400).json({ error: `Minimum order is ${MIN_ORDER} UAH` });
 
-    order = { type: "order", language, customer, items, total };
+    order = { type: "order", language, customer, items, total, paymentMethod: body.paymentMethod };
   }
 
-  const results = {};
-
-  try { results.telegram = await sendTelegram(order); }
-  catch (e) { results.telegram = { error: e.message }; }
-
-  try { results.email = await sendEmail(order); }
-  catch (e) { results.email = { error: e.message }; }
+  // A slow provider must not prevent the independent backup from receiving the order.
+  const deliveries = await Promise.allSettled([sendTelegram(order), sendEmail(order)]);
+  const results = Object.fromEntries(deliveries.map((result, i) => [
+    i === 0 ? 'telegram' : 'email',
+    result.status === 'fulfilled' ? result.value : { error: result.reason?.name || 'DeliveryError' },
+  ]));
 
   const delivered = results.telegram?.ok || results.email?.ok;
 

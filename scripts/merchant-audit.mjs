@@ -40,11 +40,16 @@ function hasScopes(token) {
 async function tokenRequest(body) {
   const res = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
+    signal: AbortSignal.timeout(20000),
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams(body),
   });
   const text = await res.text();
-  if (!res.ok) throw new Error(`Token request failed ${res.status}: ${text}`);
+  if (!res.ok) {
+    const error = new Error(`Token request failed (${res.status})`);
+    try { error.code = JSON.parse(text).error; } catch { /* No OAuth error code. */ }
+    throw error;
+  }
   return JSON.parse(text);
 }
 
@@ -71,15 +76,25 @@ async function authorize(client) {
     return existing;
   }
   if (existing?.refresh_token) {
-    const refreshed = await refreshToken(client, existing);
-    if (refreshed) {
-      await writeFile(TOKEN_PATH, JSON.stringify(refreshed, null, 2));
-      return refreshed;
+    try {
+      const refreshed = await refreshToken(client, existing);
+      if (refreshed) {
+        await writeFile(TOKEN_PATH, JSON.stringify(refreshed, null, 2));
+        return refreshed;
+      }
+    } catch (error) {
+      if (error.code !== 'invalid_grant') throw error;
+      if (!process.argv.includes('--authorize')) {
+        throw new Error('Merchant authorization expired or was revoked. Run node scripts/merchant-audit.mjs --authorize to sign in again.');
+      }
     }
   }
 
+  if (!process.argv.includes('--authorize')) throw new Error('Merchant sign-in required: rerun with --authorize.');
+
   const verifier = b64url(randomBytes(48));
   const challenge = b64url(createHash("sha256").update(verifier).digest());
+  const state = b64url(randomBytes(32));
   const port = 53683;
   const redirectUri = `http://127.0.0.1:${port}/oauth2callback`;
 
@@ -92,6 +107,7 @@ async function authorize(client) {
   authUrl.searchParams.set("prompt", "consent");
   authUrl.searchParams.set("code_challenge", challenge);
   authUrl.searchParams.set("code_challenge_method", "S256");
+  authUrl.searchParams.set('state', state);
 
   console.log("\nOpen this URL in your browser and approve Merchant Center access:\n");
   console.log(authUrl.toString());
@@ -104,17 +120,32 @@ async function authorize(client) {
         res.writeHead(404).end("Not found");
         return;
       }
+      if (url.searchParams.get('state') !== state) {
+        res.writeHead(400).end('Invalid OAuth state. Start authorization from the current link.');
+        return;
+      }
       if (url.searchParams.get("error")) {
         res.writeHead(400).end("Authorization failed. You can close this tab.");
         server.close();
+        clearTimeout(timeout);
         reject(new Error(url.searchParams.get("error")));
+        return;
+      }
+      if (!url.searchParams.get('code')) {
+        res.writeHead(400).end('Missing authorization code.');
         return;
       }
       res.writeHead(200, { "Content-Type": "text/plain; charset=utf-8" });
       res.end("Merchant authorization complete. You can close this tab and return to Codex.");
       server.close();
+      clearTimeout(timeout);
       resolve(url.searchParams.get("code"));
     });
+    const timeout = setTimeout(() => {
+      server.close();
+      reject(new Error('Authorization timed out. Rerun with --authorize.'));
+    }, 10 * 60 * 1000);
+    server.on('error', (error) => { clearTimeout(timeout); reject(error); });
     server.listen(port, "127.0.0.1");
   });
 
@@ -133,6 +164,7 @@ async function authorize(client) {
 
 async function api(token, url, options = {}) {
   const res = await fetch(url, {
+    signal: AbortSignal.timeout(20000),
     ...options,
     headers: {
       Authorization: `Bearer ${token.access_token}`,
@@ -164,17 +196,20 @@ async function safe(name, fn) {
   }
 }
 
-async function listPages(token, url, resourceKey, pageParam = "pageToken", nextKey = "nextPageToken", limit = 1000) {
+async function listPages(token, url, resourceKey) {
   const out = [];
   let pageToken = "";
-  while (out.length < limit) {
+  const seen = new Set();
+  do {
     const pageUrl = new URL(url);
-    if (pageToken) pageUrl.searchParams.set(pageParam, pageToken);
+    if (pageToken) pageUrl.searchParams.set('pageToken', pageToken);
     const data = await api(token, pageUrl.toString());
     out.push(...(data[resourceKey] || []));
-    pageToken = data[nextKey];
+    pageToken = data.nextPageToken;
     if (!pageToken) break;
-  }
+    if (seen.has(pageToken)) throw new Error('API returned a repeated page token');
+    seen.add(pageToken);
+  } while (pageToken);
   return out;
 }
 
@@ -200,13 +235,19 @@ const { name, client } = await findClient();
 const token = await authorize(client);
 await mkdir("reports", { recursive: true });
 
-const base = `https://shoppingcontent.googleapis.com/content/v2.1`;
-const authinfo = await safe("authinfo", () => api(token, `${base}/accounts/authinfo`));
-const account = await safe("account", () => api(token, `${base}/${MERCHANT_ID}/accounts/${MERCHANT_ID}`));
-const accountStatus = await safe("accountStatus", () => api(token, `${base}/${MERCHANT_ID}/accountstatuses/${MERCHANT_ID}`));
-const datafeeds = await safe("datafeeds", () => api(token, `${base}/${MERCHANT_ID}/datafeeds`));
-const products = await safe("products", () => listPages(token, `${base}/${MERCHANT_ID}/products?maxResults=250`, "resources", "pageToken", "nextPageToken", 1000));
-const productStatuses = await safe("productStatuses", () => listPages(token, `${base}/${MERCHANT_ID}/productstatuses?maxResults=250`, "resources", "pageToken", "nextPageToken", 1000));
+const base = 'https://merchantapi.googleapis.com';
+const parent = `accounts/${MERCHANT_ID}`;
+const [account, accountStatus, datafeeds, products] = await Promise.all([
+  safe('account', () => api(token, `${base}/accounts/v1/${parent}`)),
+  safe('accountStatus', () => listPages(token, `${base}/accounts/v1/${parent}/issues?pageSize=100&languageCode=ru`, 'accountIssues')),
+  safe('datafeeds', () => listPages(token, `${base}/datasources/v1/${parent}/dataSources`, 'dataSources')),
+  safe('products', () => listPages(token, `${base}/products/v1/${parent}/products?pageSize=250`, 'products')),
+]);
+const apiErrors = Object.entries({ account, accountStatus, datafeeds, products })
+  .filter(([, result]) => result?.error).map(([resource, result]) => ({ resource, ...result }));
+const productStatuses = Array.isArray(products) ? products.filter((p) => p.productStatus).map((p) => ({
+  ...p.productStatus, productId: p.name, title: p.productAttributes?.title || p.offerId,
+})) : [];
 
 const statusItems = Array.isArray(productStatuses) ? productStatuses : [];
 const productItems = Array.isArray(products) ? products : [];
@@ -217,10 +258,10 @@ for (const status of statusItems) {
       productId: status.productId,
       title: status.title,
       code: issue.code,
-      servability: issue.servability,
+      servability: issue.severity,
       resolution: issue.resolution,
-      attribute: issue.attributeName,
-      destination: issue.destination,
+      attribute: issue.attribute,
+      destination: issue.reportingContext,
       description: issue.description,
       detail: issue.detail,
       documentation: issue.documentation,
@@ -232,15 +273,18 @@ for (const status of statusItems) {
 const destinationRows = [];
 for (const status of statusItems) {
   for (const destination of status.destinationStatuses || []) {
-    destinationRows.push({
+    for (const [statusName, countries] of [['approved', destination.approvedCountries], ['disapproved', destination.disapprovedCountries], ['pending', destination.pendingCountries]]) {
+      if (!countries?.length) continue;
+      destinationRows.push({
       productId: status.productId,
       title: status.title,
-      destination: destination.destination,
-      status: destination.status,
+      destination: destination.reportingContext,
+      status: statusName,
       approved: (destination.approvedCountries || []).join(", "),
       disapproved: (destination.disapprovedCountries || []).join(", "),
       pending: (destination.pendingCountries || []).join(", "),
     });
+    }
   }
 }
 
@@ -248,13 +292,14 @@ const report = {
   generatedAt: new Date().toISOString(),
   credentialFile: name,
   merchantId: MERCHANT_ID,
-  authinfo,
+  apiVersion: 'Merchant API v1',
+  apiErrors,
   account,
   accountStatus,
   datafeeds,
-  productCount: productItems.length,
-  productStatusCount: statusItems.length,
-  issueCount: issueRows.length,
+  productCount: Array.isArray(products) ? productItems.length : null,
+  productStatusCount: Array.isArray(products) ? statusItems.length : null,
+  issueCount: Array.isArray(products) ? issueRows.length : null,
   destinationSummary: countBy(destinationRows, (r) => `${r.destination}:${r.status}`),
   issueSummary: countBy(issueRows, (r) => `${r.code} | ${r.description}`),
   products: productItems,
@@ -284,6 +329,12 @@ const md = [
   `Product statuses returned: ${report.productStatusCount}`,
   `Item-level issues returned: ${report.issueCount}`,
   "",
+  '## API Errors',
+  table(apiErrors, ['resource', 'status', 'error']),
+  '',
+  '## Account Issues',
+  Array.isArray(accountStatus) ? table(accountStatus, ['title', 'severity', 'detail', 'documentationUri']) : 'Account issues unavailable; see API errors.',
+  '',
   "## Destination Summary",
   table(destinationSummary, ["status", "count"]),
   "",
@@ -302,6 +353,9 @@ console.log(JSON.stringify({
   productCount: report.productCount,
   productStatusCount: report.productStatusCount,
   issueCount: report.issueCount,
+  accountIssueCount: Array.isArray(accountStatus) ? accountStatus.length : null,
+  apiErrors,
   reportJson: REPORT_JSON,
   reportMd: REPORT_MD,
 }, null, 2));
+if (apiErrors.length) process.exitCode = 1;

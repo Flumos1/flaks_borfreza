@@ -1,4 +1,5 @@
 import { PRODUCTS, SHAPES, CUTS } from '../src/data/burr-data.js';
+import { availableQuantity } from '../src/data/checkout.js';
 import { SITE, LANGS, productPath, productUrl, shapePath, shapeUrl } from '../src/data/site-urls.js';
 import { writeFileSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -42,7 +43,7 @@ function jsonLd(product, shape, lang = 'ua') {
       url,
       price: money(product.price),
       priceCurrency: 'UAH',
-      availability: product.qty > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+      availability: availableQuantity(product) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       itemCondition: 'https://schema.org/NewCondition',
     },
   };
@@ -92,7 +93,9 @@ function page(product, lang = '') {
   const catalogText = pageLang === 'ua' ? 'Дивитись у каталозі' : 'Смотреть в каталоге';
   const relatedTitle = pageLang === 'ua' ? 'Схожі типорозміри' : 'Похожие типоразмеры';
   const applicationTitle = pageLang === 'ua' ? 'Застосування' : 'Применение';
-  const stockText = pageLang === 'ua' ? 'В наявності' : 'В наличии';
+  const stockUa = availableQuantity(product) ? 'В наявності' : 'Немає в наявності';
+  const stockRu = availableQuantity(product) ? 'В наличии' : 'Нет в наличии';
+  const stockText = pageLang === 'ua' ? stockUa : stockRu;
   const cutTitle = pageLang === 'ua' ? 'Насічка' : 'Насечка';
 
   return `<!DOCTYPE html>
@@ -127,13 +130,13 @@ a{color:inherit;text-decoration:none}
 .nav{margin-left:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .btn,.lang-btn{border:1px solid rgba(255,255,255,.14);background:#1c2030;color:#e8eaf0;border-radius:4px;padding:9px 14px;cursor:pointer}
 .btn:hover,.lang-btn:hover{border-color:#e85d04;color:#fff}
-.crumbs{font-size:13px;color:#9aa0b8;padding:18px 0}
+.crumbs{font-size:13px;color:#9aa0b8;padding:18px 0;overflow-wrap:anywhere}
 .crumbs span{color:#5a6080;margin:0 7px}
 .product{display:grid;grid-template-columns:minmax(260px,420px) 1fr;gap:36px;padding:26px 0 54px}
 .photo{background:#f4f5f7;border-radius:8px;min-height:360px;display:grid;place-items:center;padding:24px}
 .photo img{max-width:100%;max-height:330px;object-fit:contain}
 .eyebrow{color:#e85d04;text-transform:uppercase;font-size:12px;letter-spacing:2px;font-weight:700;margin-bottom:10px}
-h1{font-size:clamp(28px,5vw,44px);line-height:1.08;color:#fff;margin-bottom:14px}
+h1{font-size:36px;line-height:1.15;color:#fff;margin-bottom:14px;overflow-wrap:anywhere}
 .lead{color:#9aa0b8;max-width:620px;margin-bottom:24px}
 .price-row{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:24px}
 .price{font-size:34px;color:#e85d04;font-weight:800}.unit{color:#9aa0b8}
@@ -146,21 +149,10 @@ h1{font-size:clamp(28px,5vw,44px);line-height:1.08;color:#fff;margin-bottom:14px
 .spec b{display:block;color:#5a6080;font-size:12px;text-transform:uppercase;margin-bottom:4px}.spec span{color:#fff}
 .section{padding:30px 0;border-top:1px solid rgba(255,255,255,.08)}
 .section h2{font-size:24px;color:#fff;margin-bottom:12px}
-.related{display:flex;gap:10px;flex-wrap:wrap}.related-link{background:#1c2030;border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:8px 12px;color:#e8eaf0}.related-link:hover{border-color:#e85d04}
+.related{display:flex;gap:10px;flex-wrap:wrap}.related-link{display:inline-block;background:#1c2030;border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:8px 12px;color:#e8eaf0}.related-link:hover{border-color:#e85d04}
 .hidden{display:none!important}
-@media(max-width:760px){.product{grid-template-columns:1fr}.photo{min-height:260px}.specs{grid-template-columns:1fr}.nav{margin-left:0}}
+@media(max-width:760px){.product{grid-template-columns:minmax(0,1fr)}.photo{min-height:260px}.specs{grid-template-columns:1fr}.nav{margin-left:0}h1{font-size:28px}}
 </style>
-<script>
-(function(){
-  var pathLang = location.pathname.split('/').filter(Boolean)[0];
-  var p = new URLSearchParams(location.search).get('lang') || (pathLang === 'ru' || pathLang === 'ua' ? pathLang : null);
-  var stored = localStorage.getItem('flaks-lang');
-  var lang = (p==='ru'||(p===null&&stored==='ru')) ? 'ru' : 'ua';
-  if(p) localStorage.setItem('flaks-lang', p);
-  document.documentElement.lang = lang==='ua' ? 'uk' : 'ru';
-  window.__lang = lang;
-})();
-</script>
 </head>
 <body>
 <header class="header"><div class="wrap header-in">
@@ -181,14 +173,16 @@ h1{font-size:clamp(28px,5vw,44px);line-height:1.08;color:#fff;margin-bottom:14px
       <p class="eyebrow" data-ua="Борфреза · ${esc(product.code)}" data-ru="Борфреза · ${esc(product.code)}">Борфреза · ${esc(product.code)}</p>
       <h1 data-ua="${esc(product.name_ua)}" data-ru="${esc(product.name_ru)}">${esc(productName)}</h1>
       <p class="lead" data-ua="${esc(descUa)}" data-ru="${esc(descRu)}">${esc(desc)}</p>
-      <div class="price-row"><span class="price">${money(product.price)}</span><span class="unit">грн / шт</span><a class="cta" href="${buyUrl}" data-ua="Купити" data-ru="Купить">${buyText}</a><a class="cta-secondary" href="${catalogUrl}" data-ua="Дивитись у каталозі" data-ru="Смотреть в каталоге">${catalogText}</a></div>
+      <div class="price-row"><span class="price">${money(product.price)}</span><span class="unit">грн / шт</span>${availableQuantity(product) ? `<a class="cta" href="${buyUrl}">${buyText}</a>` : `<span>${stockText}</span>`}<a class="cta-secondary" href="${catalogUrl}" data-ua="Дивитись у каталозі" data-ru="Смотреть в каталоге">${catalogText}</a></div>
+      <p>${pageLang === 'ua' ? 'Від однієї штуки. Оплата при отриманні або за рахунком. Доставка Новою Поштою.' : 'От одной штуки. Оплата при получении или по счёту. Доставка Новой Почтой.'}</p>
+      <p><a class="related-link" href="/dostavka/?lang=${pageLang}">${pageLang === 'ua' ? 'Доставка і оплата' : 'Доставка и оплата'}</a> <a class="related-link" href="/povernennya/?lang=${pageLang}">${pageLang === 'ua' ? 'Обмін і повернення' : 'Обмен и возврат'}</a></p>
       <div class="specs">
         <div class="spec"><b data-ua="Форма" data-ru="Форма">Форма</b><span data-ua="${esc(shape?.ua || product.shape)}" data-ru="${esc(shape?.ru || product.shape)}">${esc(shapeName)}</span></div>
         <div class="spec"><b data-ua="Артикул" data-ru="Артикул">Артикул</b><span>${esc(product.code)}</span></div>
         <div class="spec"><b data-ua="Головка" data-ru="Головка">Головка</b><span>Ø${product.headD}×${product.headL} мм</span></div>
         <div class="spec"><b data-ua="Хвостовик" data-ru="Хвостовик">Хвостовик</b><span>Ø${product.shankD} мм</span></div>
         <div class="spec"><b data-ua="Насічка" data-ru="Насечка">${cutTitle}</b><span data-ua="${esc(cutLabel(product, 'ua'))}" data-ru="${esc(cutLabel(product, 'ru'))}">${esc(cutLabel(product, pageLang))}</span></div>
-        <div class="spec"><b data-ua="Наявність" data-ru="Наличие">${pageLang === 'ua' ? 'Наявність' : 'Наличие'}</b><span data-ua="В наявності" data-ru="В наличии">${stockText}</span></div>
+        <div class="spec"><b data-ua="Наявність" data-ru="Наличие">${pageLang === 'ua' ? 'Наявність' : 'Наличие'}</b><span>${stockText}</span></div>
       </div>
     </div>
   </section>
@@ -201,27 +195,7 @@ h1{font-size:clamp(28px,5vw,44px);line-height:1.08;color:#fff;margin-bottom:14px
     <div class="related">${relatedProducts(product, pageLang)}</div>
   </section>
 </main>
-<script>
-(function(){
-  var lang = window.__lang || 'ua';
-  if(lang==='ru'){
-    document.title = ${JSON.stringify(titleRu)};
-    var md=document.querySelector('meta[name="description"]'); if(md) md.setAttribute('content', ${JSON.stringify(descRu)});
-    var ot=document.querySelector('meta[property="og:title"]'); if(ot) ot.setAttribute('content', ${JSON.stringify(titleRu)});
-    var od=document.querySelector('meta[property="og:description"]'); if(od) od.setAttribute('content', ${JSON.stringify(descRu)});
-  }
-  document.querySelectorAll('[data-ua]').forEach(function(el){
-    var v = el.getAttribute('data-'+lang);
-    if(v!=null) el.textContent = v;
-  });
-  var btn = document.getElementById('langBtn');
-  btn.textContent = lang==='ua' ? 'RU' : 'UA';
-  btn.addEventListener('click', function(){
-    var next = (window.__lang==='ua') ? 'ru' : 'ua';
-    localStorage.setItem('flaks-lang', next);
-  });
-})();
-</script>
+<footer class="section"><div class="wrap">FLAKS · <a href="tel:+380675453115">+38 (067) 545-31-15</a> · <a href="mailto:tpolegat@gmail.com">tpolegat@gmail.com</a></div></footer>
 </body>
 </html>`;
 }
