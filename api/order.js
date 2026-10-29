@@ -25,6 +25,37 @@ function money(n) {
   return Number.isInteger(n) ? String(n) : String(n).replace(".", ",");
 }
 
+// Per-IP limit on order attempts. Counters live in Upstash Redis (REST), because
+// serverless instances don't share memory. Without UPSTASH_* env vars it is a no-op.
+const ORDER_RATE_LIMIT = Number(process.env.ORDER_RATE_LIMIT) || 5; // attempts per window
+const ORDER_RATE_WINDOW_SEC = 3600;
+
+export function clientIp(req) {
+  const forwarded = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim();
+  return forwarded || req.socket?.remoteAddress || '';
+}
+
+// Returns true when the IP is over the limit. Fails open: a Redis outage must not block real orders.
+export async function rateLimited(ip, { fetchImpl = fetch, env = process.env } = {}) {
+  const url = env.UPSTASH_REDIS_REST_URL;
+  const token = env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token || !ip) return false;
+  const key = `rl:order:${ip}`;
+  try {
+    const res = await fetchImpl(`${url}/pipeline`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify([['INCR', key], ['EXPIRE', key, ORDER_RATE_WINDOW_SEC, 'NX']]),
+      signal: AbortSignal.timeout(1500),
+    });
+    if (!res.ok) return false;
+    const [{ result: count }] = await res.json();
+    return Number(count) > ORDER_RATE_LIMIT;
+  } catch {
+    return false;
+  }
+}
+
 function originAllowed(req) {
   const origin = req.headers.origin || req.headers.referer || "";
   if (!origin) return true; // запрос без Origin (server-to-server, curl) не блокируем
@@ -209,6 +240,10 @@ export default async function handler(req, res) {
 
   if (!originAllowed(req)) {
     return res.status(403).json({ error: "Forbidden" });
+  }
+
+  if (await rateLimited(clientIp(req))) {
+    return res.status(429).json({ error: "Too many requests" });
   }
 
   if (!/^application\/json(?:\s*;|$)/i.test(req.headers['content-type'] || '')) {

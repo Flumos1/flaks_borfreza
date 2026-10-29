@@ -54,5 +54,5 @@
 PHONE_RAW=380675453115, EMAIL=tpolegat@gmail.com, TG_BOT=flaks_orders_bot.
 
 ## Відомі обмеження
-- Немає rate-limit та ідемпотентності на `/api/order` (потрібне сховище, напр. Upstash) — захист лише honeypot + Origin.
+- Rate-limit на `/api/order` (5 заявок/год з IP) працює лише коли у Vercel задані `UPSTASH_REDIS_REST_URL` і `UPSTASH_REDIS_REST_TOKEN`; без них не активний (fail-open). Ідемпотентності немає.
 - Залишки в каталозі статичні (`qty` у `burr-data.js`), складського обліку немає.
