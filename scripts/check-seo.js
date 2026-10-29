@@ -113,6 +113,9 @@ function checkProducts() {
       if (!langHtml.includes(`hreflang="ru-UA" href="${productUrl(product, 'ru')}"`)) {
         fail(`${lang.toUpperCase()} product ${product.code} misses RU hreflang`);
       }
+      if (!langHtml.includes('"@type":"MerchantReturnPolicy"') || !langHtml.includes('"merchantReturnDays":14')) {
+        fail(`${lang.toUpperCase()} product ${product.code} misses the 14-day return policy markup`);
+      }
       if (!langHtml.includes('"@type":"Product"')) {
         fail(`${lang.toUpperCase()} product ${product.code} has no Product JSON-LD`);
       }

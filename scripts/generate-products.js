@@ -21,6 +21,17 @@ const esc = (s) => String(s ?? '')
   .replace(/"/g, '&quot;');
 const money = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2));
 const shapeByKey = (key) => SHAPES.find((shape) => shape.key === key);
+
+// Mirrors /povernennya/: 14 days, any reason or defect, sent back by mail.
+// Who pays return shipping is not published yet, so returnFees is omitted.
+const RETURN_POLICY = {
+  '@type': 'MerchantReturnPolicy',
+  applicableCountry: 'UA',
+  returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+  merchantReturnDays: 14,
+  returnMethod: 'https://schema.org/ReturnByMail',
+  merchantReturnLink: `${SITE}/povernennya/`,
+};
 const cutLabel = (product, lang) => (CUTS[product.cut] || CUTS.double)[lang];
 
 function productDescription(product, shape, lang) {
@@ -51,6 +62,7 @@ function jsonLd(product, shape, lang = 'ua') {
       priceCurrency: 'UAH',
       availability: availableQuantity(product) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       itemCondition: 'https://schema.org/NewCondition',
+      hasMerchantReturnPolicy: RETURN_POLICY,
     },
   };
   const breadcrumb = {
