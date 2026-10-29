@@ -1,0 +1,13 @@
+# LF everywhere: generators hash and template these files, so a CRLF checkout
+# on Windows would produce different output (and cache-buster hashes) than Vercel.
+* text=auto eol=lf
+
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.webp binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.woff binary
+*.woff2 binary

@@ -9,7 +9,10 @@ import { dirname, join } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const outDir = join(__dirname, '../public/borfrezy');
-const checkoutVersion = createHash('sha256').update(readFileSync(join(__dirname, '../public/product-checkout.js'))).digest('hex').slice(0, 12);
+// Hash LF-normalized text: a CRLF checkout on Windows must yield the same
+// cache-buster as the Vercel (LF) build, or every build rewrites 240 pages.
+const checkoutSource = readFileSync(join(__dirname, '../public/product-checkout.js'), 'utf8').replace(/\r\n/g, '\n');
+const checkoutVersion = createHash('sha256').update(checkoutSource).digest('hex').slice(0, 12);
 
 const esc = (s) => String(s ?? '')
   .replace(/&/g, '&amp;')
