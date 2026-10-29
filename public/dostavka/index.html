@@ -11,7 +11,7 @@
 <meta property="og:image" content="https://borfrezy.in.ua/assets/og-image.jpg">
 <meta property="og:url" content="https://borfrezy.in.ua/dostavka/">
 <link rel="canonical" href="https://borfrezy.in.ua/dostavka/">
-<link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/dostavka/?lang=ua">
+<link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/dostavka/">
 <link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/dostavka/?lang=ru">
 <link rel="alternate" hreflang="x-default" href="https://borfrezy.in.ua/dostavka/">
 <meta name="theme-color" content="#e85d04">
@@ -79,11 +79,12 @@ a{text-decoration:none;color:inherit}
 <script>
 (function(){
   var p = new URLSearchParams(location.search).get('lang');
-  var stored = localStorage.getItem('flaks-lang');
+  var stored = null; try { stored = localStorage.getItem('flaks-lang'); } catch (e) {}
   var lang = (p==='ru'||(p===null&&stored==='ru')) ? 'ru' : 'ua';
-  if(p) localStorage.setItem('flaks-lang', p);
+  if(p) { try { localStorage.setItem('flaks-lang', p); } catch (e) {} }
   document.documentElement.lang = lang==='ua' ? 'uk' : 'ru';
   window.__lang = lang;
+  if (lang === 'ru') { var c = document.querySelector('link[rel="canonical"]'); if (c) c.href = c.href.split('?')[0] + '?lang=ru'; }
 })();
 </script>
 </head>
@@ -184,7 +185,7 @@ a{text-decoration:none;color:inherit}
     <div class="art-cta">
       <h3 id="ctaTitle"></h3>
       <p id="ctaDesc"></p>
-      <a href="/?lang=ua" class="art-cta-btn" id="ctaBtn"></a>
+      <a href="/ua/" class="art-cta-btn" id="ctaBtn"></a>
     </div>
 
   </div>
@@ -213,7 +214,7 @@ a{text-decoration:none;color:inherit}
   document.getElementById('ctaTitle').textContent = t.ctaTitle;
   document.getElementById('ctaDesc').textContent = t.ctaDesc;
   document.getElementById('ctaBtn').textContent = t.ctaBtn;
-  document.getElementById('ctaBtn').href = '/?lang=' + lang;
+  document.getElementById('ctaBtn').href = '/' + lang + '/';
   document.getElementById('backBtn').textContent = t.backBtn;
   document.getElementById('footCity').textContent = t.footCity;
   document.getElementById('footBack').textContent = t.footBack;
@@ -226,7 +227,7 @@ a{text-decoration:none;color:inherit}
   lb.textContent = lang === 'ua' ? 'RU' : 'UA';
   lb.addEventListener('click', function(){
     var nl = lang==='ua'?'ru':'ua';
-    localStorage.setItem('flaks-lang', nl);
+    try { localStorage.setItem('flaks-lang', nl); } catch (e) {}
     location.search = '?lang=' + nl;
   });
 })();

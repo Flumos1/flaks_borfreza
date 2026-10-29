@@ -289,9 +289,34 @@ function checkFeed() {
   }
 }
 
+// Hand-written pages switch language with ?lang=ru on one canonical URL, so UA
+// and x-default must point at that canonical URL, never at a ?lang=ua duplicate.
+function checkStaticPages() {
+  const pages = [
+    'dostavka/index.html', 'povernennya/index.html', 'articles/index.html',
+    'articles/yak-vybrat-borfrezu.html', 'articles/borfrezy-po-aluminiu.html',
+    'articles/zachystka-zvarnykh-shviv.html', 'articles/oberty-borfrezy.html',
+    'articles/resurs-borfrezy.html',
+  ];
+  for (const page of pages) {
+    const html = read(rel(page));
+    const canonical = (html.match(/<link rel="canonical" href="([^"]+)"/) || [])[1];
+    if (!canonical) { fail(`${page} misses canonical`); continue; }
+    if (!html.includes(`hreflang="uk-UA" href="${canonical}"`)) fail(`${page}: UA hreflang must equal canonical ${canonical}`);
+    if (!html.includes(`hreflang="ru-UA" href="${canonical}?lang=ru"`)) fail(`${page}: RU hreflang must be ${canonical}?lang=ru`);
+    if (!html.includes(`hreflang="x-default" href="${canonical}"`)) fail(`${page}: x-default hreflang must equal canonical`);
+    if (/href="\/\?lang=/.test(html) || /'\/\?lang='/.test(html)) fail(`${page} links to /?lang= (a redirect); link /ua/ or /ru/ directly`);
+    // Blocked storage (Safari private mode, disabled cookies) throws and would abort the page script.
+    if (html.split('\n').some((line) => line.includes('localStorage.') && !line.includes('try {'))) {
+      fail(`${page} uses localStorage without try/catch`);
+    }
+  }
+}
+
 checkHomePages();
 checkProducts();
 checkLandings();
+checkStaticPages();
 checkSitemap();
 checkFeed();
 

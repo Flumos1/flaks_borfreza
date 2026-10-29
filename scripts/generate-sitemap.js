@@ -5,7 +5,6 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const TODAY = new Date().toISOString().slice(0, 10);
 
 const esc = (s) => String(s ?? '')
   .replace(/&/g, '&amp;')
@@ -55,15 +54,18 @@ function alternates(loc) {
     <xhtml:link rel="alternate" hreflang="ru-UA" href="${esc(`${SITE}/ru${suffix}`)}"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="${esc(`${SITE}/ua${suffix}`)}"/>`;
   }
-  return `    <xhtml:link rel="alternate" hreflang="uk-UA" href="${esc(loc)}?lang=ua"/>
+  // Static pages serve UA at the canonical URL itself; only RU needs ?lang=ru.
+  // Pointing uk-UA at ?lang=ua (a non-canonical duplicate) breaks the hreflang set.
+  return `    <xhtml:link rel="alternate" hreflang="uk-UA" href="${esc(loc)}"/>
     <xhtml:link rel="alternate" hreflang="ru-UA" href="${esc(loc)}?lang=ru"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="${esc(loc)}"/>`;
 }
 
+// No <lastmod>: stamping every URL with the build date on each deploy is a
+// signal Google learns to ignore, and it churns sitemap.xml in git every build.
 function entry(page) {
   return `  <url>
     <loc>${esc(page.loc)}</loc>
-    <lastmod>${TODAY}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
 ${alternates(page.loc)}

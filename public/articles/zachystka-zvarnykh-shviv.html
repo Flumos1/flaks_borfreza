@@ -10,8 +10,9 @@
 <meta property="og:image" content="https://borfrezy.in.ua/assets/og-image.jpg">
 <meta property="og:url" content="https://borfrezy.in.ua/articles/zachystka-zvarnykh-shviv.html">
 <link rel="canonical" href="https://borfrezy.in.ua/articles/zachystka-zvarnykh-shviv.html">
-<link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/articles/zachystka-zvarnykh-shviv.html?lang=ua">
+<link rel="alternate" hreflang="uk-UA" href="https://borfrezy.in.ua/articles/zachystka-zvarnykh-shviv.html">
 <link rel="alternate" hreflang="ru-UA" href="https://borfrezy.in.ua/articles/zachystka-zvarnykh-shviv.html?lang=ru">
+<link rel="alternate" hreflang="x-default" href="https://borfrezy.in.ua/articles/zachystka-zvarnykh-shviv.html">
 <meta name="theme-color" content="#e85d04">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -87,11 +88,12 @@ a{text-decoration:none;color:inherit}
 <script>
 (function(){
   var p = new URLSearchParams(location.search).get('lang');
-  var stored = localStorage.getItem('flaks-lang');
+  var stored = null; try { stored = localStorage.getItem('flaks-lang'); } catch (e) {}
   var lang = (p==='ru'||(p===null&&stored==='ru')) ? 'ru' : 'ua';
-  if(p) localStorage.setItem('flaks-lang', p);
+  if(p) { try { localStorage.setItem('flaks-lang', p); } catch (e) {} }
   document.documentElement.lang = lang==='ua' ? 'uk' : 'ru';
   window.__lang = lang;
+  if (lang === 'ru') { var c = document.querySelector('link[rel="canonical"]'); if (c) c.href = c.href.split('?')[0] + '?lang=ru'; }
 })();
 </script>
 </head>
@@ -242,7 +244,7 @@ a{text-decoration:none;color:inherit}
   document.getElementById('ctaTitle').textContent = t.ctaTitle;
   document.getElementById('ctaDesc').textContent = t.ctaDesc;
   document.getElementById('ctaBtn').textContent = t.ctaBtn;
-  document.getElementById('ctaBtn').href = '/?lang=' + lang + '&shape=A';
+  document.getElementById('ctaBtn').href = '/' + lang + '/?shape=A';
   document.getElementById('backBtn').textContent = t.backBtn;
   document.getElementById('footCity').textContent = t.footCity;
   document.getElementById('footBack').textContent = t.footBack;
@@ -260,7 +262,7 @@ a{text-decoration:none;color:inherit}
   lb.textContent = lang==='ua'?'RU':'UA';
   lb.addEventListener('click', function(){
     var nl = lang==='ua'?'ru':'ua';
-    localStorage.setItem('flaks-lang', nl);
+    try { localStorage.setItem('flaks-lang', nl); } catch (e) {}
     location.search = '?lang='+nl;
   });
 })();
