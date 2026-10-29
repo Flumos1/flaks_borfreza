@@ -3,6 +3,7 @@
 // Переиспользует SHAPES / PRODUCTS из burr-data.js (как generate-feed.js).
 // Запуск: npm run landings
 import { PRODUCTS, SHAPES } from '../src/data/burr-data.js';
+import { availableQuantity } from '../src/data/checkout.js';
 import { SITE, LANGS, SHAPE_SLUGS as SLUGS, productUrl, productPath, shapePath, shapeUrl } from '../src/data/site-urls.js';
 import { writeFileSync, mkdirSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -124,12 +125,13 @@ function jsonLd(shape, items, slug, lang = 'ua') {
           mpn: p.code,
           image: p.img,
           brand: { '@type': 'Brand', name: 'FLAKS' },
-          category: `${catalogName} > ${shapeName}`,
+          // No free-text `category` (Search Console: invalid value); availability
+          // must match the product page, which reads the same stock data.
           offers: {
             '@type': 'Offer',
             price: money(p.price),
             priceCurrency: 'UAH',
-            availability: 'https://schema.org/InStock',
+            availability: availableQuantity(p) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
             url: productUrl(p, lang),
           },
         },

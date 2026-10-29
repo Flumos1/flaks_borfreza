@@ -55,7 +55,9 @@ function jsonLd(product, shape, lang = 'ua') {
     mpn: product.code,
     image: product.img,
     brand: { '@type': 'Brand', name: 'FLAKS' },
-    category: `${lang === 'ua' ? 'Борфрези' : 'Борфрезы'} > ${lang === 'ua' ? (shape?.ua || product.shape) : (shape?.ru || product.shape)}`,
+    // No `category`: Search Console flags free text here as an invalid value
+    // (it expects Google's product taxonomy); our own path lives in the feed's
+    // product_type and in the BreadcrumbList.
     offers: {
       '@type': 'Offer',
       url,

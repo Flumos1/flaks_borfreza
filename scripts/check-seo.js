@@ -117,6 +117,9 @@ function checkProducts() {
         || !langHtml.includes('"returnFees":"https://schema.org/FreeReturn"')) {
         fail(`${lang.toUpperCase()} product ${product.code} misses the 14-day return policy markup`);
       }
+      if (langHtml.includes('"category":')) {
+        fail(`${lang.toUpperCase()} product ${product.code} has a free-text Product.category (Search Console: invalid value)`);
+      }
       if (!langHtml.includes('"@type":"Product"')) {
         fail(`${lang.toUpperCase()} product ${product.code} has no Product JSON-LD`);
       }
