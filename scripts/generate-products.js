@@ -22,14 +22,15 @@ const esc = (s) => String(s ?? '')
 const money = (n) => (Number.isInteger(n) ? String(n) : n.toFixed(2));
 const shapeByKey = (key) => SHAPES.find((shape) => shape.key === key);
 
-// Mirrors /povernennya/: 14 days, any reason or defect, sent back by mail.
-// Who pays return shipping is not published yet, so returnFees is omitted.
+// Mirrors /povernennya/ and the Merchant Center return rule: 14 days, any reason
+// or defect, sent back by mail, return shipping paid by the shop.
 const RETURN_POLICY = {
   '@type': 'MerchantReturnPolicy',
   applicableCountry: 'UA',
   returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
   merchantReturnDays: 14,
   returnMethod: 'https://schema.org/ReturnByMail',
+  returnFees: 'https://schema.org/FreeReturn',
   merchantReturnLink: `${SITE}/povernennya/`,
 };
 const cutLabel = (product, lang) => (CUTS[product.cut] || CUTS.double)[lang];
