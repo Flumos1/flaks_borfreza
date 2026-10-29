@@ -55,9 +55,11 @@ if (form) {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload), signal: controller.signal,
       });
-      const result = await response.json();
-      completed = response.ok && result.ok === true;
-      status.textContent = completed ? form.dataset.success : form.dataset.failure;
+      // A non-JSON error page (platform 4xx/5xx) is still a definite answer.
+      const result = await response.json().catch(() => null);
+      completed = response.ok && result?.ok === true;
+      status.textContent = completed ? form.dataset.success
+        : response.ok ? form.dataset.uncertain : form.dataset.failure;
     } catch {
       // A lost response does not prove that the server rejected the order.
       status.textContent = form.dataset.uncertain;

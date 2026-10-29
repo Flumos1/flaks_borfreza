@@ -8,7 +8,9 @@ function cssPreloadPlugin() {
     transformIndexHtml(html) {
       return html.replace(
         /(<link rel="stylesheet" crossorigin href="([^"]+\.css)">)/g,
-        '<link rel="preload" as="style" href="$2">$1'
+        // crossorigin must match the stylesheet's, or the browser discards the
+        // preload and downloads the CSS a second time.
+        '<link rel="preload" as="style" crossorigin href="$2">$1'
       );
     },
   };

@@ -317,7 +317,8 @@ function Catalog({ t, lang, shape, setShape, view, setView, cart, onAdd, onOpen,
     if (cutFilter !== "all") p.set("cut", cutFilter); else p.delete("cut");
     if (priceTo.trim()) p.set("price_to", priceTo.trim()); else p.delete("price_to");
     const qs = p.toString();
-    window.history.replaceState({}, "", qs ? "?" + qs : window.location.pathname);
+    // Keep the #anchor: product pages link to /ua/?q=CODE#catalog.
+    window.history.replaceState({}, "", (qs ? "?" + qs : window.location.pathname) + window.location.hash);
   }, [query, sort, headD, headL, cutFilter, priceTo]);
 
   const baseItems = useMemo(() => {
@@ -1002,6 +1003,27 @@ export default function App() {
     const nextPath = `/${lang}${basePath === "/" ? "/" : basePath}`;
     window.history.replaceState({}, "", nextPath + (qs ? "?" + qs : "") + window.location.hash);
   }, [lang, shape]);
+
+  // Feed the sticky header height to CSS (html scroll-padding-top) so anchors
+  // and menu jumps don't hide section titles under it; it differs by viewport.
+  useEffect(() => {
+    const header = document.querySelector(".bf-header");
+    if (!header || typeof ResizeObserver === "undefined") return;
+    const sync = () => document.documentElement.style.setProperty("--header-h", `${header.offsetHeight}px`);
+    sync();
+    const ro = new ResizeObserver(sync);
+    ro.observe(header);
+    return () => ro.disconnect();
+  }, []);
+
+  // The browser's own jump to #anchor fires before the SPA renders its sections,
+  // so links like /ua/?q=CODE#catalog would land at the top of the page.
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    if (!id) return;
+    const t = setTimeout(() => document.getElementById(id)?.scrollIntoView({ block: "start" }), 60);
+    return () => clearTimeout(t);
+  }, []);
 
   const pickShape = (k) => { setShape(k); setTimeout(()=>catalogRef.current && catalogRef.current.scrollIntoView({behavior:"smooth",block:"start"}),60); };
   const onNav = (id) => {
