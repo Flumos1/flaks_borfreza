@@ -1,5 +1,5 @@
 import { PRODUCTS, SHAPES, CUTS } from '../src/data/burr-data.js';
-import { availableQuantity, SHIPPING_NOTICE } from '../src/data/checkout.js';
+import { availableQuantity, SHIPPING_NOTICE, SHIPPING_FROM_UAH } from '../src/data/checkout.js';
 import { checkoutTemplate } from './product-checkout-template.js';
 import { createHash } from 'node:crypto';
 import { SITE, LANGS, productPath, productUrl, shapePath, shapeUrl } from '../src/data/site-urls.js';
@@ -32,6 +32,19 @@ const RETURN_POLICY = {
   returnMethod: 'https://schema.org/ReturnByMail',
   returnFees: 'https://schema.org/FreeReturn',
   merchantReturnLink: `${SITE}/povernennya/`,
+};
+
+// Mirrors the "Нова Пошта" rule in Merchant Center: flat rate, Ukraine,
+// handling 0–1 day + transit 2–4 days = 2–5 business days in total.
+const SHIPPING_DETAILS = {
+  '@type': 'OfferShippingDetails',
+  shippingRate: { '@type': 'MonetaryAmount', value: SHIPPING_FROM_UAH, currency: 'UAH' },
+  shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'UA' },
+  deliveryTime: {
+    '@type': 'ShippingDeliveryTime',
+    handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' },
+    transitTime: { '@type': 'QuantitativeValue', minValue: 2, maxValue: 4, unitCode: 'DAY' },
+  },
 };
 const cutLabel = (product, lang) => (CUTS[product.cut] || CUTS.double)[lang];
 
@@ -66,6 +79,7 @@ function jsonLd(product, shape, lang = 'ua') {
       availability: availableQuantity(product) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       itemCondition: 'https://schema.org/NewCondition',
       hasMerchantReturnPolicy: RETURN_POLICY,
+      shippingDetails: SHIPPING_DETAILS,
     },
   };
   const breadcrumb = {

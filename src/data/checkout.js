@@ -3,9 +3,13 @@ export const PAYMENT_METHODS = {
   invoice: { ua: 'Оплата за рахунком', ru: 'Оплата по счёту' },
 };
 
+// Nova Poshta parcel up to 2 kg across Ukraine (tariff since 13.04.2026).
+// Must equal the flat rate of the "Нова Пошта" rule in Merchant Center.
+export const SHIPPING_FROM_UAH = 90;
+
 export const SHIPPING_NOTICE = {
-  ua: 'Доставку оплачує покупець за тарифами перевізника. Вартість доставки не входить у суму товарів.',
-  ru: 'Доставку оплачивает покупатель по тарифам перевозчика. Стоимость доставки не входит в сумму товаров.',
+  ua: `Доставка Новою Поштою — від ${SHIPPING_FROM_UAH} грн за тарифами перевізника, оплачує покупець. Вартість доставки не входить у суму товарів.`,
+  ru: `Доставка Новой Почтой — от ${SHIPPING_FROM_UAH} грн по тарифам перевозчика, оплачивает покупатель. Стоимость доставки не входит в сумму товаров.`,
 };
 
 export function validPhone(value) {

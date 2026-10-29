@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { PRODUCTS, SHAPES } from '../src/data/burr-data.js';
-import { availableQuantity } from '../src/data/checkout.js';
+import { availableQuantity, SHIPPING_FROM_UAH } from '../src/data/checkout.js';
 import { SITE, LANGS, productPath, productUrl, shapePath, shapeUrl } from '../src/data/site-urls.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -116,6 +116,9 @@ function checkProducts() {
       if (!langHtml.includes('"@type":"MerchantReturnPolicy"') || !langHtml.includes('"merchantReturnDays":14')
         || !langHtml.includes('"returnFees":"https://schema.org/FreeReturn"')) {
         fail(`${lang.toUpperCase()} product ${product.code} misses the 14-day return policy markup`);
+      }
+      if (!langHtml.includes(`"shippingRate":{"@type":"MonetaryAmount","value":${SHIPPING_FROM_UAH},"currency":"UAH"}`)) {
+        fail(`${lang.toUpperCase()} product ${product.code} misses shippingDetails with the ${SHIPPING_FROM_UAH} UAH rate`);
       }
       if (langHtml.includes('"category":')) {
         fail(`${lang.toUpperCase()} product ${product.code} has a free-text Product.category (Search Console: invalid value)`);
@@ -320,6 +323,15 @@ function checkStaticPages() {
   }
 }
 
+// The hand-written delivery page must quote the same rate as SHIPPING_FROM_UAH / Merchant Center.
+function checkDeliveryRate() {
+  const html = read(rel('dostavka/index.html'));
+  if (!html.includes(`від ${SHIPPING_FROM_UAH} грн`) || !html.includes(`от ${SHIPPING_FROM_UAH} грн`)) {
+    fail(`dostavka/index.html must state "від/от ${SHIPPING_FROM_UAH} грн" (SHIPPING_FROM_UAH)`);
+  }
+}
+
+checkDeliveryRate();
 checkHomePages();
 checkProducts();
 checkLandings();
